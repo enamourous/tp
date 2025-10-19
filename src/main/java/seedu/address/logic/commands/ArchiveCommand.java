@@ -6,13 +6,13 @@ import static seedu.address.model.Model.PREDICATE_SHOW_ACTIVE_PERSONS;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.logging.Logger;
 import java.util.Set;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import seedu.address.commons.core.Messages;
-import seedu.address.commons.core.index.Index;
 import seedu.address.commons.core.LogsCenter;
+import seedu.address.commons.core.index.Index;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.person.Person;
@@ -21,8 +21,6 @@ import seedu.address.model.person.Person;
  * Archives one or more persons identified by their indexes in the displayed list.
  */
 public class ArchiveCommand extends Command {
-
-    private static final Logger logger = LogsCenter.getLogger(ArchiveCommand.class);
 
     public static final String COMMAND_WORD = "archive";
 
@@ -35,6 +33,7 @@ public class ArchiveCommand extends Command {
     public static final String MESSAGE_ALREADY_ARCHIVED = "One or more selected persons are already "
         + "archived: %s";
     public static final String MESSAGE_SUCCESS = "Archived: %s";
+    private static final Logger logger = LogsCenter.getLogger(ArchiveCommand.class);
 
     private final List<Index> targetIndexes;
 

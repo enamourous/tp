@@ -15,18 +15,34 @@ public class DeletePaymentCommandParser implements Parser<DeletePaymentCommand> 
 
     @Override
     public DeletePaymentCommand parse(String args) throws ParseException {
+        ArgumentMultimap argMultimap =
+                ArgumentTokenizer.tokenize(args, CliSyntax.PREFIX_PAYMENT_INDEX);
+
+        List<Index> personIndexes;
+        Index paymentIndex;
+
         try {
-            ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, CliSyntax.PREFIX_PAYMENT_INDEX);
-
-            List<Index> personIndexes = ParserUtil.parseIndexes(argMultimap.getPreamble());
-            Index paymentIndex = ParserUtil.parseIndex(argMultimap.getValue(CliSyntax.PREFIX_PAYMENT_INDEX)
-                    .orElseThrow(() -> new ParseException("Missing payment index.")));
-
-            return new DeletePaymentCommand(personIndexes, paymentIndex);
-
+            // Parse person indexes from preamble
+            personIndexes = ParserUtil.parseIndexes(argMultimap.getPreamble());
         } catch (ParseException pe) {
             throw new ParseException(
-                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeletePaymentCommand.MESSAGE_USAGE), pe);
+                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeletePaymentCommand.MESSAGE_USAGE));
         }
+
+        try {
+            // Parse payment index from prefix
+            paymentIndex = ParserUtil.parseIndex(
+                    argMultimap.getValue(CliSyntax.PREFIX_PAYMENT_INDEX)
+                            .orElseThrow(() ->
+                                    new ParseException(
+                                            String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                                                    DeletePaymentCommand.MESSAGE_USAGE)))
+            );
+        } catch (ParseException pe) {
+            throw new ParseException(
+                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeletePaymentCommand.MESSAGE_USAGE));
+        }
+
+        return new DeletePaymentCommand(personIndexes, paymentIndex);
     }
 }

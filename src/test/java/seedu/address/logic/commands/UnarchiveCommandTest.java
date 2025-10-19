@@ -140,10 +140,10 @@ public class UnarchiveCommandTest {
         UnarchiveCommand c2 = new UnarchiveCommand(List.of(INDEX_FIRST_PERSON));
         UnarchiveCommand c3 = new UnarchiveCommand(Arrays.asList(INDEX_FIRST_PERSON, INDEX_SECOND_PERSON));
 
-        assertTrue(c1.equals(c2));        // same targets
-        assertTrue(!c1.equals(c3));       // different targets
-        assertTrue(c1.equals(c1));        // same object
-        assertTrue(!c1.equals(null));     // null
+        assertTrue(c1.equals(c2));
+        assertTrue(!c1.equals(c3));
+        assertTrue(c1.equals(c1));
+        assertTrue(!c1.equals(null));
         assertTrue(!c1.equals(new ListCommand())); // different type
     }
 }

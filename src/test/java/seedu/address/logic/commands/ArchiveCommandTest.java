@@ -75,7 +75,8 @@ public class ArchiveCommandTest {
         int outOfBounds = model.getFilteredPersonList().size() + 1;
         ArchiveCommand command = new ArchiveCommand(List.of(Index.fromOneBased(outOfBounds)));
 
-        assertCommandFailure(command, model, seedu.address.commons.core.Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
+        assertCommandFailure(command, model,
+                seedu.address.commons.core.Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
     }
 
     @Test

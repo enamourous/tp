@@ -31,7 +31,7 @@ public class AddMemberCommand extends Command {
         + PREFIX_NAME + "John Doe "
         + PREFIX_PHONE + "98765432 "
         + PREFIX_EMAIL + "johnd@example.com "
-        + PREFIX_MATRICULATIONNUMBER + "A01234567X"
+        + PREFIX_MATRICULATIONNUMBER + "A01234567X "
         + PREFIX_TAG + "friends "
         + PREFIX_TAG + "owesMoney";
 

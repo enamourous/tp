@@ -7,8 +7,10 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import seedu.address.commons.core.LogsCenter;
 import seedu.address.commons.core.Messages;
 import seedu.address.commons.core.index.Index;
 import seedu.address.logic.commands.exceptions.CommandException;
@@ -31,6 +33,7 @@ public class ArchiveCommand extends Command {
     public static final String MESSAGE_ALREADY_ARCHIVED = "One or more selected persons are already "
         + "archived: %s";
     public static final String MESSAGE_SUCCESS = "Archived: %s";
+    private static final Logger logger = LogsCenter.getLogger(ArchiveCommand.class);
 
     private final List<Index> targetIndexes;
 
@@ -55,6 +58,12 @@ public class ArchiveCommand extends Command {
         requireNonNull(model);
         List<Person> displayedPersons = model.getFilteredPersonList();
 
+        logger.info(String.format("[ArchiveCommand] Executing with indexes: %s",
+                targetIndexes.stream()
+                        .map(Index::getOneBased)
+                        .map(Object::toString)
+                        .collect(Collectors.joining(", "))));
+
         // pre validation
         List<Person> personsToArchive = new ArrayList<>(targetIndexes.size());
         List<String> alreadyArchivedNames = new ArrayList<>();
@@ -62,17 +71,22 @@ public class ArchiveCommand extends Command {
         for (Index targetIndex : targetIndexes) {
             int zeroBasedIndex = targetIndex.getZeroBased();
             if (zeroBasedIndex >= displayedPersons.size()) {
+                logger.warning(String.format("[ArchiveCommand] Invalid index: %d (list size: %d)",
+                        zeroBasedIndex, displayedPersons.size()));
                 throw new CommandException(Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
             }
 
             Person person = displayedPersons.get(zeroBasedIndex);
             if (person.isArchived()) {
+                logger.fine(String.format("[ArchiveCommand] Already archived: %s", person.getName()));
                 alreadyArchivedNames.add(person.getName().toString());
             }
             personsToArchive.add(person);
         }
 
         if (!alreadyArchivedNames.isEmpty()) {
+            logger.warning(String.format("[ArchiveCommand] Some persons already archived: %s",
+                    String.join(", ", alreadyArchivedNames)));
             throw new CommandException(String.format(MESSAGE_ALREADY_ARCHIVED,
                 String.join(", ", alreadyArchivedNames)));
         }
@@ -83,11 +97,14 @@ public class ArchiveCommand extends Command {
             Person archivedPerson = originalPerson.withArchived(true);
             model.setPerson(originalPerson, archivedPerson);
             archivedNames.add(archivedPerson.getName().toString());
+            logger.info(String.format("[ArchiveCommand] Archived: %s", archivedPerson.getName()));
         }
 
         model.updateFilteredPersonList(PREDICATE_SHOW_ACTIVE_PERSONS);
 
-        return new CommandResult(String.format(MESSAGE_SUCCESS, String.join(", ", archivedNames)));
+        String resultMessage = String.format(MESSAGE_SUCCESS, String.join(", ", archivedNames));
+        logger.info(String.format("[ArchiveCommand] Success: %s", resultMessage));
+        return new CommandResult(resultMessage);
     }
 
     @Override

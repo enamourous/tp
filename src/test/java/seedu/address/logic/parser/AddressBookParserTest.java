@@ -6,6 +6,7 @@ import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.Messages.MESSAGE_UNKNOWN_COMMAND;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
+import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_PERSON;
 
 import java.util.Arrays;
 import java.util.List;
@@ -14,13 +15,16 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.commands.AddMemberCommand;
+import seedu.address.logic.commands.ArchiveCommand;
 import seedu.address.logic.commands.ClearCommand;
 import seedu.address.logic.commands.EditCommand;
 import seedu.address.logic.commands.EditCommand.EditPersonDescriptor;
 import seedu.address.logic.commands.ExitCommand;
 import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.commands.HelpCommand;
+import seedu.address.logic.commands.ListArchivedCommand;
 import seedu.address.logic.commands.ListCommand;
+import seedu.address.logic.commands.UnarchiveCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.Person;
 import seedu.address.testutil.EditPersonDescriptorBuilder;
@@ -34,7 +38,7 @@ public class AddressBookParserTest {
     @Test
     public void parseCommand_add() throws Exception {
         Person person = new PersonBuilder().build();
-        AddMemberCommand command = (AddMemberCommand) parser.parseCommand(PersonUtil.getAddCommand(person));
+        AddMemberCommand command = (AddMemberCommand) parser.parseCommand(PersonUtil.getAddMemberCommand(person));
         assertEquals(new AddMemberCommand(person), command);
     }
 
@@ -88,5 +92,37 @@ public class AddressBookParserTest {
     public void parseCommand_unknownCommand_throwsParseException() {
         assertThrows(ParseException.class, MESSAGE_UNKNOWN_COMMAND, () -> parser.parseCommand(
             "unknownCommand"));
+    }
+
+    @Test
+    public void parseCommand_archive_single() throws Exception {
+        String cmd = ArchiveCommand.COMMAND_WORD + " " + INDEX_FIRST_PERSON.getOneBased();
+        assertTrue(parser.parseCommand(cmd) instanceof ArchiveCommand);
+    }
+
+    @Test
+    public void parseCommand_archive_multiple() throws Exception {
+        String cmd = ArchiveCommand.COMMAND_WORD + " "
+                + INDEX_FIRST_PERSON.getOneBased() + "," + INDEX_SECOND_PERSON.getOneBased();
+        assertTrue(parser.parseCommand(cmd) instanceof ArchiveCommand);
+    }
+
+    @Test
+    public void parseCommand_unarchive_single() throws Exception {
+        String cmd = UnarchiveCommand.COMMAND_WORD + " " + INDEX_FIRST_PERSON.getOneBased();
+        assertTrue(parser.parseCommand(cmd) instanceof UnarchiveCommand);
+    }
+
+    @Test
+    public void parseCommand_unarchive_multiple() throws Exception {
+        String cmd = UnarchiveCommand.COMMAND_WORD + " "
+                + INDEX_FIRST_PERSON.getOneBased() + "," + INDEX_SECOND_PERSON.getOneBased();
+        assertTrue(parser.parseCommand(cmd) instanceof UnarchiveCommand);
+    }
+
+    @Test
+    public void parseCommand_listarchived() throws Exception {
+        assertTrue(parser.parseCommand(ListArchivedCommand.COMMAND_WORD) instanceof ListArchivedCommand);
+        assertTrue(parser.parseCommand(ListArchivedCommand.COMMAND_WORD + "   ") instanceof ListArchivedCommand);
     }
 }

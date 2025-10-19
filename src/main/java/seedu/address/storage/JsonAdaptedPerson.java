@@ -40,7 +40,7 @@ class JsonAdaptedPerson {
     public JsonAdaptedPerson(@JsonProperty("name") String name,
                              @JsonProperty("phone") String phone,
                              @JsonProperty("email") String email,
-                             @JsonProperty("matriculation number") String matriculationNumber,
+                             @JsonProperty("matriculationNumber") String matriculationNumber,
                              @JsonProperty("tags") List<JsonAdaptedTag> tags,
                              @JsonProperty("archived") Boolean archived,
                              @JsonProperty("payments") List<JsonAdaptedPayment> payments) {

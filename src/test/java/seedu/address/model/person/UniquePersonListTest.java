@@ -3,7 +3,9 @@ package seedu.address.model.person;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_ADDRESS_BOB;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_MATRICULATIONNUM_AMY;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_MATRICULATIONNUM_BOB;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_NAME_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_TAG_HUSBAND;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.ALICE;
@@ -40,11 +42,24 @@ public class UniquePersonListTest {
     }
 
     @Test
-    public void contains_personWithSameIdentityFieldsInList_returnsTrue() {
+    public void contains_personWithSameMatricNumberInList_returnsTrue() {
         uniquePersonList.add(ALICE);
-        Person editedAlice = new PersonBuilder(ALICE).withAddress(VALID_ADDRESS_BOB).withTags(VALID_TAG_HUSBAND)
-                .build();
+        // editedAlice has different name/tags but same matric number
+        Person editedAlice = new PersonBuilder(ALICE)
+            .withTags(VALID_TAG_HUSBAND)
+            .withName(VALID_NAME_BOB)
+            .build();
         assertTrue(uniquePersonList.contains(editedAlice));
+    }
+
+    @Test
+    public void contains_personWithDifferentMatricNumber_returnsFalse() {
+        uniquePersonList.add(ALICE);
+        // editedAlice has a different matric number → should not be same person
+        Person editedAlice = new PersonBuilder(ALICE)
+            .withMatriculationNumber(VALID_MATRICULATIONNUM_BOB)
+            .build();
+        assertFalse(uniquePersonList.contains(editedAlice));
     }
 
     @Test
@@ -83,10 +98,14 @@ public class UniquePersonListTest {
     }
 
     @Test
-    public void setPerson_editedPersonHasSameIdentity_success() {
+    public void setPerson_editedPersonHasSameMatricNumber_success() {
         uniquePersonList.add(ALICE);
-        Person editedAlice = new PersonBuilder(ALICE).withAddress(VALID_ADDRESS_BOB).withTags(VALID_TAG_HUSBAND)
-                .build();
+        // Same matric number but different name and tags
+        Person editedAlice = new PersonBuilder(ALICE)
+            .withName("Different Name")
+            .withTags(VALID_TAG_HUSBAND)
+            .withMatriculationNumber(VALID_MATRICULATIONNUM_AMY)
+            .build();
         uniquePersonList.setPerson(ALICE, editedAlice);
         UniquePersonList expectedUniquePersonList = new UniquePersonList();
         expectedUniquePersonList.add(editedAlice);
@@ -94,19 +113,27 @@ public class UniquePersonListTest {
     }
 
     @Test
-    public void setPerson_editedPersonHasDifferentIdentity_success() {
+    public void setPerson_editedPersonHasDifferentMatricNumber_success() {
         uniquePersonList.add(ALICE);
-        uniquePersonList.setPerson(ALICE, BOB);
+        // different matric number → different identity
+        Person editedAlice = new PersonBuilder(BOB)
+            .withMatriculationNumber(VALID_MATRICULATIONNUM_BOB)
+            .build();
+        uniquePersonList.setPerson(ALICE, editedAlice);
         UniquePersonList expectedUniquePersonList = new UniquePersonList();
-        expectedUniquePersonList.add(BOB);
+        expectedUniquePersonList.add(editedAlice);
         assertEquals(expectedUniquePersonList, uniquePersonList);
     }
 
     @Test
-    public void setPerson_editedPersonHasNonUniqueIdentity_throwsDuplicatePersonException() {
+    public void setPerson_editedPersonHasNonUniqueMatricNumber_throwsDuplicatePersonException() {
         uniquePersonList.add(ALICE);
         uniquePersonList.add(BOB);
-        assertThrows(DuplicatePersonException.class, () -> uniquePersonList.setPerson(ALICE, BOB));
+        // Edited Alice now shares BOB’s matric number → duplicate
+        Person editedAlice = new PersonBuilder(ALICE)
+            .withMatriculationNumber(BOB.getMatriculationNumber().value)
+            .build();
+        assertThrows(DuplicatePersonException.class, () -> uniquePersonList.setPerson(ALICE, editedAlice));
     }
 
     @Test
@@ -157,15 +184,18 @@ public class UniquePersonListTest {
     }
 
     @Test
-    public void setPersons_listWithDuplicatePersons_throwsDuplicatePersonException() {
-        List<Person> listWithDuplicatePersons = Arrays.asList(ALICE, ALICE);
+    public void setPersons_listWithDuplicateMatricNumbers_throwsDuplicatePersonException() {
+        Person aliceDuplicate = new PersonBuilder(ALICE)
+            .withMatriculationNumber(ALICE.getMatriculationNumber().value)
+            .build();
+        List<Person> listWithDuplicatePersons = Arrays.asList(ALICE, aliceDuplicate);
         assertThrows(DuplicatePersonException.class, () -> uniquePersonList.setPersons(listWithDuplicatePersons));
     }
 
     @Test
     public void asUnmodifiableObservableList_modifyList_throwsUnsupportedOperationException() {
-        assertThrows(UnsupportedOperationException.class, ()
-            -> uniquePersonList.asUnmodifiableObservableList().remove(0));
+        assertThrows(UnsupportedOperationException.class, (
+        ) -> uniquePersonList.asUnmodifiableObservableList().remove(0));
     }
 
     @Test

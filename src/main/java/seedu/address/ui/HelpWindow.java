@@ -11,12 +11,36 @@ import javafx.stage.Stage;
 import seedu.address.commons.core.LogsCenter;
 
 /**
- * Controller for a help page
+ * Controller for the Help window.
+ * Displays a structured quick command reference and a link to the full User Guide.
  */
 public class HelpWindow extends UiPart<Stage> {
+    public static final String USERGUIDE_URL = "https://ay2526s1-cs2103t-w11-2.github.io/tp/UserGuide.html";
 
-    public static final String USERGUIDE_URL = "https://se-education.org/addressbook-level3/UserGuide.html";
-    public static final String HELP_MESSAGE = "Refer to the user guide: " + USERGUIDE_URL;
+    // organized help message for quick user reference
+    public static final String HELP_MESSAGE =
+            "Below is a quick user guide. For detailed explanations, visit:\n" + USERGUIDE_URL + "\n"
+                    + "──────────────────────────────\n"
+                    + "BASIC COMMANDS\n"
+                    + "**Member Management**\n"
+                    + "  add n/NAME p/PHONE e/EMAIL m/MATRIC [t/TAG]...\n"
+                    + "  edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [m/MATRIC] [t/TAG]...\n"
+                    + "  list — show all active members\n"
+                    + "  listarchived — show archived members\n"
+                    + "  archive INDEX[,INDEX]... — archive members\n"
+                    + "  unarchive INDEX[,INDEX]... — unarchive members\n"
+                    + "  find KEYWORD [MORE_KEYWORDS]... — search by name/tag\n"
+                    + "  view INDEX — view member details\n\n"
+
+                    + "**Payment Management**\n"
+                    + "  addpayment INDEX[,INDEX]... a/AMOUNT d/DATE [r/REMARKS]\n"
+                    + "  editpayment PERSON_INDEX p/PAYMENT_INDEX [a/AMOUNT] [d/DATE] [r/REMARKS]\n"
+                    + "  deletepayment PERSON_INDEX[,PERSON_INDEX]... p/PAYMENT_INDEX\n"
+                    + "  viewpayment INDEX | all — view payments\n\n"
+
+                    + "**System Commands**\n"
+                    + "  help — show this help window\n"
+                    + "  exit — close the application\n\n";
 
     private static final Logger logger = LogsCenter.getLogger(HelpWindow.class);
     private static final String FXML = "HelpWindow.fxml";
@@ -28,7 +52,7 @@ public class HelpWindow extends UiPart<Stage> {
     private Label helpMessage;
 
     /**
-     * Creates a new HelpWindow.
+     * Creates a new HelpWindow using the given stage as the root.
      *
      * @param root Stage to use as the root of the HelpWindow.
      */
@@ -46,24 +70,11 @@ public class HelpWindow extends UiPart<Stage> {
 
     /**
      * Shows the help window.
-     * @throws IllegalStateException
-     *     <ul>
-     *         <li>
-     *             if this method is called on a thread other than the JavaFX Application Thread.
-     *         </li>
-     *         <li>
-     *             if this method is called during animation or layout processing.
-     *         </li>
-     *         <li>
-     *             if this method is called on the primary stage.
-     *         </li>
-     *         <li>
-     *             if {@code dialogStage} is already showing.
-     *         </li>
-     *     </ul>
+     *
+     * @throws IllegalStateException if called from a non-JavaFX thread or when the window is already showing.
      */
     public void show() {
-        logger.fine("Showing help page about the application.");
+        logger.fine("Showing help window with command reference.");
         getRoot().show();
         getRoot().centerOnScreen();
     }
@@ -90,13 +101,13 @@ public class HelpWindow extends UiPart<Stage> {
     }
 
     /**
-     * Copies the URL to the user guide to the clipboard.
+     * Copies the URL to the User Guide to the system clipboard.
      */
     @FXML
     private void copyUrl() {
         final Clipboard clipboard = Clipboard.getSystemClipboard();
-        final ClipboardContent url = new ClipboardContent();
-        url.putString(USERGUIDE_URL);
-        clipboard.setContent(url);
+        final ClipboardContent content = new ClipboardContent();
+        content.putString(USERGUIDE_URL);
+        clipboard.setContent(content);
     }
 }

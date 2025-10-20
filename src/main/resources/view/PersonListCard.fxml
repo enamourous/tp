@@ -31,6 +31,7 @@
       <Label fx:id="phone" styleClass="cell_small_label" text="\$phone" />
         <Label fx:id="matriculationNum" styleClass="cell_small_label" />
         <Label fx:id="email" styleClass="cell_small_label" text="\$email" />
+        <Region minHeight="8.0" prefHeight="8.0" maxHeight="8.0"/>
         <Label fx:id="latestPayment" styleClass="cell_small_label" text="\$latest payment" />
         <Label fx:id="archivedLabel"
                text="Archived"

@@ -57,8 +57,8 @@ public class PersonCard extends UiPart<Region> {
                             .max(Comparator.comparing(p -> p.getDate()))
                             .map(p -> {
                             String remark = (p.getRemarks() == null || p.getRemarks().isBlank())
-                                            ? "" : " — " + p.getRemarks();
-                            return "Latest: " + p.getAmount().toString() + " on " + p.getDate() + remark;
+                                            ? "" : " for " + p.getRemarks();
+                            return "Latest Payment: $" + p.getAmount().toString() + " on " + p.getDate() + remark;
                         })
                             .orElse("Latest: No payments yet");
                 latestPayment.setText(latest);

@@ -7,6 +7,9 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
 
+import java.util.logging.Logger;
+
+import seedu.address.commons.core.LogsCenter;
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
@@ -38,6 +41,8 @@ public class AddMemberCommand extends Command {
     public static final String MESSAGE_SUCCESS = "New person added: %1$s";
     public static final String MESSAGE_DUPLICATE_PERSON = "This person already exists in the address book";
 
+    private static final Logger logger = LogsCenter.getLogger(AddMemberCommand.class);
+
     private final Person toAdd;
 
     /**
@@ -52,11 +57,28 @@ public class AddMemberCommand extends Command {
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
 
+        // Log user intent
+        logger.info(String.format("User triggered 'add' command for person: %s", toAdd.getName()));
+
+        // Check for duplicates
         if (model.hasPerson(toAdd)) {
+            logger.warning(String.format(
+                "Duplicate detected — person with matriculation number %s already exists.",
+                toAdd.getMatriculationNumber()));
             throw new CommandException(MESSAGE_DUPLICATE_PERSON);
         }
 
+        // Proceed to add
         model.addPerson(toAdd);
+        logger.info(String.format(
+            "Successfully added new person: Name=%s, MatricNo=%s, Email=%s, Phone=%s, Tags=%s",
+            toAdd.getName(),
+            toAdd.getMatriculationNumber(),
+            toAdd.getEmail(),
+            toAdd.getPhone(),
+            toAdd.getTags()));
+
+        // Return command result
         return new CommandResult(String.format(MESSAGE_SUCCESS, Messages.format(toAdd)));
     }
 

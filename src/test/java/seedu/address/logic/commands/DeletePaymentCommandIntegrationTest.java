@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.index.Index;
+import seedu.address.logic.Messages;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
@@ -32,7 +33,7 @@ public class DeletePaymentCommandIntegrationTest {
     }
 
     @Test
-    public void execute_deletePaymentsinglePerson_success() throws Exception {
+    public void execute_deletePaymentSinglePerson_success() throws Exception {
         Person targetPerson = model.getFilteredPersonList().get(0);
         Payment payment = new Payment(new Amount(new BigDecimal("50.00")), LocalDate.of(2025, 1, 1));
         Person personWithPayment = targetPerson.withAddedPayment(payment);
@@ -54,7 +55,7 @@ public class DeletePaymentCommandIntegrationTest {
     }
 
     @Test
-    public void execute_deletePaymentmultiplePersons_success() throws Exception {
+    public void execute_deletePaymentMultiplePersons_success() throws Exception {
         Payment payment = new Payment(new Amount(new BigDecimal("20.00")), LocalDate.of(2025, 1, 1));
 
         // Add payment to first two persons
@@ -91,5 +92,29 @@ public class DeletePaymentCommandIntegrationTest {
 
         assertCommandFailure(command, model,
                 String.format(DeletePaymentCommand.MESSAGE_INVALID_PAYMENT_INDEX, targetPerson.getName()));
+    }
+
+    @Test
+    public void execute_emptyModel_throwsCommandException() {
+        Model emptyModel = new ModelManager();
+        Index personIndex = Index.fromOneBased(1);
+        Index paymentIndex = Index.fromOneBased(1);
+
+        DeletePaymentCommand command = new DeletePaymentCommand(List.of(personIndex), paymentIndex);
+
+        assertCommandFailure(command, emptyModel, Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
+    }
+
+    @Test
+    public void execute_invalidPersonIndex_throwsCommandException() {
+        Model model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+        int outOfBoundsIndex = model.getFilteredPersonList().size() + 1;
+
+        DeletePaymentCommand command = new DeletePaymentCommand(
+                List.of(Index.fromOneBased(outOfBoundsIndex)),
+                Index.fromOneBased(1)
+        );
+
+        assertCommandFailure(command, model, Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
     }
 }

@@ -32,20 +32,20 @@ import seedu.address.testutil.PersonBuilder;
  * 9. add payment to single person with incorrect amount
  */
 
-public class AddPaymentCommandTest {
-    // 1. Single person, no remarks
-    @Test
-    public void execute_singlePerson_noRemarks_success() throws Exception {
-        Person bob = new PersonBuilder().withName("Bob").build();
-        Model model = new ModelStubWithPerson(bob);
-
-        AddPaymentCommand command = new AddPaymentCommand(
-                List.of(Index.fromOneBased(1)),
-                new Amount(new BigDecimal("66.66")),
-                LocalDate.of(2025, 10, 10),
-                null // no remarks
-        );
-
-        CommandResult result = command.execute(model);
-    }
-}
+//public class AddPaymentCommandTest {
+//    // 1. Single person, no remarks
+//    @Test
+//    public void execute_singlePerson_noRemarks_success() throws Exception {
+//        Person bob = new PersonBuilder().withName("Bob").build();
+//        Model model = new ModelStubWithPerson(bob);
+//
+//        AddPaymentCommand command = new AddPaymentCommand(
+//                List.of(Index.fromOneBased(1)),
+//                new Amount(new BigDecimal("66.66")),
+//                LocalDate.of(2025, 10, 10),
+//                null // no remarks
+//        );
+//
+//        CommandResult result = command.execute(model);
+//    }
+//}

@@ -8,7 +8,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.logging.Logger;
 
+import seedu.address.commons.core.LogsCenter;
 import seedu.address.commons.core.index.Index;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
@@ -22,7 +24,7 @@ import seedu.address.model.person.Person;
  * viewpayment INDEX
  * viewpayment all
  */
-public class ViewPaymentsCommand extends Command {
+public class ViewPaymentCommand extends Command {
 
     public static final String COMMAND_WORD = "viewpayment";
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Shows recorded payments.\n"
@@ -31,23 +33,26 @@ public class ViewPaymentsCommand extends Command {
 
     private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ISO_LOCAL_DATE;
 
+    private static final Logger logger = LogsCenter.getLogger(ViewPaymentCommand.class);
     private final Index index; // null => all
 
-    private ViewPaymentsCommand(Index index) {
+    public ViewPaymentCommand(Index index) {
         this.index = index;
     }
 
-    public static ViewPaymentsCommand forIndex(Index index) {
-        return new ViewPaymentsCommand(index);
+    public static ViewPaymentCommand forIndex(Index index) {
+        return new ViewPaymentCommand(index);
     }
 
-    public static ViewPaymentsCommand forAll() {
-        return new ViewPaymentsCommand(null);
+    public static ViewPaymentCommand forAll() {
+        return new ViewPaymentCommand(null);
     }
 
     @Override
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
+        logger.fine(() -> "ViewPaymentCommand.execute mode=" + (index == null ? "all" : ("index=" + index.getOneBased())));
+
         List<Person> people = model.getFilteredPersonList();
 
         // 'all' mode: show per-person totals and a grand total
@@ -112,8 +117,13 @@ public class ViewPaymentsCommand extends Command {
     @Override
     public boolean equals(Object other) {
         return other == this
-            || (other instanceof ViewPaymentsCommand
-            && ((this.index == null && ((ViewPaymentsCommand) other).index == null)
-            || (this.index != null && this.index.equals(((ViewPaymentsCommand) other).index))));
+            || (other instanceof ViewPaymentCommand
+            && ((this.index == null && ((ViewPaymentCommand) other).index == null)
+            || (this.index != null && this.index.equals(((ViewPaymentCommand) other).index))));
     }
+
+    @Override
+    public int hashCode() {
+                return index == null ? 0 : index.hashCode();
+            }
 }

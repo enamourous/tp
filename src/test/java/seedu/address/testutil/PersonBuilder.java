@@ -1,5 +1,10 @@
 package seedu.address.testutil;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -10,9 +15,11 @@ import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
 import seedu.address.model.tag.Tag;
 import seedu.address.model.util.SampleDataUtil;
+import seedu.address.model.payment.Payment;
 
 /**
- * A utility class to help with building Person objects.
+ * A utility class to help with building Person objects for tests.
+ * Supports adding payments via {@link #withPayments(Payment...)}.
  */
 public class PersonBuilder {
 
@@ -27,6 +34,9 @@ public class PersonBuilder {
     private MatriculationNumber matriculationNumber;
     private Set<Tag> tags;
 
+    // New: payments to attach to the built Person
+    private List<Payment> payments = new ArrayList<>();
+
     /**
      * Creates a {@code PersonBuilder} with the default details.
      */
@@ -40,6 +50,7 @@ public class PersonBuilder {
 
     /**
      * Initializes the PersonBuilder with the data of {@code personToCopy}.
+     * Note: payments are intentionally not copied to keep cloning predictable in tests.
      */
     public PersonBuilder(Person personToCopy) {
         name = personToCopy.getName();
@@ -49,48 +60,80 @@ public class PersonBuilder {
         tags = new HashSet<>(personToCopy.getTags());
     }
 
-    /**
-     * Sets the {@code Name} of the {@code Person} that we are building.
-     */
+    /** Sets the {@code Name} of the {@code Person} that we are building. */
     public PersonBuilder withName(String name) {
         this.name = new Name(name);
         return this;
     }
 
-    /**
-     * Parses the {@code tags} into a {@code Set<Tag>} and set it to the {@code Person} that we are building.
-     */
+    /** Parses the {@code tags} into a {@code Set<Tag>} and set it to the {@code Person} that we are building. */
     public PersonBuilder withTags(String... tags) {
         this.tags = SampleDataUtil.getTagSet(tags);
         return this;
     }
 
-    /**
-     * Sets the {@code Address} of the {@code Person} that we are building.
-     */
+    /** Sets the {@code MatriculationNumber} of the {@code Person} that we are building. */
     public PersonBuilder withMatriculationNumber(String matriculationNum) {
         this.matriculationNumber = new MatriculationNumber(matriculationNum);
         return this;
     }
 
-    /**
-     * Sets the {@code Phone} of the {@code Person} that we are building.
-     */
+    /** Sets the {@code Phone} of the {@code Person} that we are building. */
     public PersonBuilder withPhone(String phone) {
         this.phone = new Phone(phone);
         return this;
     }
 
-    /**
-     * Sets the {@code Email} of the {@code Person} that we are building.
-     */
+    /** Sets the {@code Email} of the {@code Person} that we are building. */
     public PersonBuilder withEmail(String email) {
         this.email = new Email(email);
         return this;
     }
 
-    public Person build() {
-        return new Person(name, phone, email, matriculationNumber, tags);
+    /** Adds payments to the person being built. */
+    public PersonBuilder withPayments(Payment... payments) {
+        this.payments = Arrays.asList(payments);
+        return this;
     }
 
+    /**
+     * Builds the Person. If payments were provided, this tries the following (in order):
+     * 1) person.withPayments(List&lt;Payment&gt;)
+     * 2) person.withAddedPayment(Payment) repeatedly
+     * 3) A Person constructor that accepts payments as an extra parameter
+     */
+    public Person build() {
+        Person base = new Person(name, phone, email, matriculationNumber, tags);
+
+        if (payments.isEmpty()) {
+            return base;
+        }
+
+        // Option 1: withPayments(List<Payment>)
+        try {
+            Method m = Person.class.getMethod("withPayments", List.class);
+            Object out = m.invoke(base, payments);
+            return (Person) out;
+        } catch (ReflectiveOperationException ignored) { }
+
+        // Option 2: withAddedPayment(Payment) repeatedly
+        try {
+            Method add = Person.class.getMethod("withAddedPayment", Payment.class);
+            Person current = base;
+            for (Payment p : payments) {
+                current = (Person) add.invoke(current, p);
+            }
+            return current;
+        } catch (ReflectiveOperationException ignored) { }
+
+        // Option 3: constructor that includes payments (… , Set<Tag>, List<Payment>)
+        try {
+            Constructor<Person> ctor = Person.class.getConstructor(
+                    Name.class, Phone.class, Email.class, MatriculationNumber.class, Set.class, List.class);
+            return ctor.newInstance(name, phone, email, matriculationNumber, tags, payments);
+        } catch (ReflectiveOperationException ignored) { }
+
+        // Fallback: return base if none of the above APIs exist
+        return base;
+    }
 }

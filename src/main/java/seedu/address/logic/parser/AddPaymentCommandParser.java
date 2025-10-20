@@ -2,8 +2,8 @@ package seedu.address.logic.parser;
 
 import static seedu.address.commons.core.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 
-import java.time.format.DateTimeParseException;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
@@ -18,12 +18,14 @@ import seedu.address.model.payment.Amount;
  */
 public class AddPaymentCommandParser implements Parser<AddPaymentCommand> {
 
+    public static final String MESSAGE_INVALID_AMOUNT =
+            "Amount must be positive and have at most 2 decimal places!";
+    public static final String MESSAGE_INVALID_DATE =
+            "Invalid date format. Please use YYYY-MM-DD.";
+
     private static final Prefix PREFIX_AMOUNT = new Prefix("a/");
     private static final Prefix PREFIX_DATE = new Prefix("d/");
     private static final Prefix PREFIX_REMARKS = new Prefix("r/");
-
-    public static final String MESSAGE_INVALID_AMOUNT = "Amount must be positive and have at most 2 decimal places!";
-    public static final String MESSAGE_INVALID_DATE = "Invalid date format. Please use YYYY-MM-DD.";
 
     @Override
     public AddPaymentCommand parse(String args) throws ParseException {

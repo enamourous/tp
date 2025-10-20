@@ -15,7 +15,7 @@ import seedu.address.model.payment.Payment;
 import seedu.address.model.person.Person;
 
 /**
- * Adds a payment to a person identified by the index number in the displayed list.
+ * Adds a payment to one or more persons identified by their indexes in the displayed list.
  */
 public class AddPaymentCommand extends Command {
 
@@ -27,25 +27,25 @@ public class AddPaymentCommand extends Command {
             + "Example (single index): " + COMMAND_WORD + " 1 a/23.50 d/2025-10-09 r/taxi home\n"
             + "Example (multiple indexes): " + COMMAND_WORD + " 1,2,5 a/23.50 d/2025-10-09 r/taxi home";
 
+    public static final String MESSAGE_SUCCESS_TEMPLATE = "Added payment %s to %s";
+
     private final List<Index> indexes;
-    private final Payment payment;
+    private final Amount amount;
+    private final LocalDate date;
+    private final String remarks;
 
     /**
      * Constructs an {@code AddPaymentCommand} to add a payment to one or more persons.
-     *
-     * @param indexes The list of one-based indexes of persons in the displayed list to add the payment to.
-     * @param amount The amount of the payment.
-     * @param date The date of the payment.
-     * @param remarks Optional remarks for the payment. Can be null.
-     * @throws NullPointerException if {@code indexes}, {@code amount}, or {@code date} is null.
      */
     public AddPaymentCommand(List<Index> indexes, Amount amount, LocalDate date, String remarks) {
         requireNonNull(indexes);
         requireNonNull(amount);
         requireNonNull(date);
 
-        this.indexes = List.copyOf(indexes); // defensive copy
-        this.payment = new Payment(amount, date, remarks);
+        this.indexes = List.copyOf(indexes);
+        this.amount = amount;
+        this.date = date;
+        this.remarks = remarks;
     }
 
     @Override
@@ -53,6 +53,7 @@ public class AddPaymentCommand extends Command {
         requireNonNull(model);
         var list = model.getFilteredPersonList();
 
+        Payment payment = new Payment(amount, date, remarks);
         List<String> updatedNames = new ArrayList<>();
 
         for (Index index : indexes) {
@@ -62,14 +63,12 @@ public class AddPaymentCommand extends Command {
 
             Person target = list.get(index.getZeroBased());
             Person updated = target.withAddedPayment(payment);
-
             model.setPerson(target, updated);
             updatedNames.add(updated.getName().toString());
         }
 
         String joinedNames = String.join(", ", updatedNames);
-        String message = String.format("Added payment %s to %s", payment, joinedNames);
-
+        String message = String.format(MESSAGE_SUCCESS_TEMPLATE, payment, joinedNames);
         return new CommandResult(message);
     }
 
@@ -78,6 +77,8 @@ public class AddPaymentCommand extends Command {
         return other == this
                 || (other instanceof AddPaymentCommand
                 && indexes.equals(((AddPaymentCommand) other).indexes)
-                && payment.equals(((AddPaymentCommand) other).payment));
+                && amount.equals(((AddPaymentCommand) other).amount)
+                && date.equals(((AddPaymentCommand) other).date)
+                && java.util.Objects.equals(remarks, ((AddPaymentCommand) other).remarks)); // remarks could be null
     }
 }

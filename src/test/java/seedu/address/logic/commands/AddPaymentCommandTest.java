@@ -146,8 +146,7 @@ public class AddPaymentCommandTest {
         List<Index> indexes = List.of(Index.fromOneBased(1));
         Amount amount = new Amount(new BigDecimal("15.00"));
 
-        assertThrows(NullPointerException.class,
-                () -> new AddPaymentCommand(indexes, amount, null, null));
+        assertThrows(NullPointerException.class, () -> new AddPaymentCommand(indexes, amount, null, null));
     }
 
     // 7. Missing amount (null)
@@ -155,8 +154,7 @@ public class AddPaymentCommandTest {
     public void constructor_nullAmount_throwsNullPointerException() {
         List<Index> indexes = List.of(Index.fromOneBased(1));
 
-        assertThrows(NullPointerException.class,
-                () -> new AddPaymentCommand(indexes, null,
+        assertThrows(NullPointerException.class, () -> new AddPaymentCommand(indexes, null,
                         LocalDate.of(2025, 10, 9), null));
     }
 
@@ -179,8 +177,7 @@ public class AddPaymentCommandTest {
     public void constructor_invalidAmount_throwsIllegalArgumentException() {
         List<Index> indexes = List.of(Index.fromOneBased(1));
 
-        assertThrows(IllegalArgumentException.class,
-                () -> new Amount(new BigDecimal("-5.00")));
+        assertThrows(IllegalArgumentException.class, () -> new Amount(new BigDecimal("-5.00")));
     }
 
     // 10. Empty model (no persons)

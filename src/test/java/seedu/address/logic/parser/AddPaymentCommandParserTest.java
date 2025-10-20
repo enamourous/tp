@@ -34,10 +34,10 @@ import seedu.address.model.payment.Amount;
 
 public class AddPaymentCommandParserTest {
 
-    private final AddPaymentCommandParser parser = new AddPaymentCommandParser();
-
     private static final String MESSAGE_USAGE =
             String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddPaymentCommand.MESSAGE_USAGE);
+
+    private final AddPaymentCommandParser parser = new AddPaymentCommandParser();
 
     // 1. Empty or missing args
     @Test

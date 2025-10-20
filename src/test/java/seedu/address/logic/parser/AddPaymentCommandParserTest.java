@@ -100,7 +100,7 @@ public class AddPaymentCommandParserTest {
 
     // 6. Single index, valid input
     @Test
-    public void parse_singleIndex_validArgs_success() {
+    public void parse_singleIndexValidArgs_success() {
         AddPaymentCommand expected = new AddPaymentCommand(
                 List.of(INDEX_FIRST_PERSON),
                 Amount.parse("23.50"),
@@ -113,7 +113,7 @@ public class AddPaymentCommandParserTest {
 
     // 7. Single index with remarks
     @Test
-    public void parse_singleIndex_withRemarks_success() {
+    public void parse_singleIndexWithRemarks_success() {
         AddPaymentCommand expected = new AddPaymentCommand(
                 List.of(INDEX_FIRST_PERSON),
                 Amount.parse("45.00"),
@@ -139,7 +139,7 @@ public class AddPaymentCommandParserTest {
 
     // 9. Multiple indexes with remarks and trailing comma
     @Test
-    public void parse_multipleIndexes_withRemarksAndTrailingComma_success() {
+    public void parse_multipleIndexesWithRemarksAndTrailingComma_success() {
         AddPaymentCommand expected = new AddPaymentCommand(
                 Arrays.asList(INDEX_FIRST_PERSON, INDEX_SECOND_PERSON),
                 Amount.parse("50.00"),

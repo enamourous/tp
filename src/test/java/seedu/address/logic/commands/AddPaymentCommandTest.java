@@ -40,7 +40,7 @@ public class AddPaymentCommandTest {
 
     // 1. Single person, no remarks
     @Test
-    public void execute_singlePerson_noRemarks_success() throws Exception {
+    public void execute_singlePersonNoRemarks_success() throws Exception {
         Person bob = new PersonBuilder().withName("Bob").build();
         Model model = new ModelStubWithPerson(bob);
 
@@ -60,7 +60,7 @@ public class AddPaymentCommandTest {
 
     // 2. Single person, with remarks
     @Test
-    public void execute_singlePerson_withRemarks_success() throws Exception {
+    public void execute_singlePersonWithRemarks_success() throws Exception {
         Person alice = new PersonBuilder().withName("Alice").build();
         Model model = new ModelStubWithPerson(alice);
 
@@ -81,7 +81,7 @@ public class AddPaymentCommandTest {
 
     // 3. Multiple persons, no remarks
     @Test
-    public void execute_multiplePersons_noRemarks_success() throws Exception {
+    public void execute_multiplePersonsNoRemarks_success() throws Exception {
         Person charlie = new PersonBuilder().withName("Charlie").build();
         Person dana = new PersonBuilder().withName("Dana").build();
         Model model = new ModelStubWithMultiplePersons(List.of(charlie, dana));
@@ -90,19 +90,21 @@ public class AddPaymentCommandTest {
         LocalDate date = LocalDate.of(2025, 10, 9);
 
         AddPaymentCommand command = new AddPaymentCommand(
-                List.of(Index.fromOneBased(1), Index.fromOneBased(2)), amount, date, null);
+                List.of(Index.fromOneBased(1),
+                        Index.fromOneBased(2)), amount, date, null);
 
         CommandResult result = command.execute(model);
 
         Payment expectedPayment = new Payment(amount, date, null);
-        String expectedMessage = String.format(AddPaymentCommand.MESSAGE_SUCCESS_TEMPLATE, expectedPayment, "Charlie, Dana");
+        String expectedMessage = String.format(AddPaymentCommand.MESSAGE_SUCCESS_TEMPLATE,
+                expectedPayment, "Charlie, Dana");
 
         assertEquals(expectedMessage, result.getFeedbackToUser());
     }
 
     // 4. Multiple persons, with remarks
     @Test
-    public void execute_multiplePersons_withRemarks_success() throws Exception {
+    public void execute_multiplePersonsWithRemarks_success() throws Exception {
         Person ethan = new PersonBuilder().withName("Ethan").build();
         Person danton = new PersonBuilder().withName("Danton").build();
         Model model = new ModelStubWithMultiplePersons(List.of(ethan, danton));
@@ -117,7 +119,8 @@ public class AddPaymentCommandTest {
         CommandResult result = command.execute(model);
 
         Payment expectedPayment = new Payment(amount, date, remarks);
-        String expectedMessage = String.format(AddPaymentCommand.MESSAGE_SUCCESS_TEMPLATE, expectedPayment, "Ethan, Danton");
+        String expectedMessage = String.format(AddPaymentCommand.MESSAGE_SUCCESS_TEMPLATE,
+                expectedPayment, "Ethan, Danton");
 
         assertEquals(expectedMessage, result.getFeedbackToUser());
     }
@@ -269,20 +272,48 @@ public class AddPaymentCommandTest {
 
     // Model Stubs
     private static class ModelStub implements Model {
-        @Override public ObservableList<Person> getFilteredPersonList() { throw new AssertionError(); }
-        @Override public void setPerson(Person target, Person editedPerson) { throw new AssertionError(); }
-        @Override public void addPerson(Person person) { throw new AssertionError(); }
-        @Override public boolean hasPerson(Person person) { throw new AssertionError(); }
-        @Override public void deletePerson(Person target) { throw new AssertionError(); }
-        @Override public void updateFilteredPersonList(java.util.function.Predicate<Person> predicate) { throw new AssertionError(); }
-        @Override public void setUserPrefs(seedu.address.model.ReadOnlyUserPrefs userPrefs) { throw new AssertionError(); }
-        @Override public seedu.address.model.ReadOnlyUserPrefs getUserPrefs() { throw new AssertionError(); }
-        @Override public void setGuiSettings(seedu.address.commons.core.GuiSettings guiSettings) { throw new AssertionError(); }
-        @Override public seedu.address.commons.core.GuiSettings getGuiSettings() { throw new AssertionError(); }
-        @Override public void setAddressBookFilePath(java.nio.file.Path addressBookFilePath) { throw new AssertionError(); }
-        @Override public java.nio.file.Path getAddressBookFilePath() { throw new AssertionError(); }
-        @Override public void setAddressBook(seedu.address.model.ReadOnlyAddressBook newData) { throw new AssertionError(); }
-        @Override public seedu.address.model.ReadOnlyAddressBook getAddressBook() { throw new AssertionError(); }
+        @Override public ObservableList<Person> getFilteredPersonList() {
+            throw new AssertionError();
+        }
+        @Override public void setPerson(Person target, Person editedPerson) {
+            throw new AssertionError();
+        }
+        @Override public void addPerson(Person person) {
+            throw new AssertionError();
+        }
+        @Override public boolean hasPerson(Person person) {
+            throw new AssertionError();
+        }
+        @Override public void deletePerson(Person target) {
+            throw new AssertionError();
+        }
+        @Override public void updateFilteredPersonList(java.util.function.Predicate<Person> predicate) {
+            throw new AssertionError();
+        }
+        @Override public void setUserPrefs(seedu.address.model.ReadOnlyUserPrefs userPrefs) {
+            throw new AssertionError();
+        }
+        @Override public seedu.address.model.ReadOnlyUserPrefs getUserPrefs() {
+            throw new AssertionError();
+        }
+        @Override public void setGuiSettings(seedu.address.commons.core.GuiSettings guiSettings) {
+            throw new AssertionError();
+        }
+        @Override public seedu.address.commons.core.GuiSettings getGuiSettings() {
+            throw new AssertionError();
+        }
+        @Override public void setAddressBookFilePath(java.nio.file.Path addressBookFilePath) {
+            throw new AssertionError();
+        }
+        @Override public java.nio.file.Path getAddressBookFilePath() {
+            throw new AssertionError();
+        }
+        @Override public void setAddressBook(seedu.address.model.ReadOnlyAddressBook newData) {
+            throw new AssertionError();
+        }
+        @Override public seedu.address.model.ReadOnlyAddressBook getAddressBook() {
+            throw new AssertionError();
+        }
     }
 
     private static class ModelStubWithPerson extends ModelStub {

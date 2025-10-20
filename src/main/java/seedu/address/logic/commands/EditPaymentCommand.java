@@ -24,7 +24,6 @@ import seedu.address.model.person.Person;
 public class EditPaymentCommand extends Command {
 
     public static final String COMMAND_WORD = "editpayment";
-    private static final Logger logger = LogsCenter.getLogger(EditPaymentCommand.class);
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Edits one payment of a person.\n"
             + "Parameters: PERSON_INDEX p/PAYMENT_INDEX [a/AMOUNT] [d/DATE] [r/REMARKS]\n"
@@ -36,9 +35,12 @@ public class EditPaymentCommand extends Command {
     public static final String MESSAGE_INVALID_PAYMENT_INDEX = "Payment index is invalid for this person.";
     public static final String MESSAGE_SUCCESS = "Edited payment p/%d for %s";
 
+    private static final Logger logger = LogsCenter.getLogger(EditPaymentCommand.class);
+
     private final Index personIndex; // 1-based
     private final int paymentOneBased; // 1-based
     private final EditPaymentDescriptor descriptor;
+
 
     /**
      * Creates an EditPaymentCommand to edit the specified payment.

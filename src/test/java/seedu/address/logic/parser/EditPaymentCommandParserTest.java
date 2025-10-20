@@ -11,6 +11,7 @@ import seedu.address.logic.commands.EditPaymentCommand.EditPaymentDescriptor;
 import seedu.address.logic.parser.exceptions.ParseException;
 
 /**
+ * Tests for {@link EditPaymentCommandParser}.
  * Expected CLI: PERSON_INDEX p/PAYMENT_INDEX [a/AMOUNT] [d/DATE] [r/REMARKS]
  */
 public class EditPaymentCommandParserTest {

@@ -1,3 +1,4 @@
+// src/test/java/seedu/address/logic/parser/ViewPaymentCommandParserTest.java
 package seedu.address.logic.parser;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -14,16 +15,25 @@ public class ViewPaymentCommandParserTest {
     private final ViewPaymentCommandParser parser = new ViewPaymentCommandParser();
 
     @Test
-    public void parse_valid_success() throws Exception {
-        ViewPaymentCommand cmd = parser.parse("1");
-        assertEquals(new ViewPaymentCommand(Index.fromOneBased(1)), cmd);
+    public void parse_validIndex_success() throws Exception {
+        ViewPaymentCommand expected = new ViewPaymentCommand(Index.fromOneBased(1));
+        ViewPaymentCommand actual = parser.parse("1");
+        assertEquals(expected, actual);
     }
 
     @Test
-    public void parse_invalidIndex_failure() {
-        assertThrows(ParseException.class, () -> parser.parse(""));
+    public void parseInvalidIndexZero_fails() {
         assertThrows(ParseException.class, () -> parser.parse("0"));
-        assertThrows(ParseException.class, () -> parser.parse("-1"));
-        assertThrows(ParseException.class, () -> parser.parse("abc"));
+    }
+
+    @Test
+    public void parseInvalidIndexNegative_fails() {
+        assertThrows(ParseException.class, () -> parser.parse("-5"));
+    }
+
+    @Test
+    public void parseInvalidFormatNonInteger_fails() {
+        assertThrows(ParseException.class, () -> parser.parse("one"));
+        assertThrows(ParseException.class, () -> parser.parse("1 2"));
     }
 }

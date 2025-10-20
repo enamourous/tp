@@ -9,6 +9,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import seedu.address.model.person.Person;
 
+/**
+ * A UI component that displays information of a {@code Person}.
+ */
 public class PersonCard extends UiPart<Region> {
 
     private static final String FXML = "PersonListCard.fxml";
@@ -32,8 +35,14 @@ public class PersonCard extends UiPart<Region> {
     @FXML
     private Label archivedLabel;
     @FXML
-    private Label latestPayment; // NEW
+    private Label latestPayment;
 
+    /**
+     * Creates a {@code PersonCard} with the given {@code Person} and index to display.
+     *
+     * @param person the person whose details to show
+     * @param displayedIndex the 1-based index to display on the card
+     */
     public PersonCard(Person person, int displayedIndex) {
         super(FXML);
         this.person = person;
@@ -42,9 +51,11 @@ public class PersonCard extends UiPart<Region> {
         phone.setText(person.getPhone().value);
         matriculationNum.setText(person.getMatriculationNumber().value);
         email.setText(person.getEmail().value);
+
         person.getTags().stream()
                 .sorted(Comparator.comparing(tag -> tag.tagName))
                 .forEach(tag -> tags.getChildren().add(new Label(tag.tagName)));
+
         if (person.isArchived()) {
             archivedLabel.setVisible(true);
             archivedLabel.setText("Archived");
@@ -52,15 +63,16 @@ public class PersonCard extends UiPart<Region> {
             archivedLabel.setVisible(false);
         }
 
-                        // Latest payment text (minimal logic; by date only)
-                                String latest = person.getPayments().stream()
-                            .max(Comparator.comparing(p -> p.getDate()))
-                            .map(p -> {
-                            String remark = (p.getRemarks() == null || p.getRemarks().isBlank())
-                                            ? "" : " for " + p.getRemarks();
-                            return "Latest Payment: $" + p.getAmount().toString() + " on " + p.getDate() + remark;
-                        })
-                            .orElse("Latest: No payments yet");
-                latestPayment.setText(latest);
+        // Latest payment line (by date)
+        String latest = person.getPayments().stream()
+                .max(Comparator.comparing(p -> p.getDate()))
+                .map(p -> {
+                    String remark = (p.getRemarks() == null || p.getRemarks().isBlank())
+                            ? "" : " for " + p.getRemarks();
+                    return "Latest Payment: $" + p.getAmount().toString()
+                            + " on " + p.getDate() + remark;
+                })
+                .orElse("Latest Payment: No payments yet");
+        latestPayment.setText(latest);
     }
 }

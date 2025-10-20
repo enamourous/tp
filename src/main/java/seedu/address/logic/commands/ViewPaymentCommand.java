@@ -7,8 +7,8 @@ import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
+import java.util.logging.Logger; // <- before java.util.stream
 import java.util.stream.Collectors;
-import java.util.logging.Logger;
 
 import seedu.address.commons.core.LogsCenter;
 import seedu.address.commons.core.index.Index;
@@ -28,12 +28,12 @@ public class ViewPaymentCommand extends Command {
 
     public static final String COMMAND_WORD = "viewpayment";
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Shows recorded payments.\n"
-        + "Parameters: INDEX (positive integer) OR 'all'\n"
-        + "Examples: " + COMMAND_WORD + " 1    |    " + COMMAND_WORD + " all";
+            + "Parameters: INDEX (positive integer) OR 'all'\n"
+            + "Examples: " + COMMAND_WORD + " 1    |    " + COMMAND_WORD + " all";
 
     private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ISO_LOCAL_DATE;
-
     private static final Logger logger = LogsCenter.getLogger(ViewPaymentCommand.class);
+
     private final Index index; // null => all
 
     public ViewPaymentCommand(Index index) {
@@ -51,26 +51,30 @@ public class ViewPaymentCommand extends Command {
     @Override
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
-        logger.fine(() -> "ViewPaymentCommand.execute mode=" + (index == null ? "all" : ("index=" + index.getOneBased())));
+        logger.fine(() -> "Executing viewpayment" + (index == null ? " all" : " " + index.getOneBased()));
 
         List<Person> people = model.getFilteredPersonList();
 
         // 'all' mode: show per-person totals and a grand total
         if (index == null) {
-            String perPerson = people.stream().map(p -> {
-                BigDecimal total = p.getPayments().stream()
-                    .map(pay -> pay.getAmount().asBigDecimal())
-                    .reduce(BigDecimal.ZERO, BigDecimal::add);
-                return String.format("- %s: %s", p.getName(), total.toPlainString());
-            }).collect(Collectors.joining("\n"));
+            String perPerson = people.stream()
+                    .map(p -> {
+                        BigDecimal total = p.getPayments().stream()
+                                .map(pay -> pay.getAmount().asBigDecimal())
+                                .reduce(BigDecimal.ZERO, BigDecimal::add);
+                        return String.format("- %s: %s", p.getName(), total.toPlainString());
+                    })
+                    .collect(Collectors.joining("\n"));
 
             BigDecimal grand = people.stream()
-                .flatMap(p -> p.getPayments().stream())
-                .map(pay -> pay.getAmount().asBigDecimal())
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+                    .flatMap(p -> p.getPayments().stream())
+                    .map(pay -> pay.getAmount().asBigDecimal())
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-            String header = String.format("Payments summary for %d people. Grand total: %s",
-                people.size(), grand.toPlainString());
+            String header = String.format(
+                    "Payments summary for %d people. Grand total: %s",
+                    people.size(), grand.toPlainString()
+            );
             return new CommandResult(header + (perPerson.isEmpty() ? "\n(no payments)" : "\n" + perPerson));
         }
 
@@ -81,24 +85,25 @@ public class ViewPaymentCommand extends Command {
 
         Person person = people.get(index.getZeroBased());
         List<Payment> sorted = person.getPayments().stream()
-            .sorted(Comparator.comparing(Payment::getDate).reversed())
-            .collect(Collectors.toList());
+                .sorted(Comparator.comparing(Payment::getDate).reversed())
+                .toList();
 
         if (sorted.isEmpty()) {
             return new CommandResult(String.format("%s has no payments recorded.", person.getName()));
         }
 
         BigDecimal total = sorted.stream()
-            .map(p -> p.getAmount().asBigDecimal())
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
+                .map(p -> p.getAmount().asBigDecimal())
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         StringBuilder body = new StringBuilder();
         for (int i = 0; i < sorted.size(); i++) {
             Payment p = sorted.get(i);
-            body.append(i + 1).append(". ")
-                .append(DATE_FMT.format(p.getDate()))
-                .append(" | ")
-                .append(p.getAmount().toString());
+            body.append(i + 1)
+                    .append(". ")
+                    .append(DATE_FMT.format(p.getDate()))
+                    .append(" | ")
+                    .append(p.getAmount().toString());
 
             if (p.getRemarks() != null && !p.getRemarks().isEmpty()) {
                 body.append(" | ").append(p.getRemarks());
@@ -107,23 +112,29 @@ public class ViewPaymentCommand extends Command {
                 body.append("\n");
             }
         }
-        String list = body.toString();
 
-        String header = String.format("Payments for %s (%d). Total: %s",
-            person.getName(), sorted.size(), total.toPlainString());
-        return new CommandResult(header + "\n" + list);
+        String header = String.format(
+                "Payments for %s (%d). Total: %s",
+                person.getName(), sorted.size(), total.toPlainString()
+        );
+        return new CommandResult(header + "\n" + body);
     }
 
     @Override
     public boolean equals(Object other) {
-        return other == this
-            || (other instanceof ViewPaymentCommand
-            && ((this.index == null && ((ViewPaymentCommand) other).index == null)
-            || (this.index != null && this.index.equals(((ViewPaymentCommand) other).index))));
+        if (other == this) {
+            return true;
+        }
+        if (!(other instanceof ViewPaymentCommand)) {
+            return false;
+        }
+        ViewPaymentCommand o = (ViewPaymentCommand) other;
+        return (this.index == null && o.index == null)
+                || (this.index != null && this.index.equals(o.index));
     }
 
     @Override
     public int hashCode() {
-                return index == null ? 0 : index.hashCode();
-            }
+        return index == null ? 0 : index.hashCode();
+    }
 }

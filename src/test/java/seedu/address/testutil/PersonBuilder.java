@@ -4,10 +4,11 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet; // must be before List (lexicographic)
 import java.util.List;
-import java.util.HashSet;
 import java.util.Set;
 
+import seedu.address.model.payment.Payment; // must be before SampleDataUtil
 import seedu.address.model.person.Email;
 import seedu.address.model.person.MatriculationNumber;
 import seedu.address.model.person.Name;
@@ -15,7 +16,6 @@ import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
 import seedu.address.model.tag.Tag;
 import seedu.address.model.util.SampleDataUtil;
-import seedu.address.model.payment.Payment;
 
 /**
  * A utility class to help with building Person objects for tests.
@@ -34,7 +34,7 @@ public class PersonBuilder {
     private MatriculationNumber matriculationNumber;
     private Set<Tag> tags;
 
-    // New: payments to attach to the built Person
+    // Payments to attach to the built Person (optional)
     private List<Payment> payments = new ArrayList<>();
 
     /**
@@ -101,6 +101,7 @@ public class PersonBuilder {
      * 1) person.withPayments(List&lt;Payment&gt;)
      * 2) person.withAddedPayment(Payment) repeatedly
      * 3) A Person constructor that accepts payments as an extra parameter
+     * Falls back to base person if none exist.
      */
     public Person build() {
         Person base = new Person(name, phone, email, matriculationNumber, tags);
@@ -110,30 +111,61 @@ public class PersonBuilder {
         }
 
         // Option 1: withPayments(List<Payment>)
-        try {
-            Method m = Person.class.getMethod("withPayments", List.class);
-            Object out = m.invoke(base, payments);
-            return (Person) out;
-        } catch (ReflectiveOperationException ignored) { }
+        Method withPaymentsMethod = findMethod(Person.class, "withPayments", List.class);
+        if (withPaymentsMethod != null) {
+            try {
+                Object out = withPaymentsMethod.invoke(base, payments);
+                return (Person) out;
+            } catch (ReflectiveOperationException e) {
+                // Fail fast if the method exists but invocation failed.
+                throw new RuntimeException("Invoking Person.withPayments(List<Payment>) failed", e);
+            }
+        }
 
         // Option 2: withAddedPayment(Payment) repeatedly
-        try {
-            Method add = Person.class.getMethod("withAddedPayment", Payment.class);
-            Person current = base;
-            for (Payment p : payments) {
-                current = (Person) add.invoke(current, p);
+        Method withAddedPaymentMethod = findMethod(Person.class, "withAddedPayment", Payment.class);
+        if (withAddedPaymentMethod != null) {
+            try {
+                Person current = base;
+                for (Payment p : payments) {
+                    current = (Person) withAddedPaymentMethod.invoke(current, p);
+                }
+                return current;
+            } catch (ReflectiveOperationException e) {
+                throw new RuntimeException("Invoking Person.withAddedPayment(Payment) failed", e);
             }
-            return current;
-        } catch (ReflectiveOperationException ignored) { }
+        }
 
         // Option 3: constructor that includes payments (… , Set<Tag>, List<Payment>)
-        try {
-            Constructor<Person> ctor = Person.class.getConstructor(
-                    Name.class, Phone.class, Email.class, MatriculationNumber.class, Set.class, List.class);
-            return ctor.newInstance(name, phone, email, matriculationNumber, tags, payments);
-        } catch (ReflectiveOperationException ignored) { }
+        Constructor<Person> ctor = findConstructor(Person.class,
+                Name.class, Phone.class, Email.class, MatriculationNumber.class, Set.class, List.class);
+        if (ctor != null) {
+            try {
+                return ctor.newInstance(name, phone, email, matriculationNumber, tags, payments);
+            } catch (ReflectiveOperationException e) {
+                throw new RuntimeException("Invoking Person constructor with payments failed", e);
+            }
+        }
 
-        // Fallback: return base if none of the above APIs exist
+        // Fallback
         return base;
+    }
+
+    // --- Reflection helpers that probe without empty catch blocks ---
+
+    private static Method findMethod(Class<?> cls, String name, Class<?>... paramTypes) {
+        try {
+            return cls.getMethod(name, paramTypes);
+        } catch (NoSuchMethodException e) {
+            return null; // method doesn't exist -> try next strategy
+        }
+    }
+
+    private static <T> Constructor<T> findConstructor(Class<T> cls, Class<?>... paramTypes) {
+        try {
+            return cls.getConstructor(paramTypes);
+        } catch (NoSuchMethodException e) {
+            return null; // ctor doesn't exist -> try next strategy
+        }
     }
 }

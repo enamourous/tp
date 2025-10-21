@@ -40,7 +40,7 @@ public class FindCommandIntegrationTest {
         expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
     }
 
-     // 1. Persons with payments remain discoverable via find command
+    // 1. Persons with payments remain discoverable via find command
     @Test
     public void execute_findAfterAddingPayments_success() throws Exception {
         // get a person from the model and add a payment
@@ -95,6 +95,7 @@ public class FindCommandIntegrationTest {
         assertEquals(expectedModel.getFilteredPersonList(), model.getFilteredPersonList());
     }
 
+    // 3. The filtered list reflects the expected persons after both AddPayment and Find commands.
     @Test
     public void execute_findAfterMultiplePersonsHavePayments_success() throws Exception {
         // add payments to multiple people, ensure find still filters correctly
@@ -122,6 +123,7 @@ public class FindCommandIntegrationTest {
         assertEquals(expectedModel.getFilteredPersonList(), model.getFilteredPersonList());
     }
 
+    // 4. Find person - add payment - view payment workflow
     @Test
     public void execute_findAddViewPaymentsFlow_success() throws Exception {
         // Step 1: find person by keyword

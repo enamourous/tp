@@ -154,7 +154,7 @@ public class FindCommandIntegrationTest {
         assertEquals(1, updated.getPayments().size());
 
         // Step 3: view payments for that person
-        ViewPaymentsCommand viewCommand = ViewPaymentsCommand.forIndex(Index.fromOneBased(1));
+        ViewPaymentCommand viewCommand = ViewPaymentCommand.forIndex(Index.fromOneBased(1));
         CommandResult viewResult = viewCommand.execute(model);
 
         String expectedHeader = String.format("Payments for %s (1). Total: 25.00", updated.getName());

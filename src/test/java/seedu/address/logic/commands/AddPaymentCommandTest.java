@@ -315,16 +315,22 @@ public class AddPaymentCommandTest {
 
     private static class ModelStubWithPerson extends ModelStub {
         private Person person;
-        ModelStubWithPerson(Person person) { this.person = person; }
+        ModelStubWithPerson(Person person) {
+            this.person = person;
+        }
         @Override public ObservableList<Person> getFilteredPersonList() {
             return FXCollections.observableArrayList(person);
         }
-        @Override public void setPerson(Person target, Person editedPerson) { this.person = editedPerson; }
+        @Override public void setPerson(Person target, Person editedPerson) {
+            this.person = editedPerson;
+        }
     }
 
     private static class ModelStubWithMultiplePersons extends ModelStub {
         private final List<Person> persons;
-        ModelStubWithMultiplePersons(List<Person> persons) { this.persons = new ArrayList<>(persons); }
+        ModelStubWithMultiplePersons(List<Person> persons) {
+            this.persons = new ArrayList<>(persons);
+        }
         @Override public ObservableList<Person> getFilteredPersonList() {
             return FXCollections.observableArrayList(persons);
         }

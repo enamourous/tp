@@ -79,6 +79,6 @@ public class AddPaymentCommand extends Command {
                 && indexes.equals(((AddPaymentCommand) other).indexes)
                 && amount.equals(((AddPaymentCommand) other).amount)
                 && date.equals(((AddPaymentCommand) other).date)
-                && ((AddPaymentCommand) other).remarks.equals(remarks));
+                && java.util.Objects.equals(remarks, ((AddPaymentCommand) other).remarks)); // remarks could be null
     }
 }

@@ -49,6 +49,8 @@ public class AddPaymentCommandParser implements Parser<AddPaymentCommand> {
                 }
             }
 
+            // technically this branch should not happen since the first branch has already handled that,
+            // left it here for safety
             if (indexes.isEmpty()) {
                 throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT,
                         AddPaymentCommand.MESSAGE_USAGE));
@@ -62,6 +64,7 @@ public class AddPaymentCommandParser implements Parser<AddPaymentCommand> {
             Amount amount;
             LocalDate date;
 
+            // handle bad amount
             try {
                 amount = Amount.parse(amountStr);
             } catch (IllegalArgumentException ex) {
@@ -80,8 +83,10 @@ public class AddPaymentCommandParser implements Parser<AddPaymentCommand> {
 
         } catch (ParseException pe) {
             throw pe;
+
         } catch (Exception e) {
             // fallback for anything unexpected
+            // current test does not cover this branch, left it here for safety
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT,
                     AddPaymentCommand.MESSAGE_USAGE), e);
         }

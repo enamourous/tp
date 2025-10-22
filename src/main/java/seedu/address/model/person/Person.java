@@ -4,9 +4,11 @@ import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 import seedu.address.commons.util.ToStringBuilder;
@@ -145,6 +147,15 @@ public class Person {
         }
 
         return otherPerson.getMatriculationNumber().equals(getMatriculationNumber());
+    }
+    /**
+     * Returns latest payment if the person has made any pauyment
+     */
+    public Optional<Payment> getLatestPayment() {
+        return getPayments().stream()
+                .max(Comparator
+                        .comparing(Payment::getDate)
+                        .thenComparing(Payment::getRecordedAt)); // if recordedAt exists
     }
 
     /**

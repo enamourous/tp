@@ -82,7 +82,6 @@ public class AddPaymentCommandParser implements Parser<AddPaymentCommand> {
             return new AddPaymentCommand(indexes, amount, date, remarks);
 
         } catch (ParseException pe) {
-            // rethrow parse errors for index
             throw pe;
 
         } catch (Exception e) {

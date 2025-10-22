@@ -8,7 +8,9 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.logging.Logger;
 
+import seedu.address.commons.core.LogsCenter;
 import seedu.address.commons.core.index.Index;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
@@ -24,18 +26,21 @@ public class EditPaymentCommand extends Command {
     public static final String COMMAND_WORD = "editpayment";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Edits one payment of a person.\n"
-        + "Parameters: PERSON_INDEX p/PAYMENT_INDEX [a/AMOUNT] [d/DATE] [r/REMARKS]\n"
-        + "Examples:\n"
-        + "  " + COMMAND_WORD + " 1 p/1 a/10.50\n"
-        + "  " + COMMAND_WORD + " 2 p/3 d/2025-10-15 r/late fee waived";
+            + "Parameters: PERSON_INDEX p/PAYMENT_INDEX [a/AMOUNT] [d/DATE] [r/REMARKS]\n"
+            + "Examples:\n"
+            + "  " + COMMAND_WORD + " 1 p/1 a/10.50\n"
+            + "  " + COMMAND_WORD + " 2 p/3 d/2025-10-15 r/late fee waived";
 
     public static final String MESSAGE_NO_FIELDS = "At least one of a/, d/, r/ must be provided.";
     public static final String MESSAGE_INVALID_PAYMENT_INDEX = "Payment index is invalid for this person.";
     public static final String MESSAGE_SUCCESS = "Edited payment p/%d for %s";
 
+    private static final Logger logger = LogsCenter.getLogger(EditPaymentCommand.class);
+
     private final Index personIndex; // 1-based
     private final int paymentOneBased; // 1-based
     private final EditPaymentDescriptor descriptor;
+
 
     /**
      * Creates an EditPaymentCommand to edit the specified payment.
@@ -51,6 +56,8 @@ public class EditPaymentCommand extends Command {
     @Override
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
+        logger.fine(() -> String.format("EditPayment.execute person=%d payment=%d",
+                personIndex.getOneBased(), paymentOneBased));
 
         List<Person> lastShownList = model.getFilteredPersonList();
         if (personIndex.getZeroBased() >= lastShownList.size()) {
@@ -132,8 +139,8 @@ public class EditPaymentCommand extends Command {
             }
             EditPaymentDescriptor that = (EditPaymentDescriptor) o;
             return Objects.equals(amount, that.amount)
-                && Objects.equals(date, that.date)
-                && Objects.equals(remarks, that.remarks);
+                    && Objects.equals(date, that.date)
+                    && Objects.equals(remarks, that.remarks);
         }
 
         @Override
@@ -152,7 +159,7 @@ public class EditPaymentCommand extends Command {
         }
         EditPaymentCommand o = (EditPaymentCommand) other;
         return personIndex.equals(o.personIndex)
-            && paymentOneBased == o.paymentOneBased
-            && Objects.equals(descriptor, o.descriptor);
+                && paymentOneBased == o.paymentOneBased
+                && Objects.equals(descriptor, o.descriptor);
     }
 }

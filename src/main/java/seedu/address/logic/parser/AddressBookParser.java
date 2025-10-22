@@ -11,7 +11,6 @@ import seedu.address.commons.core.LogsCenter;
 import seedu.address.logic.commands.AddMemberCommand;
 import seedu.address.logic.commands.AddPaymentCommand;
 import seedu.address.logic.commands.ArchiveCommand;
-import seedu.address.logic.commands.ClearCommand;
 import seedu.address.logic.commands.Command;
 import seedu.address.logic.commands.DeletePaymentCommand;
 import seedu.address.logic.commands.EditCommand;
@@ -23,7 +22,7 @@ import seedu.address.logic.commands.ListArchivedCommand;
 import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.commands.UnarchiveCommand;
 import seedu.address.logic.commands.ViewCommand;
-import seedu.address.logic.commands.ViewPaymentsCommand;
+import seedu.address.logic.commands.ViewPaymentCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 
 /**
@@ -69,9 +68,6 @@ public class AddressBookParser {
         case EditCommand.COMMAND_WORD:
             return new EditCommandParser().parse(arguments);
 
-        case ClearCommand.COMMAND_WORD:
-            return new ClearCommand();
-
         case FindCommand.COMMAND_WORD:
             return new FindCommandParser().parse(arguments);
 
@@ -99,8 +95,8 @@ public class AddressBookParser {
         case AddPaymentCommand.COMMAND_WORD:
             return new AddPaymentCommandParser().parse(arguments);
 
-        case ViewPaymentsCommand.COMMAND_WORD:
-            return new ViewPaymentsCommandParser().parse(arguments);
+        case ViewPaymentCommand.COMMAND_WORD:
+            return new ViewPaymentCommandParser().parse(arguments);
 
         case DeletePaymentCommand.COMMAND_WORD:
             return new DeletePaymentCommandParser().parse(arguments);

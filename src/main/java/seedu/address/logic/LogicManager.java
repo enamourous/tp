@@ -48,6 +48,12 @@ public class LogicManager implements Logic {
 
         CommandResult commandResult;
         Command command = addressBookParser.parseCommand(commandText);
+
+        if (command.isMutating()) {
+            model.saveSnapshot();
+            model.clearRedo(); // for a later redo if needed
+        }
+
         commandResult = command.execute(model);
 
         try {

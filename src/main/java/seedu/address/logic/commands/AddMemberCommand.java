@@ -103,4 +103,9 @@ public class AddMemberCommand extends Command {
             .add("toAdd", toAdd)
             .toString();
     }
+
+    @Override
+    public boolean isMutating() {
+        return true;
+    }
 }

@@ -157,6 +157,11 @@ public class EditCommand extends Command {
             .toString();
     }
 
+    @Override
+    public boolean isMutating() {
+        return true;
+    }
+
     /**
      * Stores the details to edit the person with. Each non-empty field value will replace the
      * corresponding field value of the person.

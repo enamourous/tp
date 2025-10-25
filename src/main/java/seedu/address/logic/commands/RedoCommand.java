@@ -18,4 +18,14 @@ public class RedoCommand extends Command {
         model.redo();
         return new CommandResult(MESSAGE_SUCCESS);
     }
+
+    @Override
+    public boolean equals(Object other) {
+        return other == this || other instanceof RedoCommand;
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }

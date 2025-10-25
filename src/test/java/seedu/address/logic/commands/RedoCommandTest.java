@@ -1,5 +1,6 @@
 package seedu.address.logic.commands;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 
@@ -70,5 +71,14 @@ public class RedoCommandTest {
         assertCommandSuccess(new RedoCommand(), model, RedoCommand.MESSAGE_NOTHING, expectedModel);
     }
 
-}
+    @Test
+    public void equals() {
+        RedoCommand a = new RedoCommand();
+        RedoCommand b = new RedoCommand();
 
+        assertTrue(a.equals(a)); // same object
+        assertTrue(a.equals(b)); // stateless shld be equal
+        assertTrue(!a.equals(null)); // null
+        assertTrue(!a.equals(new UndoCommand())); // different type
+    }
+}

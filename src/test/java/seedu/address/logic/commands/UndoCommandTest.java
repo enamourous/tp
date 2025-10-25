@@ -1,5 +1,6 @@
 package seedu.address.logic.commands;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 
@@ -40,5 +41,16 @@ public class UndoCommandTest {
 
         // After undo, model should match expectedModel (original state)
         assertCommandSuccess(new UndoCommand(), model, UndoCommand.MESSAGE_SUCCESS, expectedModel);
+    }
+
+    @Test
+    public void equals() {
+        UndoCommand a = new UndoCommand();
+        UndoCommand b = new UndoCommand();
+
+        assertTrue(a.equals(a)); // same object
+        assertTrue(a.equals(b)); // stateless shld be equal
+        assertTrue(!a.equals(null)); // null
+        assertTrue(!a.equals(new RedoCommand())); // different type
     }
 }

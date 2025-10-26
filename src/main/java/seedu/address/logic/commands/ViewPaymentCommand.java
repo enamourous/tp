@@ -103,7 +103,7 @@ public class ViewPaymentCommand extends Command {
                     .append(". ")
                     .append(DATE_FMT.format(p.getDate()))
                     .append(" | ")
-                    .append(p.getAmount().toString());
+                    .append("$").append(p.getAmount().toString());
 
             if (p.getRemarks() != null && !p.getRemarks().isEmpty()) {
                 body.append(" | ").append(p.getRemarks());
@@ -114,7 +114,7 @@ public class ViewPaymentCommand extends Command {
         }
 
         String header = String.format(
-                "Payments for %s (%d). Total: %s",
+                "Payments for %s (%d). Total: $%s",
                 person.getName(), sorted.size(), total.toPlainString()
         );
         return new CommandResult(header + "\n" + body);

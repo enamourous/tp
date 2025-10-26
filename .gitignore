@@ -3,6 +3,8 @@
 /build/
 src/main/resources/docs/
 
+/.build.gradle
+
 # IDEA files
 /.idea/
 /out/

@@ -98,4 +98,9 @@ public class UnarchiveCommand extends Command {
         UnarchiveCommand otherCommand = (UnarchiveCommand) other;
         return targetIndexes.equals(otherCommand.targetIndexes);
     }
+
+    @Override
+    public boolean isMutating() {
+        return true;
+    }
 }

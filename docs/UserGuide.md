@@ -22,7 +22,7 @@ Treasura is a **desktop app for managing contacts, optimized for use via a  Line
 
 1. Copy the file to the folder you want to use as the _home folder_ for your Treasura.
 
-1. Open a command terminal, `cd` into the folder you put the jar file in, and use the `java -jar addressbook.jar` command to run the application.<br>
+1. Open a command terminal, `cd` into the folder you put the jar file in, and use the `java -jar treasura.jar` command to run the application.<br>
    A GUI similar to the below should appear in a few seconds. Note how the app contains some sample data.<br>
    ![Ui](images/Ui.png)
 
@@ -31,11 +31,9 @@ Treasura is a **desktop app for managing contacts, optimized for use via a  Line
 
    * `list` : Lists all contacts.
 
-   * `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01` : Adds a contact named `John Doe` to the Address Book.
+   * `add n/John Doe p/98765432 e/johnd@example.com m/A01234567X t/friends t/owesMoney` : Adds a contact named `John Doe` to the Address Book.
 
-   * `delete 3` : Deletes the 3rd contact shown in the current list.
-
-   * `clear` : Deletes all contacts.
+   * `archive 3` : Archives the 3rd member shown in the current list.
 
    * `exit` : Exits the app.
 
@@ -61,11 +59,14 @@ Treasura is a **desktop app for managing contacts, optimized for use via a  Line
 * Parameters can be in any order.<br>
   e.g. if the command specifies `n/NAME p/PHONE_NUMBER`, `p/PHONE_NUMBER n/NAME` is also acceptable.
 
-* Extraneous parameters for commands that do not take in parameters (such as `help`, `list`, `exit` and `clear`) will be ignored.<br>
+* Extraneous parameters for commands that do not take in parameters (such as `help`, `list`, `exit`) will be ignored.<br>
   e.g. if the command specifies `help 123`, it will be interpreted as `help`.
+* `Archive` is used to remove members from the active list view
 
 * If you are using a PDF version of this document, be careful when copying and pasting commands that span multiple lines as space characters surrounding line-breaks may be omitted when copied over to the application.
 </box>
+
+---
 
 ### Viewing help : `help`
 
@@ -75,12 +76,13 @@ Shows a message explaining how to access the help page.
 
 Format: `help`
 
+---
 
 ### Adding a person: `add`
 
 Adds a person to the address book.
 
-Format: `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​`
+Format: `add n/NAME p/PHONE_NUMBER e/EMAIL m/MATRICNUM [t/TAG]…​`
 
 <box type="tip" seamless>
 
@@ -88,8 +90,8 @@ Format: `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​`
 </box>
 
 Examples:
-* `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01`
-* `add n/Betsy Crowe t/friend e/betsycrowe@example.com a/Newgate Prison p/1234567 t/criminal`
+* `add n/John Doe p/98765432 e/johnd@example.com m/A01234567X t/friends t/owesMoney`
+* `add n/Jane Doe p/98765432 e/janed@example.com m/A0987632Y t/member t/overdue`
 
 ### Listing all persons : `list`
 
@@ -97,11 +99,13 @@ Shows a list of all persons in the address book.
 
 Format: `list`
 
+---
+
 ### Editing a person : `edit`
 
 Edits an existing person in the address book.
 
-Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`
+Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [m/MATRIC] [t/TAG]…​`
 
 * Edits the person at the specified `INDEX`. The index refers to the index number shown in the displayed person list. The index **must be a positive integer** 1, 2, 3, …​
 * At least one of the optional fields must be provided.
@@ -114,7 +118,9 @@ Examples:
 *  `edit 1 p/91234567 e/johndoe@example.com` Edits the phone number and email address of the 1st person to be `91234567` and `johndoe@example.com` respectively.
 *  `edit 2 n/Betsy Crower t/` Edits the name of the 2nd person to be `Betsy Crower` and clears all existing tags.
 
-### Locating persons by name: `find`
+---
+
+### Locating persons by name or tag: `find`
 
 Finds persons whose names contain any of the given keywords.
 
@@ -122,35 +128,127 @@ Format: `find KEYWORD [MORE_KEYWORDS]`
 
 * The search is case-insensitive. e.g `hans` will match `Hans`
 * The order of the keywords does not matter. e.g. `Hans Bo` will match `Bo Hans`
-* Only the name is searched.
-* Only full words will be matched e.g. `Han` will not match `Hans`
+* Only the name or tag is searched.
+* Only full words will be matched for names e.g. `Han` will not match `Hans`
+* When finding for via tag, any prefix matched will be shown e.g. `owe` will match `owesMoney`
 * Persons matching at least one keyword will be returned (i.e. `OR` search).
   e.g. `Hans Bo` will return `Hans Gruber`, `Bo Yang`
+  e.g. `Jane friend` will return all members either with the name `Jane` or with the tag `friend`
 
 Examples:
 * `find John` returns `john` and `John Doe`
 * `find alex david` returns `Alex Yeoh`, `David Li`<br>
+* `find alex family` returns all members with the name alex or the tag `family`
   ![result for 'find alex david'](images/findAlexDavidResult.png)
 
-### Deleting a person : `delete`
+---
+
+### Archiving members : `archive`
 
 Deletes the specified person from the address book.
 
-Format: `delete INDEX`
+Format: `archive INDEX[,INDEX...]`
 
-* Deletes the person at the specified `INDEX`.
+* Archives the person at the specified `INDEX`.
 * The index refers to the index number shown in the displayed person list.
 * The index **must be a positive integer** 1, 2, 3, …​
 
 Examples:
-* `list` followed by `delete 2` deletes the 2nd person in the address book.
-* `find Betsy` followed by `delete 1` deletes the 1st person in the results of the `find` command.
+* `list` followed by `archive 2` archives the 2nd person in the address book.
+* `find Betsy` followed by `archives 1` archives the 1st person in the results of the `find` command.
 
-### Clearing all entries : `clear`
+---
 
-Clears all entries from the address book.
+### Listing archived people: `listarchived`
 
-Format: `clear`
+List members who have been archived.
+
+Format: `listarchived`
+
+* Displays a list of archived members
+* Any argument will be disregarded in the command
+
+---
+
+### Unarchiving members: `unarchive`
+
+Unarchives the person at the specified `INDEX`
+
+Format: `unarchive INDEX[,INDEX...]`
+
+* The index refers to the index number shown in the displayed person list, after using `listarchived`
+* The index **must be a positive integer** 1, 2, 3, …​
+
+Examples:
+* `listarchived` followed by `unarchive 2` unarchives the 2nd person in the archived list.
+* `find Alice` followed by `unarchive 1` unarchives the 1st person in the results of the `find` command.
+
+---
+
+### Add payment(s): `addpayment`
+
+Adds a payment to the member(s) at the specified `INDEX`
+
+Format: `addpayment INDEX[,INDEX]... a/AMOUNT d/DATE [r/REMARKS]`
+
+* The index refers to the member(s) shown in the current displayed list.
+* `a/AMOUNT` is the payment amount in dollars and cents (e.g., 25.00)
+* `d/DATE` follows the `YYYY-MM-DD` format.
+* `[r/REMARKS]` is optional for short notes such as “Membership Fee” or “CCA Shirt”.
+
+Examples:
+* `addpayment 1 a/20.00 d/2025-03-12 r/Membership fee`
+* `addpayment 2,3 a/15.50 d/2025-04-01 r/Event T-shirt`
+
+---
+
+### Edit payment(s): `editpayment`
+
+Edits an existing payment record for the specified member.
+
+Format: `editpayment PERSON_INDEX p/PAYMENT_INDEX [a/AMOUNT] [d/DATE] [r/REMARKS]`
+
+* `PERSON_INDEX` is the index of the member.
+* `p/PAYMENT_INDEX` refers to the payment number listed in that member’s payment history.
+* You can update one or more details: amount, date, or remarks.
+
+Examples:
+* `editpayment 1 p/2 a/30.00` — updates payment #2 for member #1 to $30.00.
+* `editpayment 3 p/1 r/Corrected to event fee` — changes the remark for payment #1 of member #3.
+
+---
+
+### View payment(s): `viewpayment`
+
+Displays payment details for a specific member, or for all members.
+
+Format: `viewpayment INDEX`  
+or  
+`viewpayment all`
+
+* Use `viewpayment INDEX` to show all payments made by a single member.
+* Use `viewpayment all` to view payments for every member in the system.
+
+Examples:
+* `viewpayment 2` — shows all payments made by the 2nd member.
+* `viewpayment all` — lists all recorded payments in the address book.
+
+---
+
+### Delete payment(s): `deletepayment`
+
+Deletes an existing payment record from one or more members.
+
+Format: `deletepayment PERSON_INDEX[,PERSON_INDEX]... p/PAYMENT_INDEX`
+
+* `PERSON_INDEX` refers to the member(s).
+* `p/PAYMENT_INDEX` refers to the payment number to delete from each listed member.
+
+Examples:
+* `deletepayment 1 p/2` — deletes payment #2 for member #1.
+* `deletepayment 1,3 p/1` — deletes payment #1 for both members #1 and #3.
+
+---
 
 ### Exiting the program : `exit`
 
@@ -173,9 +271,6 @@ If your changes to the data file makes its format invalid, AddressBook will disc
 Furthermore, certain edits can cause the AddressBook to behave in unexpected ways (e.g., if a value entered is outside the acceptable range). Therefore, edit the data file only if you are confident that you can update it correctly.
 </box>
 
-### Archiving data files `[coming in v2.0]`
-
-_Details coming soon ..._
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -195,12 +290,22 @@ _Details coming soon ..._
 
 ## Command summary
 
-Action     | Format, Examples
------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-**Add**    | `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​` <br> e.g., `add n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 t/friend t/colleague`
-**Clear**  | `clear`
-**Delete** | `delete INDEX`<br> e.g., `delete 3`
-**Edit**   | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com`
-**Find**   | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`
-**List**   | `list`
-**Help**   | `help`
+| Action              | Format                                                                     | Example(s)                                                                         |
+| ------------------- | -------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| **Add**             | `add n/NAME p/PHONE e/EMAIL m/MATRIC [t/TAG]...`                           | `add n/James Ho p/22224444 e/jamesho@example.com m/A0273010Y t/friend t/treasurer` |
+| **Edit**            | `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [m/MATRIC] [t/TAG]...`            | `edit 2 n/James Lee e/jameslee@example.com`                                        |
+| **Delete**          | `delete INDEX`                                                             | `delete 3`                                                                         |
+| **Find**            | `find KEYWORD [MORE_KEYWORDS]...`                                          | `find James treasurer`                                                             |
+| **List**            | `list`                                                                     | `list`                                                                             |
+| **List Archived**   | `listarchived`                                                             | `listarchived`                                                                     |
+| **Archive**         | `archive INDEX[,INDEX]...`                                                 | `archive 1,2,5`                                                                    |
+| **Unarchive**       | `unarchive INDEX[,INDEX]...`                                               | `unarchive 2,5`                                                                    |
+| **View Member**     | `view INDEX`                                                               | `view 4`                                                                           |
+| **Add Payment**     | `addpayment INDEX[,INDEX]... a/AMOUNT d/DATE [r/REMARKS]`                  | `addpayment 1,3 a/25.00 d/2025-10-24 r/Monthly dues`                               |
+| **Edit Payment**    | `editpayment PERSON_INDEX p/PAYMENT_INDEX [a/AMOUNT] [d/DATE] [r/REMARKS]` | `editpayment 2 p/1 a/30.00 r/Corrected`                                            |
+| **Delete Payment**  | `deletepayment PERSON_INDEX[,PERSON_INDEX]... p/PAYMENT_INDEX`             | `deletepayment 1,3 p/2`                                                            |
+| **View Payment(s)** | `viewpayment INDEX` or `viewpayment all`                                   | `viewpayment 2`, `viewpayment all`                                                 |
+| **Help**            | `help`                                                                     | `help`                                                                             |
+
+
+

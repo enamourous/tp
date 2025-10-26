@@ -4,14 +4,17 @@ import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.model.payment.Payment;
 import seedu.address.model.tag.Tag;
+import seedu.address.model.util.PersonFormatter;
 
 /**
  * Represents a Person in the address book.
@@ -146,6 +149,15 @@ public class Person {
 
         return otherPerson.getMatriculationNumber().equals(getMatriculationNumber());
     }
+    /**
+     * Returns latest payment if the person has made any pauyment
+     */
+    public Optional<Payment> getLatestPayment() {
+        return getPayments().stream()
+                .max(Comparator
+                        .comparing(Payment::getDate)
+                        .thenComparing(Payment::getRecordedAt)); // if recordedAt exists
+    }
 
     /**
      * Returns true if both persons have the same identity and data fields.
@@ -184,5 +196,13 @@ public class Person {
             .add("archived", archived)
             .add("paymentsCount", payments.size())
             .toString();
+    }
+
+    /**
+     * Returns a human-readable summary of this person's information,
+     * suitable for display in a detailed view.
+     */
+    public String getFormattedProfile() {
+        return PersonFormatter.formatProfile(this);
     }
 }

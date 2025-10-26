@@ -11,19 +11,21 @@ import seedu.address.commons.core.LogsCenter;
 import seedu.address.logic.commands.AddMemberCommand;
 import seedu.address.logic.commands.AddPaymentCommand;
 import seedu.address.logic.commands.ArchiveCommand;
-import seedu.address.logic.commands.ClearCommand;
 import seedu.address.logic.commands.Command;
 import seedu.address.logic.commands.DeletePaymentCommand;
 import seedu.address.logic.commands.EditCommand;
 import seedu.address.logic.commands.EditPaymentCommand;
 import seedu.address.logic.commands.ExitCommand;
 import seedu.address.logic.commands.FindCommand;
+import seedu.address.logic.commands.FindPaymentCommand;
 import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.ListArchivedCommand;
 import seedu.address.logic.commands.ListCommand;
+import seedu.address.logic.commands.RedoCommand;
 import seedu.address.logic.commands.UnarchiveCommand;
+import seedu.address.logic.commands.UndoCommand;
 import seedu.address.logic.commands.ViewCommand;
-import seedu.address.logic.commands.ViewPaymentsCommand;
+import seedu.address.logic.commands.ViewPaymentCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 
 /**
@@ -69,11 +71,11 @@ public class AddressBookParser {
         case EditCommand.COMMAND_WORD:
             return new EditCommandParser().parse(arguments);
 
-        case ClearCommand.COMMAND_WORD:
-            return new ClearCommand();
-
         case FindCommand.COMMAND_WORD:
             return new FindCommandParser().parse(arguments);
+
+        case FindPaymentCommand.COMMAND_WORD:
+            return new FindPaymentCommandParser().parse(arguments);
 
         case ListCommand.COMMAND_WORD:
             return new ListCommand();
@@ -99,14 +101,20 @@ public class AddressBookParser {
         case AddPaymentCommand.COMMAND_WORD:
             return new AddPaymentCommandParser().parse(arguments);
 
-        case ViewPaymentsCommand.COMMAND_WORD:
-            return new ViewPaymentsCommandParser().parse(arguments);
+        case ViewPaymentCommand.COMMAND_WORD:
+            return new ViewPaymentCommandParser().parse(arguments);
 
         case DeletePaymentCommand.COMMAND_WORD:
             return new DeletePaymentCommandParser().parse(arguments);
 
         case EditPaymentCommand.COMMAND_WORD:
             return new EditPaymentCommandParser().parse(arguments);
+
+        case UndoCommand.COMMAND_WORD:
+            return new UndoCommandParser().parse(arguments);
+
+        case RedoCommand.COMMAND_WORD:
+            return new RedoCommandParser().parse(arguments);
 
         default:
             logger.finer("This user input caused a ParseException: " + userInput);

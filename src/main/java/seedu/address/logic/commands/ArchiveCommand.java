@@ -118,4 +118,9 @@ public class ArchiveCommand extends Command {
         ArchiveCommand otherCommand = (ArchiveCommand) other;
         return targetIndexes.equals(otherCommand.targetIndexes);
     }
+
+    @Override
+    public boolean isMutating() {
+        return true;
+    }
 }

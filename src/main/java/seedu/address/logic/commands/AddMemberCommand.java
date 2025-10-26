@@ -39,8 +39,8 @@ public class AddMemberCommand extends Command {
         + PREFIX_TAG + "owesMoney";
 
     public static final String MESSAGE_SUCCESS = "New person added: %1$s";
-    public static final String MESSAGE_DUPLICATE_PERSON = "This person already exists in the address book. " +
-            "A person is uniquely identified by his/her matriculation number.";
+    public static final String MESSAGE_DUPLICATE_PERSON = "This person already exists in the address book. "
+            + "A person is uniquely identified by his/her matriculation number.";
 
     private static final Logger logger = LogsCenter.getLogger(AddMemberCommand.class);
 

@@ -1,12 +1,13 @@
 package seedu.address.model.util;
 
 import seedu.address.model.person.Person;
-import seedu.address.model.payment.Payment;
 
-// additional PersonFormatter class for better abstraction
+/**
+ * Contains utility method(s) for formatting a person's information for viewing purposes
+ */
 public class PersonFormatter {
     /**
-     * Returns a human-readable formatted profile string for the given person.
+     * Returns a human-readable formatted profile string for the given person for viewing purposes
      */
     public static String formatProfile(Person person) {
         StringBuilder sb = new StringBuilder();

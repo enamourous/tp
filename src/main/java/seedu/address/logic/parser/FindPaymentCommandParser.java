@@ -4,6 +4,7 @@ import static seedu.address.commons.core.Messages.MESSAGE_INVALID_COMMAND_FORMAT
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.Optional;
 
 import seedu.address.commons.core.index.Index;
 import seedu.address.logic.commands.FindPaymentCommand;
@@ -14,15 +15,6 @@ import seedu.address.model.payment.Amount;
  * Parses input arguments and creates a new FindPaymentCommand object.
  */
 public class FindPaymentCommandParser implements Parser<FindPaymentCommand> {
-
-    public static final String MESSAGE_INVALID_AMOUNT =
-            "Amount must be positive and have at most 2 decimal places!";
-    public static final String MESSAGE_INVALID_DATE =
-            "Invalid date format. Please use YYYY-MM-DD.";
-    public static final String MESSAGE_MISSING_FILTER =
-            "Please provide one filter: a/AMOUNT, d/DATE or r/REMARK";
-    public static final String MESSAGE_TOO_MANY_FILTERS =
-            "Please specify only one filter: either a/AMOUNT, d/DATE or r/REMARK";
 
     private static final Prefix PREFIX_AMOUNT = new Prefix("a/");
     private static final Prefix PREFIX_REMARK = new Prefix("r/");
@@ -37,50 +29,42 @@ public class FindPaymentCommandParser implements Parser<FindPaymentCommand> {
                     FindPaymentCommand.MESSAGE_USAGE));
         }
 
-        Index index;
-        try {
-            index = ParserUtil.parseIndex(map.getPreamble());
-        } catch (ParseException e) {
-            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                    FindPaymentCommand.MESSAGE_USAGE), e);
-        }
+        Index index = ParserUtil.parseIndex(map.getPreamble());
+        Optional<String> amountVal = map.getValue(PREFIX_AMOUNT);
+        Optional<String> remarkVal = map.getValue(PREFIX_REMARK);
+        Optional<String> dateVal = map.getValue(PREFIX_DATE);
 
-        boolean hasAmount = map.getValue(PREFIX_AMOUNT).isPresent();
-        boolean hasRemark = map.getValue(PREFIX_REMARK).isPresent();
-        boolean hasDate = map.getValue(PREFIX_DATE).isPresent();
+        int filtersUsed = (amountVal.isPresent() ? 1 : 0)
+                + (remarkVal.isPresent() ? 1 : 0)
+                + (dateVal.isPresent() ? 1 : 0);
 
-        // only accept if the number of filters is exactly 1
-        // but with different exception thrown for the case 0 and >1
-        int filtersUsed = (hasAmount ? 1 : 0) + (hasRemark ? 1 : 0) + (hasDate ? 1 : 0);
         if (filtersUsed == 0) {
-            throw new ParseException(MESSAGE_MISSING_FILTER);
+            throw new ParseException("Please provide one filter: a/AMOUNT, d/DATE or r/REMARK");
         }
         if (filtersUsed > 1) {
-            throw new ParseException(MESSAGE_TOO_MANY_FILTERS);
+            throw new ParseException("Please specify only one filter at a time.");
         }
 
         Amount amount = null;
         String remark = null;
         LocalDate date = null;
 
-        if (hasAmount) {
-            String amtStr = map.getValue(PREFIX_AMOUNT).get();
+        if (amountVal.isPresent()) {
             try {
-                amount = Amount.parse(amtStr);
+                amount = Amount.parse(amountVal.get());
             } catch (IllegalArgumentException ex) {
-                throw new ParseException(MESSAGE_INVALID_AMOUNT, ex);
+                throw new ParseException("Invalid amount: must be positive and ≤ 2 decimal places.", ex);
             }
-        } else if (hasRemark) {
-            remark = map.getValue(PREFIX_REMARK).get().trim();
+        } else if (remarkVal.isPresent()) {
+            remark = remarkVal.get().trim();
             if (remark.isEmpty()) {
                 throw new ParseException("Remark cannot be empty.");
             }
         } else {
-            String dateStr = map.getValue(PREFIX_DATE).get().trim();
             try {
-                date = LocalDate.parse(dateStr);
+                date = LocalDate.parse(dateVal.get().trim());
             } catch (DateTimeParseException ex) {
-                throw new ParseException(MESSAGE_INVALID_DATE, ex);
+                throw new ParseException("Invalid date format. Please use YYYY-MM-DD.", ex);
             }
         }
 

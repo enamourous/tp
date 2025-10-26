@@ -121,7 +121,16 @@ public class EditCommand extends Command {
             editPersonDescriptor.getMatriculationNumber().orElse(personToEdit.getMatriculationNumber());
         Set<Tag> updatedTags = editPersonDescriptor.getTags().orElse(personToEdit.getTags());
 
-        return new Person(updatedName, updatedPhone, updatedEmail, updatedMatriculationNumber, updatedTags);
+        // returns new person with prior archive status and payment record
+        return new Person(
+                updatedName,
+                updatedPhone,
+                updatedEmail,
+                updatedMatriculationNumber,
+                updatedTags,
+                personToEdit.isArchived(),
+                personToEdit.getPayments()
+        );
     }
 
     @Override
@@ -146,6 +155,11 @@ public class EditCommand extends Command {
             .add("index", index)
             .add("editPersonDescriptor", editPersonDescriptor)
             .toString();
+    }
+
+    @Override
+    public boolean isMutating() {
+        return true;
     }
 
     /**

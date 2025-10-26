@@ -93,4 +93,9 @@ public class DeletePaymentCommand extends Command {
                 && personIndexes.equals(((DeletePaymentCommand) other).personIndexes)
                 && paymentIndex.equals(((DeletePaymentCommand) other).paymentIndex));
     }
+
+    @Override
+    public boolean isMutating() {
+        return true;
+    }
 }

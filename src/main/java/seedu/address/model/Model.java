@@ -65,12 +65,6 @@ public interface Model {
     boolean hasPerson(Person person);
 
     /**
-     * Deletes the given person.
-     * The person must exist in the address book.
-     */
-    void deletePerson(Person target);
-
-    /**
      * Adds the given person.
      * {@code person} must not already exist in the address book.
      */
@@ -95,4 +89,50 @@ public interface Model {
      * @throws NullPointerException if {@code predicate} is null.
      */
     void updateFilteredPersonList(Predicate<Person> predicate);
+
+    /**
+     * Returns true if there is at least one previous state available
+     * in the undo history.
+     *
+     * @return true if undo can be performed, false otherwise.
+     */
+    boolean canUndo();
+
+    /**
+     * Saves the current state of the AddressBook into the undo history.
+     * This should be called before executing a mutating command so that
+     * the previous state can be restored if needed.
+     */
+    void saveSnapshot();
+
+    /**
+     * Restores the AddressBook to its previous state.
+     *
+     * @throws IllegalStateException if there are no states available to undo.
+     */
+    void undo();
+
+    /**
+     * Clears the redo history.
+     * This should be called whenever a new command that changes the state
+     * is executed, to maintain consistency of the undo/redo stacks.
+     */
+    void clearRedo();
+
+    /**
+     * Returns true if there is at least one future state available
+     * in the redo history.
+     *
+     * @return true if redo can be performed, false otherwise.
+     */
+    boolean canRedo();
+
+    /**
+     * Reapplies the most recently undone change to restore the AddressBook
+     * to its state before the last undo operation.
+     *
+     * @throws IllegalStateException if there are no states available to redo.
+     */
+    void redo();
+
 }

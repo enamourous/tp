@@ -91,4 +91,9 @@ public class AddPaymentCommand extends Command {
                 && date.equals(((AddPaymentCommand) other).date)
                 && java.util.Objects.equals(remarks, ((AddPaymentCommand) other).remarks)); // remarks could be null
     }
+
+    @Override
+    public boolean isMutating() {
+        return true;
+    }
 }

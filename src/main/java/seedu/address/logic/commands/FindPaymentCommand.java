@@ -40,24 +40,13 @@ public class FindPaymentCommand extends Command {
     private final LocalDate date;
 
     /**
-     * Creates a {@code FindPaymentCommand} to find payments for a specific member
-     * identified by their index in the displayed list, filtered by exactly one of
-     * the following criteria:
-     * <ul>
-     *     <li>Amount — matches payments with the exact specified amount</li>
-     *     <li>Remark — matches payments whose remark contains the given keyword (case-insensitive)</li>
-     *     <li>Date — matches payments made on the specified date</li>
-     * </ul>
+     * Constructs a FindPaymentCommand with exactly one non-null filter.
      *
-     * <p>Only one of {@code amount}, {@code remark}, or {@code date} should be non-null.
-     * This constraint is enforced by {@link seedu.address.logic.parser.FindPaymentCommandParser}.</p>
-     *
-     * @param targetIndex the index of the member in the current displayed list
-     * @param amount the amount to match payments against, or {@code null} if not filtering by amount
-     * @param remark the keyword to match within payment remarks, or {@code null} if not filtering by remark
-     * @param date the date to match payments against, or {@code null} if not filtering by date
+     * @param targetIndex the index of the member in the displayed list
+     * @param amount the amount to filter by, or null
+     * @param remark the remark keyword to filter by, or null
+     * @param date the date to filter by, or null
      */
-
     public FindPaymentCommand(Index targetIndex, Amount amount, String remark, LocalDate date) {
         requireNonNull(targetIndex);
         this.targetIndex = targetIndex;
@@ -69,52 +58,74 @@ public class FindPaymentCommand extends Command {
     @Override
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
-        List<Person> persons = model.getFilteredPersonList();
+        Person target = getTargetPerson(model);
 
+        List<Payment> matchedPayments = findMatchingPayments(target.getPayments());
+
+        if (matchedPayments.isEmpty()) {
+            return new CommandResult(String.format(MESSAGE_NOT_FOUND, target.getName(), getCriteriaString()));
+        }
+
+        String formattedPayments = formatPayments(matchedPayments);
+        logger.info(String.format("Found %d payments for %s", matchedPayments.size(), target.getName()));
+        return new CommandResult(String.format(MESSAGE_SUCCESS, matchedPayments.size(), target.getName(),
+                formattedPayments));
+    }
+
+    private Person getTargetPerson(Model model) throws CommandException {
+        List<Person> persons = model.getFilteredPersonList();
         if (targetIndex.getZeroBased() >= persons.size()) {
             throw new CommandException(MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
         }
-
-        Person target = persons.get(targetIndex.getZeroBased());
-        List<Payment> payments = target.getPayments();
-        List<Payment> matched = findMatchingPayments(payments);
-
-        if (matched.isEmpty()) {
-            String criteria = amount != null ? "amount " + amount
-                    : date != null ? "date " + date
-                    : "remark \"" + remark + "\"";
-            return new CommandResult(String.format(MESSAGE_NOT_FOUND, target.getName(), criteria));
-        }
-
-        String formattedList = formatPayments(matched);
-        return new CommandResult(String.format(MESSAGE_SUCCESS, matched.size(), target.getName(), formattedList));
+        return persons.get(targetIndex.getZeroBased());
     }
 
     private List<Payment> findMatchingPayments(List<Payment> payments) {
         if (amount != null) {
-            return payments.stream()
-                    .filter(p -> p.getAmount().equals(amount))
-                    .collect(Collectors.toList());
-        } else if (remark != null) {
-            String keyword = remark.toLowerCase();
-            return payments.stream()
-                    .filter(p -> p.getRemarks() != null
-                            && p.getRemarks().toLowerCase().contains(keyword))
-                    .collect(Collectors.toList());
-        } else if (date != null) {
-            return payments.stream()
-                    .filter(p -> p.getDate().equals(date))
-                    .collect(Collectors.toList());
+            return filterByAmount(payments, amount);
         }
-        return List.of();
+        if (remark != null) {
+            return filterByRemark(payments, remark);
+        }
+        if (date != null) {
+            return filterByDate(payments, date);
+        }
+        return List.of(); // should not happen if parser is correct
+    }
+
+    private List<Payment> filterByAmount(List<Payment> payments, Amount amount) {
+        return payments.stream()
+                .filter(p -> p.getAmount().equals(amount))
+                .collect(Collectors.toList());
+    }
+
+    private List<Payment> filterByRemark(List<Payment> payments, String keyword) {
+        String lowerKeyword = keyword.toLowerCase();
+        return payments.stream()
+                .filter(p -> p.getRemarks() != null && p.getRemarks().toLowerCase().contains(lowerKeyword))
+                .collect(Collectors.toList());
+    }
+
+    private List<Payment> filterByDate(List<Payment> payments, LocalDate date) {
+        return payments.stream()
+                .filter(p -> p.getDate().equals(date))
+                .collect(Collectors.toList());
     }
 
     private String formatPayments(List<Payment> payments) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < payments.size(); i++) {
-            sb.append(String.format("%d. %s%n", i + 1, payments.get(i)));
+        return payments.stream()
+                .map(p -> "- " + p)
+                .collect(Collectors.joining("\n"));
+    }
+
+    private String getCriteriaString() {
+        if (amount != null) {
+            return "amount " + amount;
         }
-        return sb.toString().trim();
+        if (date != null) {
+            return "date " + date;
+        }
+        return "remark \"" + remark + "\"";
     }
 
     @Override

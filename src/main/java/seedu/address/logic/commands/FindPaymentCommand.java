@@ -6,6 +6,7 @@ import static seedu.address.commons.core.Messages.MESSAGE_INVALID_PERSON_DISPLAY
 import java.time.LocalDate;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import seedu.address.commons.core.LogsCenter;
 import seedu.address.commons.core.index.Index;
@@ -26,14 +27,10 @@ public class FindPaymentCommand extends Command {
             + ": Finds payments of the person identified by the displayed index, "
             + "filtered by amount, remark, or date.\n"
             + "Parameters: INDEX [a/AMOUNT | r/REMARK | d/DATE]\n"
-            + "Example 1: " + COMMAND_WORD + " 1 a/23.00\n"
-            + "Example 2: " + COMMAND_WORD + " 1 r/cca\n"
-            + "Example 3: " + COMMAND_WORD + " 1 d/2023-02-07";
+            + "Example: " + COMMAND_WORD + " 1 r/CCA";
 
-    public static final String MESSAGE_SUCCESS_AMOUNT = "Payments with amount %s found for %s:\n%s";
-    public static final String MESSAGE_SUCCESS_REMARK = "Payments with remark containing \"%s\" found for %s:\n%s";
-    public static final String MESSAGE_SUCCESS_DATE = "Payments on date %s found for %s:\n%s";
-    public static final String MESSAGE_NOT_FOUND = "No payments found for the given filter.";
+    public static final String MESSAGE_SUCCESS = "Found %d payment(s) for %s:\n%s";
+    public static final String MESSAGE_NOT_FOUND = "No payments found for %s matching %s.";
 
     private static final Logger logger = LogsCenter.getLogger(FindPaymentCommand.class);
 
@@ -43,9 +40,12 @@ public class FindPaymentCommand extends Command {
     private final LocalDate date;
 
     /**
-     * Constructs a {@code FindPaymentCommand} with exactly one non-null filter.
-     * Note: when correctly used, only one of the three arguments (amount, remark, date) would be non-null.
-     * The above check is done by FindPaymentCommandParser
+     * Constructs a FindPaymentCommand with exactly one non-null filter.
+     *
+     * @param targetIndex the index of the member in the displayed list
+     * @param amount the amount to filter by, or null
+     * @param remark the remark keyword to filter by, or null
+     * @param date the date to filter by, or null
      */
     public FindPaymentCommand(Index targetIndex, Amount amount, String remark, LocalDate date) {
         requireNonNull(targetIndex);
@@ -58,59 +58,74 @@ public class FindPaymentCommand extends Command {
     @Override
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
+        Person target = getTargetPerson(model);
 
-        var list = model.getFilteredPersonList();
-        if (targetIndex.getZeroBased() >= list.size()) {
+        List<Payment> matchedPayments = findMatchingPayments(target.getPayments());
+
+        if (matchedPayments.isEmpty()) {
+            return new CommandResult(String.format(MESSAGE_NOT_FOUND, target.getName(), getCriteriaString()));
+        }
+
+        String formattedPayments = formatPayments(matchedPayments);
+        logger.info(String.format("Found %d payments for %s", matchedPayments.size(), target.getName()));
+        return new CommandResult(String.format(MESSAGE_SUCCESS, matchedPayments.size(), target.getName(),
+                formattedPayments));
+    }
+
+    private Person getTargetPerson(Model model) throws CommandException {
+        List<Person> persons = model.getFilteredPersonList();
+        if (targetIndex.getZeroBased() >= persons.size()) {
             throw new CommandException(MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
         }
+        return persons.get(targetIndex.getZeroBased());
+    }
 
-        Person target = list.get(targetIndex.getZeroBased());
-        logger.fine("Searching payments for: " + target.getName());
-
-        List<Payment> payments = target.getPayments();
-        List<Payment> matched;
-
+    private List<Payment> findMatchingPayments(List<Payment> payments) {
         if (amount != null) {
-            matched = payments.stream()
-                    .filter(p -> p.getAmount().equals(amount))
-                    .toList();
-
-        } else if (remark != null) {
-            String keyword = remark.toLowerCase();
-            matched = payments.stream()
-                    .filter(p -> p.getRemarks() != null
-                            && p.getRemarks().toLowerCase().contains(keyword))
-                    .toList();
-
-        } else if (date != null) {
-            matched = payments.stream()
-                    .filter(p -> p.getDate().equals(date))
-                    .toList();
-
-        } else {
-            throw new CommandException("Invalid search.");
+            return filterByAmount(payments, amount);
         }
-
-        if (matched.isEmpty()) {
-            return new CommandResult(MESSAGE_NOT_FOUND);
+        if (remark != null) {
+            return filterByRemark(payments, remark);
         }
-
-        StringBuilder sb = new StringBuilder();
-        for (Payment p : matched) {
-            sb.append("- ").append(p).append("\n");
+        if (date != null) {
+            return filterByDate(payments, date);
         }
+        return List.of(); // should not happen if parser is correct
+    }
 
-        String message;
+    private List<Payment> filterByAmount(List<Payment> payments, Amount amount) {
+        return payments.stream()
+                .filter(p -> p.getAmount().equals(amount))
+                .collect(Collectors.toList());
+    }
+
+    private List<Payment> filterByRemark(List<Payment> payments, String keyword) {
+        String lowerKeyword = keyword.toLowerCase();
+        return payments.stream()
+                .filter(p -> p.getRemarks() != null && p.getRemarks().toLowerCase().contains(lowerKeyword))
+                .collect(Collectors.toList());
+    }
+
+    private List<Payment> filterByDate(List<Payment> payments, LocalDate date) {
+        return payments.stream()
+                .filter(p -> p.getDate().equals(date))
+                .collect(Collectors.toList());
+    }
+
+    private String formatPayments(List<Payment> payments) {
+        return payments.stream()
+                .map(p -> "- " + p)
+                .collect(Collectors.joining("\n"));
+    }
+
+    private String getCriteriaString() {
         if (amount != null) {
-            message = String.format(MESSAGE_SUCCESS_AMOUNT, amount, target.getName(), sb.toString().trim());
-        } else if (remark != null) {
-            message = String.format(MESSAGE_SUCCESS_REMARK, remark, target.getName(), sb.toString().trim());
-        } else {
-            message = String.format(MESSAGE_SUCCESS_DATE, date, target.getName(), sb.toString().trim());
+            return "amount " + amount;
         }
-
-        logger.info("Found " + matched.size() + " matching payments for " + target.getName());
-        return new CommandResult(message);
+        if (date != null) {
+            return "date " + date;
+        }
+        return "remark \"" + remark + "\"";
     }
 
     @Override
@@ -123,9 +138,9 @@ public class FindPaymentCommand extends Command {
         }
         FindPaymentCommand o = (FindPaymentCommand) other;
         return targetIndex.equals(o.targetIndex)
-                && java.util.Objects.equals(amount, o.amount) // amount could be null
-                && java.util.Objects.equals(remark, o.remark) // remark could be null
-                && java.util.Objects.equals(date, o.date); // date could be null
+                && java.util.Objects.equals(amount, o.amount)
+                && java.util.Objects.equals(remark, o.remark)
+                && java.util.Objects.equals(date, o.date);
     }
 
     @Override

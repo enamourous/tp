@@ -14,6 +14,7 @@ import java.util.Set;
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.model.payment.Payment;
 import seedu.address.model.tag.Tag;
+import seedu.address.model.util.PersonFormatter;
 
 /**
  * Represents a Person in the address book.
@@ -195,5 +196,13 @@ public class Person {
             .add("archived", archived)
             .add("paymentsCount", payments.size())
             .toString();
+    }
+
+    /**
+     * Returns a human-readable summary of this person's information,
+     * suitable for display in a detailed view.
+     */
+    public String getFormattedProfile() {
+        return PersonFormatter.formatProfile(this);
     }
 }

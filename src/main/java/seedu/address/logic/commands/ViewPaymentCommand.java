@@ -62,7 +62,7 @@ public class ViewPaymentCommand extends Command {
                         BigDecimal total = p.getPayments().stream()
                                 .map(pay -> pay.getAmount().asBigDecimal())
                                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-                        return String.format("- %s: %s", p.getName(), total.toPlainString());
+                        return String.format("- %s: $%s", p.getName(), total.toPlainString());
                     })
                     .collect(Collectors.joining("\n"));
 
@@ -72,7 +72,7 @@ public class ViewPaymentCommand extends Command {
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
 
             String header = String.format(
-                    "Payments summary for %d people. Grand total: %s",
+                    "Payments summary for %d people. Grand total: $%s",
                     people.size(), grand.toPlainString()
             );
             return new CommandResult(header + (perPerson.isEmpty() ? "\n(no payments)" : "\n" + perPerson));

@@ -1,5 +1,6 @@
 package seedu.address.logic.parser;
 
+import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
 
 import org.junit.jupiter.api.Test;
@@ -21,11 +22,26 @@ public class ListArchivedCommandParserTest {
     }
 
     @Test
-    public void parse_extraArgs_stillSuccess() {
-        // Parser is lenient: any trailing args are ignored
-        assertParseSuccess(parser, " anything", new ListArchivedCommand());
-        assertParseSuccess(parser, " 123", new ListArchivedCommand());
-        assertParseSuccess(parser, " archived please", new ListArchivedCommand());
+    public void parseExtraArgs_throwsParseException() {
+        assertParseFailure(
+                parser,
+                " anything",
+                String.format(seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT,
+                        ListArchivedCommand.MESSAGE_USAGE)
+        );
+        assertParseFailure(
+                parser,
+                " 123",
+                String.format(seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT,
+                        ListArchivedCommand.MESSAGE_USAGE)
+        );
+        assertParseFailure(
+                parser,
+                " archived please",
+                String.format(seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT,
+                        ListArchivedCommand.MESSAGE_USAGE)
+        );
     }
+
 }
 

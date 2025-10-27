@@ -9,6 +9,11 @@ public class UndoCommand extends Command {
     public static final String COMMAND_WORD = "undo";
     public static final String MESSAGE_SUCCESS = "Undid the last change.";
     public static final String MESSAGE_NOTHING = "Nothing to undo.";
+    public static final String MESSAGE_USAGE = COMMAND_WORD
+            + ": Undoes the most recent change made to the address book.\n"
+            + "Format: " + COMMAND_WORD + "\n"
+            + "Example: " + COMMAND_WORD;
+
 
     @Override
     public CommandResult execute(Model model) {

@@ -4,6 +4,7 @@ import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.core.Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -96,6 +97,9 @@ public class FindPaymentCommand extends Command {
     private List<Payment> filterByAmount(List<Payment> payments, Amount amount) {
         return payments.stream()
                 .filter(p -> p.getAmount().equals(amount))
+                .sorted(Comparator.comparing(Payment::getDate, Comparator.reverseOrder())
+                        .thenComparing(Payment::getAmount, Comparator.reverseOrder())
+                        .thenComparing(p -> p.getRemarks() == null ? "" : p.getRemarks().toLowerCase()))
                 .collect(Collectors.toList());
     }
 
@@ -103,12 +107,18 @@ public class FindPaymentCommand extends Command {
         String lowerKeyword = keyword.toLowerCase();
         return payments.stream()
                 .filter(p -> p.getRemarks() != null && p.getRemarks().toLowerCase().contains(lowerKeyword))
+                .sorted(Comparator.comparing(Payment::getDate, Comparator.reverseOrder())
+                        .thenComparing(Payment::getAmount, Comparator.reverseOrder())
+                        .thenComparing(p -> p.getRemarks() == null ? "" : p.getRemarks().toLowerCase()))
                 .collect(Collectors.toList());
     }
 
     private List<Payment> filterByDate(List<Payment> payments, LocalDate date) {
         return payments.stream()
                 .filter(p -> p.getDate().equals(date))
+                .sorted(Comparator.comparing(Payment::getDate, Comparator.reverseOrder())
+                        .thenComparing(Payment::getAmount, Comparator.reverseOrder())
+                        .thenComparing(p -> p.getRemarks() == null ? "" : p.getRemarks().toLowerCase()))
                 .collect(Collectors.toList());
     }
 

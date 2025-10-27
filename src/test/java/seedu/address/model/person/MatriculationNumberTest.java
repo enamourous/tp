@@ -18,21 +18,21 @@ public class MatriculationNumberTest {
     // ✅ ---------------- VALID CASES ----------------
     @Test
     public void constructor_validMatriculationNumber_success() {
-        MatriculationNumber m = new MatriculationNumber("A01234567X");
-        assertEquals("A01234567X", m.value);
+        MatriculationNumber m = new MatriculationNumber("A1234567X");
+        assertEquals("A1234567X", m.value);
     }
 
     @Test
     public void constructor_lowercase_convertedToUppercase() {
-        MatriculationNumber m = new MatriculationNumber("a01234567b");
-        assertEquals("A01234567B", m.value);
+        MatriculationNumber m = new MatriculationNumber("a1234567b");
+        assertEquals("A1234567B", m.value);
     }
 
     @Test
     public void isValidMatriculationNumber_validExamples_returnTrue() {
-        assertTrue(MatriculationNumber.isValidMatriculationNumber("A01234567X"));
-        assertTrue(MatriculationNumber.isValidMatriculationNumber("A17172828B"));
-        assertTrue(MatriculationNumber.isValidMatriculationNumber("A00000000Z"));
+        assertTrue(MatriculationNumber.isValidMatriculationNumber("A1234567X"));
+        assertTrue(MatriculationNumber.isValidMatriculationNumber("A7172828B"));
+        assertTrue(MatriculationNumber.isValidMatriculationNumber("A0000000Z"));
     }
 
     @Test
@@ -58,15 +58,15 @@ public class MatriculationNumberTest {
         assertThrows(InvalidMatriculationNumberException.class, () -> new MatriculationNumber("12312312HH"));
         // no digits in middle
         assertThrows(InvalidMatriculationNumberException.class, () -> new MatriculationNumber("AABCDEFGHX"));
-        // only 9 total characters
-        assertThrows(InvalidMatriculationNumberException.class, () -> new MatriculationNumber("A1234567B"));
+        // only 10 total characters
+        assertThrows(InvalidMatriculationNumberException.class, () -> new MatriculationNumber("A01234567B"));
     }
 
     @Test
     public void isValidMatriculationNumber_invalidExamples_returnFalse() {
         String[] invalids = {
             "", " ", "A", "A123B", "A123456789", "A1234567BB",
-            "a1234567b", "B01234567X", "C12312311B", "12312312HH",
+            "a01234567b", "B01234567X", "C12312311B", "12312312HH",
             "AABCDEFGHX", "A1234567@", "A12", "A00000000", "Z00000000X"
         };
         for (String test : invalids) {
@@ -76,42 +76,42 @@ public class MatriculationNumberTest {
 
     @Test
     public void equals_sameValue_true() {
-        MatriculationNumber m1 = new MatriculationNumber("A01234567X");
-        MatriculationNumber m2 = new MatriculationNumber("a01234567x");
+        MatriculationNumber m1 = new MatriculationNumber("A1234567X");
+        MatriculationNumber m2 = new MatriculationNumber("a1234567x");
         assertEquals(m1, m2);
     }
 
     @Test
     public void equals_differentValue_false() {
-        MatriculationNumber m1 = new MatriculationNumber("A01234567X");
-        MatriculationNumber m2 = new MatriculationNumber("A01234567Y");
+        MatriculationNumber m1 = new MatriculationNumber("A1234567X");
+        MatriculationNumber m2 = new MatriculationNumber("A1234567Y");
         assertNotEquals(m1, m2);
     }
 
     @Test
     public void equals_sameObject_true() {
-        MatriculationNumber m = new MatriculationNumber("A01234567X");
+        MatriculationNumber m = new MatriculationNumber("A1234567X");
         assertTrue(m.equals(m)); // self equality
     }
 
     @Test
     public void equals_differentType_false() {
-        MatriculationNumber m = new MatriculationNumber("A01234567X");
-        assertFalse(m.equals("A01234567X")); // different type
+        MatriculationNumber m = new MatriculationNumber("A1234567X");
+        assertFalse(m.equals("A1234567X")); // different type
         assertFalse(m.equals(123)); // integer
     }
 
     @Test
     public void hashCode_sameValue_sameHash() {
-        MatriculationNumber m1 = new MatriculationNumber("A01234567X");
-        MatriculationNumber m2 = new MatriculationNumber("a01234567x");
+        MatriculationNumber m1 = new MatriculationNumber("A1234567X");
+        MatriculationNumber m2 = new MatriculationNumber("a1234567x");
         assertEquals(m1.hashCode(), m2.hashCode());
     }
 
     @Test
     public void toString_returnsValue() {
-        MatriculationNumber m = new MatriculationNumber("A01234567X");
-        assertEquals("A01234567X", m.toString());
+        MatriculationNumber m = new MatriculationNumber("A1234567X");
+        assertEquals("A1234567X", m.toString());
     }
 
 }

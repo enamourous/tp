@@ -32,7 +32,7 @@ Treasura is primarily targeted towards CCA leaders and treasurers.
 
    * `list` : Lists all contacts.
 
-   * `add n/John Doe p/98765432 e/johnd@example.com m/A0123456X t/friends t/owesMoney` : Adds a contact named `John Doe` to the Address Book.
+   * `add n/John Doe p/98765432 e/johnd@example.com m/A01234567X t/friends t/owesMoney` : Adds a contact named `John Doe` to the Address Book.
 
    * `archive 3` : Archives the 3rd member shown in the current list.
 
@@ -98,8 +98,8 @@ Format: `add n/NAME p/PHONE_NUMBER e/EMAIL m/MATRICNUM [t/TAG]…​`
 </box>
 
 Examples:
-* `add n/John Doe p/98765432 e/johnd@example.com m/A0123456X t/friends t/owesMoney`
-* `add n/Jane Doe p/98765432 e/janed@example.com m/A0987632Y t/member t/overdue`
+* `add n/John Doe p/98765432 e/johnd@example.com m/A01234567X t/friends t/owesMoney`
+* `add n/Jane Doe p/98765432 e/janed@example.com m/A09876327Y t/member t/overdue`
 
 ---
 

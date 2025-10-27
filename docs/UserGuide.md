@@ -278,6 +278,7 @@ or
 **Notes:**
 * Use `viewpayment INDEX` to show all payments made by a single member.
 * Use `viewpayment all` to view payments for every member in the current displayed list.
+* If the payment history is too long, feel free to use `findpayment`.
 
 **Examples:**
 * `viewpayment 2` — shows all payments made by the 2nd member.
@@ -348,7 +349,7 @@ undo                      ← removes the payment just added
 <box type="warning" seamless>
 
 **Caution:**
-Adding an argument will cause an error!<br>
+Adding an argument will cause an error! Please unarchive the member first.<br>
 
 </box>
 
@@ -431,6 +432,9 @@ Furthermore, certain edits can cause the AddressBook to behave in unexpected way
 **Q**: How do I streamline the process of tracking members and their payments?<br>
 **A**: Adding a tag to members and payments is highly recommended, because it allows you to filter through the members and payments quickly, using find and findpayment commands.
 
+**Q**: If I archive a member, will his/her payments be removed?<br>
+**A**: The archived member's payments will be removed from the main payment history, but you can still access them from viewing the payment of the archived list.
+
 --------------------------------------------------------------------------------------------------------------------
 
 ## Known issues
@@ -468,5 +472,9 @@ Furthermore, certain edits can cause the AddressBook to behave in unexpected way
 * Member = A NUS student part of a CCA
 * Matriculation number = A unique ID given to all NUS students. Starts with A, followed by 7 digits and ending with any upper case letter.
 * JSON = A file format used to store Treasura data.
+
+### Future Features ( Work in Progress! )
+* Payment dashboard (A quick visualisation of all payments)
+* Store and access member and payment data from multiple CCAs (Separate storage)
 
 

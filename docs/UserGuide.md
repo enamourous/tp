@@ -442,23 +442,24 @@ Furthermore, certain edits can cause the AddressBook to behave in unexpected way
 
 ## Command summary
 
-| Action              | Format                                                                       | Example(s)                                                                         |
-|---------------------|------------------------------------------------------------------------------|------------------------------------------------------------------------------------|
-| **Add**             | `add n/NAME p/PHONE e/EMAIL m/MATRIC [t/TAG]...`                             | `add n/James Ho p/22224444 e/jamesho@example.com m/A0273010Y t/friend t/treasurer` |
-| **Edit**            | `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [m/MATRIC] [t/TAG]...`              | `edit 2 n/James Lee e/jameslee@example.com`                                        |
-| **Undo**            | `undo`                                                                       | `undo`                                                                             |
-| **Redo**            | `redo`                                                                       | `redo`                                                                             |
-| **Find**            | `find KEYWORD [MORE_KEYWORDS]...`                                            | `find James treasurer`                                                             |
-| **List**            | `list`                                                                       | `list`                                                                             |
-| **List Archived**   | `listarchived`                                                               | `listarchived`                                                                     |
-| **Archive**         | `archive INDEX[,INDEX]...`                                                   | `archive 1,2,5`                                                                    |
-| **Unarchive**       | `unarchive INDEX[,INDEX]...`                                                 | `unarchive 2,5`                                                                    |
-| **View Member**     | `view INDEX`                                                                 | `view 4`                                                                           |
-| **Add Payment**     | `addpayment INDEX[,INDEX]... a/AMOUNT d/DATE [r/REMARKS]`                    | `addpayment 1,3 a/25.00 d/2025-10-24 r/Monthly dues`                               |
-| **Edit Payment**    | `editpayment PERSON_INDEX p/PAYMENT_INDEX [a/AMOUNT] [d/DATE] [r/REMARKS]`   | `editpayment 2 p/1 a/30.00 r/Corrected`                                            |
-| **Delete Payment**  | `deletepayment PERSON_INDEX[,PERSON_INDEX]... p/PAYMENT_INDEX`               | `deletepayment 1,3 p/2`                                                            |
-| **View Payment(s)** | `viewpayment INDEX` or `viewpayment all`                                     | `viewpayment 2`, `viewpayment all`                                                 |
-| **Help**            | `help`                                                                       | `help`                                                                             |
+| Action              | Format                                                                     | Example(s)                                                                         |
+|---------------------|----------------------------------------------------------------------------|------------------------------------------------------------------------------------|
+| **Add**             | `add n/NAME p/PHONE e/EMAIL m/MATRIC [t/TAG]...`                           | `add n/James Ho p/22224444 e/jamesho@example.com m/A0273010Y t/friend t/treasurer` |
+| **Edit**            | `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [m/MATRIC] [t/TAG]...`            | `edit 2 n/James Lee e/jameslee@example.com`                                        |
+| **Undo**            | `undo`                                                                     | `undo`                                                                             |
+| **Redo**            | `redo`                                                                     | `redo`                                                                             |
+| **Find**            | `find KEYWORD [MORE_KEYWORDS]...`                                          | `find James treasurer`                                                             |
+| **List**            | `list`                                                                     | `list`                                                                             |
+| **List Archived**   | `listarchived`                                                             | `listarchived`                                                                     |
+| **Archive**         | `archive INDEX[,INDEX]...`                                                 | `archive 1,2,5`                                                                    |
+| **Unarchive**       | `unarchive INDEX[,INDEX]...`                                               | `unarchive 2,5`                                                                    |
+| **View Member**     | `view INDEX`                                                               | `view 4`                                                                           |
+| **Add Payment**     | `addpayment INDEX[,INDEX]... a/AMOUNT d/DATE [r/REMARKS]`                  | `addpayment 1,3 a/25.00 d/2025-10-24 r/Monthly dues`                               |
+| **Edit Payment**    | `editpayment PERSON_INDEX p/PAYMENT_INDEX [a/AMOUNT] [d/DATE] [r/REMARKS]` | `editpayment 2 p/1 a/30.00 r/Corrected`                                            |
+| **Delete Payment**  | `deletepayment PERSON_INDEX[,PERSON_INDEX]... p/PAYMENT_INDEX`             | `deletepayment 1,3 p/2`                                                            |
+| **View Payment(s)** | `viewpayment INDEX` or `viewpayment all`                                   | `viewpayment 2`, `viewpayment all`                                                 |
+| **Find Payment**    | `findpayment INDEX [a/AMOUNT] [r/REMARK] [d/DATE]`                         | `findpayment 1 a/50.00`, `findpayment 2 r/Workshop`, `findpayment 3 d/2025-03-15`  |
+| **Help**            | `help`                                                                     | `help`                                                                             |
 
 ---
 

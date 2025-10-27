@@ -3,7 +3,7 @@
   "persons": [
     {
       "name": "Alice Pauline",
-      "phone": "94351253",
+      "phone": "13658964",
       "email": "alice@example.com",
       "matriculationNumber": "A0000000D",
       "tags": [
@@ -12,7 +12,7 @@
     },
     {
       "name": "Benson Meier",
-      "phone": "98765432",
+      "phone": "69834754",
       "email": "johnd@example.com",
       "matriculationNumber": "A0000000E",
       "tags": [
@@ -22,14 +22,14 @@
     },
     {
       "name": "Carl Kurz",
-      "phone": "95352563",
+      "phone": "99997765",
       "email": "heinz@example.com",
       "matriculationNumber": "A0000000F",
       "tags": []
     },
     {
       "name": "Daniel Meier",
-      "phone": "87652533",
+      "phone": "27547468",
       "email": "cornelia@example.com",
       "matriculationNumber": "A0000000G",
       "tags": [
@@ -38,21 +38,21 @@
     },
     {
       "name": "Elle Meyer",
-      "phone": "9482224",
+      "phone": "27527468",
       "email": "werner@example.com",
       "matriculationNumber": "A0000000H",
       "tags": []
     },
     {
       "name": "Fiona Kunz",
-      "phone": "9482427",
+      "phone": "27547468",
       "email": "lydia@example.com",
       "matriculationNumber": "A0000000I",
       "tags": []
     },
     {
       "name": "George Best",
-      "phone": "9482442",
+      "phone": "27547468",
       "email": "anna@example.com",
       "matriculationNumber": "A0000000J",
       "tags": []

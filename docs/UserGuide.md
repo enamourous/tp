@@ -35,7 +35,6 @@ Treasura is primarily targeted towards CCA leaders and treasurers.
 ---
 
 ### Example Commands to Try
-
    * `add n/John Doe p/98765432 e/johnd@example.com m/A0123456X t/friend t/owesMoney` : Adds a contact named `John Doe` to Treasura.
    * `archive 3` : Archives the 3rd member shown in the current list.
 
@@ -345,6 +344,9 @@ undo                      ← restores the archived members to active
 addpayment 1 a/25.00 d/2025-10-21 r/membership
 undo                      ← removes the payment just added
 ```
+  <img width="645" height="659" alt="image" src="https://github.com/user-attachments/assets/d2e01018-3c17-4c15-b124-74ab58dad8bf" />
+
+
 ---
 
 ### Redoing an action: `redo`
@@ -410,6 +412,12 @@ Furthermore, certain edits can cause the AddressBook to behave in unexpected way
 
 **Q**: How do I transfer my data to another computer?<br>
 **A**: Install the app in the other computer and overwrite the empty data file it creates with the file that contains the data of your previous AddressBook home folder.
+
+**Q**: Can I delete a member?
+**A**: Deleting a member accidentally can wipe out his/her entire payment history, therefor the app only supports archiving a member. You can also use edit command to swap out the details of the unwanted member with that of a new member.
+
+**Q**: How do I streamline the process of tracking members and their payments?
+**A**: Adding a tag to members and payments is highly recommended, because it allows you to filter through the members and payments quickly, using find and findpayment commands.
 
 --------------------------------------------------------------------------------------------------------------------
 

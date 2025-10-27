@@ -277,6 +277,9 @@ Examples:
 * `addpayment 1 a/20.00 d/2025-03-12 r/Membership fee`
 * `addpayment 2,3 a/15.50 d/2025-04-01 r/Event T-shirt`
 
+  <img width="645" height="659" alt="image" src="https://github.com/user-attachments/assets/d2e01018-3c17-4c15-b124-74ab58dad8bf" />
+
+
 ---
 
 ### Edit payment(s): `editpayment`

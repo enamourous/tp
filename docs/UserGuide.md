@@ -364,6 +364,12 @@ Furthermore, certain edits can cause the AddressBook to behave in unexpected way
 **Q**: How do I transfer my data to another computer?<br>
 **A**: Install the app in the other computer and overwrite the empty data file it creates with the file that contains the data of your previous AddressBook home folder.
 
+**Q**: Can I delete a member?
+**A**: Deleting a member accidentally can wipe out his/her entire payment history, therefor the app only supports archiving a member. You can also use edit command to swap out the details of the unwanted member with that of a new member.
+
+**Q**: How do I streamline the process of tracking members and their payments?
+**A**: Adding a tag to members and payments is highly recommended, because it allows you to filter through the members and payments quickly, using find and findpayment commands.
+
 --------------------------------------------------------------------------------------------------------------------
 
 ## Known issues

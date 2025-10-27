@@ -23,7 +23,7 @@ public class TagContainsKeywordsPredicate implements Predicate<Person> {
         for (Tag tag : tags) {
             String tagName = tag.tagName.toLowerCase();
             for (String keyword : keywords) {
-                if (tagName.contains(keyword.toLowerCase())) {
+                if (tagName.equalsIgnoreCase(keyword)) {
                     return true;
                 }
             }

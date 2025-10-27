@@ -162,4 +162,9 @@ public class EditPaymentCommand extends Command {
                 && paymentOneBased == o.paymentOneBased
                 && Objects.equals(descriptor, o.descriptor);
     }
+
+    @Override
+    public boolean isMutating() {
+        return true;
+    }
 }

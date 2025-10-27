@@ -281,9 +281,6 @@ public class AddPaymentCommandTest {
         @Override public boolean hasPerson(Person person) {
             throw new AssertionError();
         }
-        @Override public void deletePerson(Person target) {
-            throw new AssertionError();
-        }
         @Override public void updateFilteredPersonList(java.util.function.Predicate<Person> predicate) {
             throw new AssertionError();
         }
@@ -310,6 +307,35 @@ public class AddPaymentCommandTest {
         }
         @Override public seedu.address.model.ReadOnlyAddressBook getAddressBook() {
             throw new AssertionError();
+        }
+        @Override
+        public boolean canUndo() {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void saveSnapshot() {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void undo() {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void clearRedo() {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public boolean canRedo() {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void redo() {
+            throw new AssertionError("This method should not be called.");
         }
     }
 

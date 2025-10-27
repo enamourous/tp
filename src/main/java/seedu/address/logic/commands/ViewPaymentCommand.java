@@ -62,7 +62,7 @@ public class ViewPaymentCommand extends Command {
                         BigDecimal total = p.getPayments().stream()
                                 .map(pay -> pay.getAmount().asBigDecimal())
                                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-                        return String.format("- %s: %s", p.getName(), total.toPlainString());
+                        return String.format("- %s: $%s", p.getName(), total.toPlainString());
                     })
                     .collect(Collectors.joining("\n"));
 
@@ -72,7 +72,7 @@ public class ViewPaymentCommand extends Command {
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
 
             String header = String.format(
-                    "Payments summary for %d people. Grand total: %s",
+                    "Payments summary for %d people. Grand total: $%s",
                     people.size(), grand.toPlainString()
             );
             return new CommandResult(header + (perPerson.isEmpty() ? "\n(no payments)" : "\n" + perPerson));
@@ -103,7 +103,7 @@ public class ViewPaymentCommand extends Command {
                     .append(". ")
                     .append(DATE_FMT.format(p.getDate()))
                     .append(" | ")
-                    .append(p.getAmount().toString());
+                    .append("$").append(p.getAmount().toString());
 
             if (p.getRemarks() != null && !p.getRemarks().isEmpty()) {
                 body.append(" | ").append(p.getRemarks());
@@ -114,7 +114,7 @@ public class ViewPaymentCommand extends Command {
         }
 
         String header = String.format(
-                "Payments for %s (%d). Total: %s",
+                "Payments for %s (%d). Total: $%s",
                 person.getName(), sorted.size(), total.toPlainString()
         );
         return new CommandResult(header + "\n" + body);

@@ -5,41 +5,41 @@ import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSucces
 
 import org.junit.jupiter.api.Test;
 
-import seedu.address.logic.commands.ListArchivedCommand;
+import seedu.address.logic.commands.UndoCommand;
 
-public class ListArchivedCommandParserTest {
+public class UndoCommandParserTest {
 
-    private final ListArchivedCommandParser parser = new ListArchivedCommandParser();
+    private final UndoCommandParser parser = new UndoCommandParser();
 
     @Test
-    public void parse_empty_success() {
-        assertParseSuccess(parser, "", new ListArchivedCommand());
+    public void parseEmpty_success() {
+        assertParseSuccess(parser, "", new UndoCommand());
     }
 
     @Test
-    public void parse_whitespace_success() {
-        assertParseSuccess(parser, "   \t \n ", new ListArchivedCommand());
+    public void parseWhitespace_success() {
+        assertParseSuccess(parser, "   \t \n ", new UndoCommand());
     }
 
     @Test
     public void parseExtraArgs_throwsParseException() {
         assertParseFailure(
                 parser,
-                " anything",
+                " please",
                 String.format(seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT,
-                        ListArchivedCommand.MESSAGE_USAGE)
+                        UndoCommand.MESSAGE_USAGE)
         );
         assertParseFailure(
                 parser,
                 " 123",
                 String.format(seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT,
-                        ListArchivedCommand.MESSAGE_USAGE)
+                        UndoCommand.MESSAGE_USAGE)
         );
         assertParseFailure(
                 parser,
-                " archived please",
+                " now",
                 String.format(seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT,
-                        ListArchivedCommand.MESSAGE_USAGE)
+                        UndoCommand.MESSAGE_USAGE)
         );
     }
 

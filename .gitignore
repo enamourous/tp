@@ -1,26 +1,39 @@
-# Gradle build files
-/.gradle/
-/build/
+# Gradle build artifacts
+.gradle/
+build/
 src/main/resources/docs/
 
-# IDEA files
-/.idea/
-/out/
-/*.iml
+# Do NOT ignore your build script.
+# You had "/.build.gradle" which would hide a hidden file ".build.gradle".
+# If that was a typo, delete that line.
 
-# Storage/log files
-/data/
-/config.json
-/preferences.json
-/*.log.*
+# IntelliJ IDEA
+.idea/
+out/
+*.iml
+
+# Storage / logs
+data/
+config.json
+preferences.json
+*.log
+*.log.*
 hs_err_pid[0-9]*.log
 
-# Test sandbox files
+# Test sandbox
 src/test/data/sandbox/
 
-# MacOS custom attributes files created by Finder
+# macOS and docs output
 .DS_Store
 docs/_site/
 docs/_markbind/logs/
+
+# SSH keys
 Yes
 Yes.pub
+
+# Keep Gradle wrapper files tracked
+!gradlew
+!gradlew.bat
+!gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.properties

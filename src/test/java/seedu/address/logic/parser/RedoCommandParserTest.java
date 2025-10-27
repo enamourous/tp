@@ -1,5 +1,6 @@
 package seedu.address.logic.parser;
 
+import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
 
 import org.junit.jupiter.api.Test;
@@ -21,10 +22,25 @@ public class RedoCommandParserTest {
     }
 
     @Test
-    public void parseExtraArgs_stillSuccess() {
-        // Parser is lenient: any trailing args are ignored
-        assertParseSuccess(parser, " please", new RedoCommand());
-        assertParseSuccess(parser, " 123", new RedoCommand());
-        assertParseSuccess(parser, " again", new RedoCommand());
+    public void parseExtraArgs_throwsParseException() {
+        assertParseFailure(
+                parser,
+                " please",
+                String.format(seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT,
+                        RedoCommand.MESSAGE_USAGE)
+        );
+        assertParseFailure(
+                parser,
+                " 123",
+                String.format(seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT,
+                        RedoCommand.MESSAGE_USAGE)
+        );
+        assertParseFailure(
+                parser,
+                " again",
+                String.format(seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT,
+                        RedoCommand.MESSAGE_USAGE)
+        );
     }
+
 }

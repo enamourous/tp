@@ -90,9 +90,9 @@ If you run a command such as `listarchived` or `find`, the indexes will change a
 
 ### Viewing help : `help`
 
-Shows a message explaining how to access the help page.
+Shows a message containing all functions.
 
-![help message](images/helpWindow.png)
+![help message](images/helpMessage.png)
 
 **Format:** `help`
 
@@ -286,6 +286,7 @@ or
 **Notes:**
 * Use `viewpayment INDEX` to show all payments made by a single member.
 * Use `viewpayment all` to view payments for every member in the current displayed list.
+* If the payment history is too long, feel free to use `findpayment`.
 
 **Examples:**
 * `viewpayment 2` — shows all payments made by the 2nd member.
@@ -356,7 +357,7 @@ undo                      ← removes the payment just added
 <box type="warning" seamless>
 
 **Caution:**
-Adding an argument will cause an error!<br>
+Adding an argument will cause an error! Please unarchive the member first.<br>
 
 </box>
 
@@ -439,15 +440,21 @@ Furthermore, certain edits can cause the AddressBook to behave in unexpected way
 **Q**: How do I streamline the process of tracking members and their payments?<br>
 **A**: Adding a tag to members and payments is highly recommended, because it allows you to filter through the members and payments quickly, using find and findpayment commands.
 
+**Q**: If I archive a member, will his/her payments be removed?<br>
+**A**: The archived member's payments will be removed from the main payment history, but you can still access them from viewing the payment of the archived list.
+
 --------------------------------------------------------------------------------------------------------------------
 
 ## Known issues
 
 1. **When using multiple screens**, if you move the application to a secondary screen, and later switch to using only the primary screen, the GUI will open off-screen. The remedy is to delete the `preferences.json` file created by the application before running the application again.
 2. **If you minimize the Help Window** and then run the `help` command (or use the `Help` menu, or the keyboard shortcut `F1`) again, the original Help Window will remain minimized, and no new Help Window will appear. The remedy is to manually restore the minimized Help Window.
-3. Undo history is cleared upon application restart.
-4. Payment remarks longer than 100 characters may be truncated in UI.
-5. Only one Treasura instance can access a data file at a time - opening multiple windows at once does not save data properly.
+
+## Limitations
+
+1. Undo history is cleared upon application restart.
+2. Payment remarks longer than 100 characters may be truncated in UI.
+3. Only one Treasura instance can access a data file at a time - opening multiple windows at once might not save data properly.
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -479,3 +486,7 @@ Furthermore, certain edits can cause the AddressBook to behave in unexpected way
 * Member = A NUS student part of a CCA
 * Matriculation number = A unique ID given to all NUS students. Starts with A, followed by 7 digits and ending with any upper case letter.
 * JSON = A file format used to store Treasura data.
+
+### Future Features ( Work in Progress! )
+* Payment dashboard (A quick visualisation of all payments)
+* Store and access member and payment data from multiple CCAs (Separate storage)

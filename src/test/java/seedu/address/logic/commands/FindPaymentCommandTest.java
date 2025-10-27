@@ -210,13 +210,27 @@ public class FindPaymentCommandTest {
         @Override public void setAddressBook(seedu.address.model.ReadOnlyAddressBook newData) {
             throw new AssertionError();
         }
-        @Override public seedu.address.model.ReadOnlyAddressBook getAddressBook() { throw new AssertionError(); }
-        @Override public boolean canUndo() { throw new AssertionError(); }
-        @Override public void saveSnapshot() { throw new AssertionError(); }
-        @Override public void undo() { throw new AssertionError(); }
-        @Override public void clearRedo() { throw new AssertionError(); }
-        @Override public boolean canRedo() { throw new AssertionError(); }
-        @Override public void redo() { throw new AssertionError(); }
+        @Override public seedu.address.model.ReadOnlyAddressBook getAddressBook() {
+            throw new AssertionError();
+        }
+        @Override public boolean canUndo() {
+            throw new AssertionError();
+        }
+        @Override public void saveSnapshot() {
+            throw new AssertionError();
+        }
+        @Override public void undo() {
+            throw new AssertionError();
+        }
+        @Override public void clearRedo() {
+            throw new AssertionError();
+        }
+        @Override public boolean canRedo() {
+            throw new AssertionError();
+        }
+        @Override public void redo() {
+            throw new AssertionError();
+        }
     }
 
     private static class ModelStubWithPerson extends ModelStub {

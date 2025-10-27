@@ -70,6 +70,12 @@ Refer to the [Features](#features) below for details of more commands.
 </box>
 
 * If you are using a PDF version of this document, be careful when copying and pasting commands that span multiple lines as space characters surrounding line-breaks may be omitted when copied over to the application.
+
+</box>
+
+<box type="tip" seamless>
+
+**Tip:**  For best results, always run `list` or `listarchived` before executing commands that use an **INDEX**.
 </box>
 
 ---
@@ -80,7 +86,7 @@ Shows a message explaining how to access the help page.
 
 ![help message](images/helpMessage.png)
 
-Format: `help`
+**Format:** `help`
 
 ---
 
@@ -92,10 +98,10 @@ Adds a new member to Treasura.
 **Format:**  
 `add n/NAME m/MATRICULATION_NUMBER p/PHONE_NUMBER e/EMAIL [t/TAG]…​`
 
-> **Notes:**
-> - Each **Matriculation Number must be unique**.
-> - Must follow **NUS format**: `A` + 7 digits + uppercase letter (e.g., `A0123456X`).
-> - Tags are optional and can be used for roles (e.g., `exco`, `performer`).
+**Notes:**
+* Each **Matriculation Number must be unique**. 
+* Must follow **NUS format**: `A` + 7 digits + uppercase letter (e.g., `A0123456X`). 
+* Tags are optional and can be used for roles (e.g., `exco`, `performer`).
 
 **Examples:**
 - `add n/John Doe m/A0123456X p/98765432 e/john@example.com`
@@ -104,10 +110,17 @@ Adds a new member to Treasura.
 ---
 
 ### Listing All Members: `list`
-Displays all active members.
+Displays all **active** members.
 
 **Format:**  
 `list`
+
+<box type="warning" seamless>
+
+**Caution:**
+Adding an argument will cause an error!<br>
+
+</box>
 
 ---
 
@@ -117,12 +130,6 @@ Finds members whose names or tags contain the given keywords.
 **Format:**  
 `find KEYWORD [MORE_KEYWORDS]`
 
-**Examples:**
-* `find John` — returns all members with the name “John”.
-* `find Alex David` — returns members named “Alex” or “David”.
-* `find Alex family` — returns members named “Alex” or tagged with “family”.
-  ![result for 'find alex david'](images/findAlexDavidResult.png)
-
 **Notes:**
 * The search is case-insensitive. e.g. `hans` will match `Hans`.
 * The order of the keywords does not matter. e.g. `Hans Bo` will match `Bo Hans`.
@@ -131,6 +138,11 @@ Finds members whose names or tags contain the given keywords.
 * Members matching at least one keyword will be returned (i.e. `OR` search).
 * Archived members are not included in the search results.
 
+**Examples:**
+* `find John` — returns all members with the name “John”.
+* `find Alex David` — returns members named “Alex” or “David”.
+* `find Alex family` — returns members named “Alex” or tagged with “family”.
+  ![result for 'find alex david'](images/findAlexDavidResult.png)
 
 ---
 
@@ -140,10 +152,11 @@ Edits details of an existing member.
 **Format:**  
 `edit INDEX [n/NAME] [m/MATRICULATION_NUMBER] [p/PHONE_NUMBER] [e/EMAIL] [t/TAG]…​`
 
-> - **INDEX** refers to the member’s number in the displayed list.
-> - At least one field must be provided.
-> - Editing tags replaces all existing tags. Use `t/` to remove all tags.
-> - Updated Matriculation Numbers must remain **unique** and **NUS-formatted**.
+**Notes:**
+* **INDEX** refers to the member’s number in the displayed list. 
+* At least one field must be provided. 
+* Editing tags replaces all existing tags. Use `t/` to remove all tags. 
+* Updated Matriculation Numbers must remain **unique** and **NUS-formatted**.
 
 **Examples:**
 - `edit 1 p/91234567 e/johndoe@example.com`
@@ -156,13 +169,21 @@ Edits details of an existing member.
 Archives a member, hiding them from the active list but keeping their records.
 
 **Format:**  
-`archive INDEX`
+`archive INDEX[,INDEX]`
 
-> Run `list` first to check the indices before archiving members.
+**Notes:**
+* Run `list` first to check the indices before archiving members.
+* Archives the person at the specified `INDEX`.
+* The index **must be a positive integer** 1, 2, 3, …​
 
 **Examples:**
 - `archive 1` — archives the 1st member.
-- `archive 3` — archives the 3rd member.
+- `archive 1,3,4` — archives the 1st, 3rd and 4th members.
+
+<box type="tip" seamless>
+
+**Tip:** Members who have been archived still keep their payment and member details. Their details can be viewed via using `listarchived` and `viewpayment INDEX` or `view INDEX`.
+</box>
 
 ---
 
@@ -175,24 +196,36 @@ Displays all archived members.
 **Example:**
 - `listarchived` — lists all archived members.
 
+<box type="warning" seamless>
+
+**Caution:**
+Adding an argument will cause an error!<br>
+
+</box>
+
 ---
 
 ### Unarchiving a Member: `unarchive`
 Restores an archived member to the active list.
 
 **Format:**  
-`unarchive INDEX`
+`unarchive INDEX[,INDEX]`
 
-> - Run `listarchived` first to view indices of archived members.
-> - Restored members retain all previous details and payments.
+**Notes:**
+* The index refers to the index number shown in the displayed person list, after using `listarchived`
+* Restored members retain all previous details and payments.
+* The index **must be a positive integer** 1, 2, 3, …​
 
 **Examples:**
-- `unarchive 1` — restores the 1st archived member.
-- `unarchive 2` — restores the 2nd archived member.
+* `listarchived` followed by `unarchive 2` unarchives the 2nd person in the archived list.
+* `listarchived` followed by `unarchive 1,2,4` unarchives the 1st, 2nd and 4th members in the archived list.
 
 ---
 
 ## 💰 Payment Management
+<box type="info" seamless>
+All payment commands function for archived members using indices from listarchived.<br>
+</box>
 
 ### Adding a Payment: `addpayment`
 
@@ -201,15 +234,18 @@ Adds a payment to one or more members specified by their indices.
 **Format:**  
 `addpayment INDEX[,INDEX]... a/AMOUNT d/DATE [r/REMARKS]`
 
+**Notes:**
 * The index refers to the member(s) shown in the current displayed list.
 * `a/AMOUNT` is the payment amount in dollars and cents (e.g., 25.00).
 * `d/DATE` follows the `YYYY-MM-DD` format.
 * `[r/REMARKS]` is optional for short notes such as “Membership Fee” or “CCA Shirt”.
+* `addpayment` can be performed for archived members using indices from `listarchived`
 
 **Examples:**
 * `addpayment 1 a/20.00 d/2025-03-12 r/Membership fee`
 * `addpayment 2,3 a/15.50 d/2025-04-01 r/Event T-shirt`
-
+  
+<img width="645" height="659" alt="image" src="https://github.com/user-attachments/assets/d2e01018-3c17-4c15-b124-74ab58dad8bf" />
 
 ---
 
@@ -217,17 +253,20 @@ Adds a payment to one or more members specified by their indices.
 
 Edits an existing payment record for the specified member.
 
-Format: `editpayment PERSON_INDEX p/PAYMENT_INDEX [a/AMOUNT] [d/DATE] [r/REMARKS]`
+**Format:**
+`editpayment PERSON_INDEX p/PAYMENT_INDEX [a/AMOUNT] [d/DATE] [r/REMARKS]`
 
+**Notes:**
 * `PERSON_INDEX` is the index of the member.
 * `p/PAYMENT_INDEX` refers to the payment number listed in that member’s payment history.
 * You can update one or more details: amount, date, or remarks.
 
-Examples:
+**Examples:**
 * `editpayment 1 p/2 a/30.00` — updates payment #2 for member #1 to $30.00.
 * `editpayment 3 p/1 r/Corrected to event fee` — changes the remark for payment #1 of member #3.
 
 ---
+
 ### Viewing Payments: `viewpayment`
 Displays payment details for a specific member, or for all members.
 
@@ -236,12 +275,13 @@ Displays payment details for a specific member, or for all members.
 or  
 `viewpayment all`
 
+**Notes:**
 * Use `viewpayment INDEX` to show all payments made by a single member.
-* Use `viewpayment all` to view payments for every member in Treasura.
+* Use `viewpayment all` to view payments for every member in the current displayed list.
 
 **Examples:**
 * `viewpayment 2` — shows all payments made by the 2nd member.
-* `viewpayment all` — lists all recorded payments in Treasura.
+* `viewpayment all` — lists all recorded payments in current displayed list.
 
 ---
 
@@ -249,12 +289,14 @@ or
 
 Deletes an existing payment record from one or more members.
 
-Format: `deletepayment PERSON_INDEX[,PERSON_INDEX]... p/PAYMENT_INDEX`
+**Format:**
+`deletepayment PERSON_INDEX[,PERSON_INDEX]... p/PAYMENT_INDEX`
 
+**Notes:**
 * `PERSON_INDEX` refers to the member(s).
 * `p/PAYMENT_INDEX` refers to the payment number to delete from each listed member.
 
-Examples:
+**Examples:**
 * `deletepayment 1 p/2` — deletes payment #2 for member #1.
 * `deletepayment 1,3 p/1` — deletes payment #1 for both members #1 and #3.
 
@@ -271,8 +313,9 @@ Finds payments made by a specific member using filters.
 **Format:**  
 `findpayment INDEX [a/AMOUNT] [r/REMARK] [d/DATE]`
 
-> - Search within a member’s payment history.
-> - Combine filters to narrow results.
+**Notes:**
+* Search within a member’s payment history.
+* Combine filters to narrow results.
 
 **Examples:**
 - `findpayment 1 a/50.00`
@@ -281,49 +324,6 @@ Finds payments made by a specific member using filters.
 
 
 ## ⚙️ General Commands
-=======
-Format: `archive INDEX[,INDEX...]`
-
-* Archives the person at the specified `INDEX`.
-* The index refers to the index number shown in the displayed person list.
-* The index **must be a positive integer** 1, 2, 3, …​
-
-Examples:
-* `list` followed by `archive 2` archives the 2nd person in the address book.
-* `find Betsy` followed by `archives 1` archives the 1st person in the results of the `find` command.
-
-<box type="tip" seamless>
-
-**Tip:** Members who have been archived still keep their payment and member details. Their details can be viewed via using `listarchived` and `viewpayment INDEX` or `view INDEX`.
-</box>
-
----
-
-### Listing archived people: `listarchived`
-
-List members who have been archived.
-
-Format: `listarchived`
-
-* Displays a list of archived members
-* Any argument will be disregarded in the command and will return an error.
-
----
-
-### Unarchiving members: `unarchive`
-
-Unarchives the person at the specified `INDEX`
-
-Format: `unarchive INDEX[,INDEX...]`
-
-* The index refers to the index number shown in the displayed person list, after using `listarchived`
-* The index **must be a positive integer** 1, 2, 3, …​
-
-Examples:
-* `listarchived` followed by `unarchive 2` unarchives the 2nd person in the archived list.
-* `listarchived` followed by `unarchive 1,2,4` unarchives the 1st, 2nd and 4th members in the archived list.
-
----
 
 ### Undoing an action: `undo`
 
@@ -331,11 +331,12 @@ Undoes the most recent mutating action performed in Treasura.
 
 **Format:** `undo`
 
+**Notes:**
 - Reverses the **last mutating command** (e.g., state-changing commands such as `add`, `edit`, `archive`, `unarchive`, `addpayment`, `editpayment`, `deletepayment`).
 - You can `undo` a `redo` (i.e., undoing reverts the re-applied change).
 - Non-mutating commands (e.g., `list`, `find`, `help`, `viewpayment`, `findpayment`) **do not** affect the undo history.
 
-**Examples**
+**Examples:**
 ```text
 add n/Ali p/91234567 e/ali@example.com m/A1234567X
 undo                      ← removes the person that was just added
@@ -344,7 +345,12 @@ undo                      ← restores the archived members to active
 addpayment 1 a/25.00 d/2025-10-21 r/membership
 undo                      ← removes the payment just added
 ```
-  <img width="645" height="659" alt="image" src="https://github.com/user-attachments/assets/d2e01018-3c17-4c15-b124-74ab58dad8bf" />
+<box type="warning" seamless>
+
+**Caution:**
+Adding an argument will cause an error!<br>
+
+</box>
 
 
 ---
@@ -355,12 +361,13 @@ Reapplies the most recently undone mutating action.
 
 **Format:** `redo`
 
+**Notes:**
 * Performs the last change that was previously undone using the `undo` command.
 * If a new mutating command (e.g., `add`, `edit`, `archive`, `unarchive`, `addpayment`, `deletepayment`) is executed after an `undo`, the redo history is cleared.  
   This prevents redoing outdated actions after the user starts a new timeline.
 * Non-mutating commands (e.g., `list`, `find`, `help`, `viewpayment`, `findpayment`) do **not** affect the redo history.
 
-**Examples**
+**Examples:**
 ```text
 archive 2
 undo                      ← restores member 2 to the active list
@@ -370,6 +377,12 @@ addpayment 1 a/50.00 d/2025-10-27
 undo
 redo                      ← re-applies the payment of $50.00 for person 1
 ```
+<box type="warning" seamless>
+
+**Caution:**
+Adding an argument will cause an error!<br>
+
+</box>
 
 ---
 
@@ -380,13 +393,12 @@ Closes Treasura.
 **Format:**  
 `exit`
 
----
+<box type="warning" seamless>
 
-**Tip:**  
-For best results, always run `list` or `listarchived` before executing commands that use an **INDEX**.
-* Exits the program.
-* Any argument will be disregarded in the command and will return an error.
+**Caution:**
+Adding an argument will cause an error!<br>
 
+</box>
 
 ---
 
@@ -413,10 +425,10 @@ Furthermore, certain edits can cause the AddressBook to behave in unexpected way
 **Q**: How do I transfer my data to another computer?<br>
 **A**: Install the app in the other computer and overwrite the empty data file it creates with the file that contains the data of your previous AddressBook home folder.
 
-**Q**: Can I delete a member?
+**Q**: Can I delete a member?<br>
 **A**: Deleting a member accidentally can wipe out his/her entire payment history, therefor the app only supports archiving a member. You can also use edit command to swap out the details of the unwanted member with that of a new member.
 
-**Q**: How do I streamline the process of tracking members and their payments?
+**Q**: How do I streamline the process of tracking members and their payments?<br>
 **A**: Adding a tag to members and payments is highly recommended, because it allows you to filter through the members and payments quickly, using find and findpayment commands.
 
 --------------------------------------------------------------------------------------------------------------------
@@ -430,23 +442,24 @@ Furthermore, certain edits can cause the AddressBook to behave in unexpected way
 
 ## Command summary
 
-| Action              | Format                                                                       | Example(s)                                                                         |
-|---------------------|------------------------------------------------------------------------------|------------------------------------------------------------------------------------|
-| **Add**             | `add n/NAME p/PHONE e/EMAIL m/MATRIC [t/TAG]...`                             | `add n/James Ho p/22224444 e/jamesho@example.com m/A0273010Y t/friend t/treasurer` |
-| **Edit**            | `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [m/MATRIC] [t/TAG]...`              | `edit 2 n/James Lee e/jameslee@example.com`                                        |
-| **Undo**            | `undo`                                                                       | `undo`                                                                             |
-| **Redo**            | `redo`                                                                       | `redo`                                                                             |
-| **Find**            | `find KEYWORD [MORE_KEYWORDS]...`                                            | `find James treasurer`                                                             |
-| **List**            | `list`                                                                       | `list`                                                                             |
-| **List Archived**   | `listarchived`                                                               | `listarchived`                                                                     |
-| **Archive**         | `archive INDEX[,INDEX]...`                                                   | `archive 1,2,5`                                                                    |
-| **Unarchive**       | `unarchive INDEX[,INDEX]...`                                                 | `unarchive 2,5`                                                                    |
-| **View Member**     | `view INDEX`                                                                 | `view 4`                                                                           |
-| **Add Payment**     | `addpayment INDEX[,INDEX]... a/AMOUNT d/DATE [r/REMARKS]`                    | `addpayment 1,3 a/25.00 d/2025-10-24 r/Monthly dues`                               |
-| **Edit Payment**    | `editpayment PERSON_INDEX p/PAYMENT_INDEX [a/AMOUNT] [d/DATE] [r/REMARKS]`   | `editpayment 2 p/1 a/30.00 r/Corrected`                                            |
-| **Delete Payment**  | `deletepayment PERSON_INDEX[,PERSON_INDEX]... p/PAYMENT_INDEX`               | `deletepayment 1,3 p/2`                                                            |
-| **View Payment(s)** | `viewpayment INDEX` or `viewpayment all`                                     | `viewpayment 2`, `viewpayment all`                                                 |
-| **Help**            | `help`                                                                       | `help`                                                                             |
+| Action              | Format                                                                     | Example(s)                                                                         |
+|---------------------|----------------------------------------------------------------------------|------------------------------------------------------------------------------------|
+| **Add**             | `add n/NAME p/PHONE e/EMAIL m/MATRIC [t/TAG]...`                           | `add n/James Ho p/22224444 e/jamesho@example.com m/A0273010Y t/friend t/treasurer` |
+| **Edit**            | `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [m/MATRIC] [t/TAG]...`            | `edit 2 n/James Lee e/jameslee@example.com`                                        |
+| **Undo**            | `undo`                                                                     | `undo`                                                                             |
+| **Redo**            | `redo`                                                                     | `redo`                                                                             |
+| **Find**            | `find KEYWORD [MORE_KEYWORDS]...`                                          | `find James treasurer`                                                             |
+| **List**            | `list`                                                                     | `list`                                                                             |
+| **List Archived**   | `listarchived`                                                             | `listarchived`                                                                     |
+| **Archive**         | `archive INDEX[,INDEX]...`                                                 | `archive 1,2,5`                                                                    |
+| **Unarchive**       | `unarchive INDEX[,INDEX]...`                                               | `unarchive 2,5`                                                                    |
+| **View Member**     | `view INDEX`                                                               | `view 4`                                                                           |
+| **Add Payment**     | `addpayment INDEX[,INDEX]... a/AMOUNT d/DATE [r/REMARKS]`                  | `addpayment 1,3 a/25.00 d/2025-10-24 r/Monthly dues`                               |
+| **Edit Payment**    | `editpayment PERSON_INDEX p/PAYMENT_INDEX [a/AMOUNT] [d/DATE] [r/REMARKS]` | `editpayment 2 p/1 a/30.00 r/Corrected`                                            |
+| **Delete Payment**  | `deletepayment PERSON_INDEX[,PERSON_INDEX]... p/PAYMENT_INDEX`             | `deletepayment 1,3 p/2`                                                            |
+| **View Payment(s)** | `viewpayment INDEX` or `viewpayment all`                                   | `viewpayment 2`, `viewpayment all`                                                 |
+| **Find Payment**    | `findpayment INDEX [a/AMOUNT] [r/REMARK] [d/DATE]`                         | `findpayment 1 a/50.00`, `findpayment 2 r/Workshop`, `findpayment 3 d/2025-03-15`  |
+| **Help**            | `help`                                                                     | `help`                                                                             |
 
 ---
 

@@ -6,7 +6,8 @@
 
 # Treasura User Guide
 
-Treasura is a **desktop app for managing contacts, optimized for use via a  Line Interface** (CLI) while still having the benefits of a Graphical User Interface (GUI). If you can type fast, Treasura can get your contact management tasks done faster than traditional GUI apps.
+Treasura is a **desktop app for managing CCA members and payments, optimized for use via a  Line Interface** (CLI) while still having the benefits of a Graphical User Interface (GUI). If you can type fast, Treasura can get your CCA management tasks done faster than traditional GUI apps. 
+Treasura is primarily targeted towards CCA leaders and treasurers.
 
 <!-- * Table of Contents -->
 <page-nav-print />
@@ -15,10 +16,10 @@ Treasura is a **desktop app for managing contacts, optimized for use via a  Line
 
 ## Quick start
 
-1. Ensure you have Java `17` or above installed in your Computer.<br>
+1. Ensure you have Java `17` or above installed in your computer.<br>
    **Mac users:** Ensure you have the precise JDK version prescribed [here](https://se-education.org/guides/tutorials/javaInstallationMac.html).
 
-1. Download the latest `.jar` file from [here](https://github.com/se-edu/addressbook-level3/releases).
+1. Download the latest `.jar` file from [here](https://github.com/AY2526S1-CS2103T-W11-2/tp/releases).
 
 1. Copy the file to the folder you want to use as the _home folder_ for your Treasura.
 
@@ -31,7 +32,7 @@ Treasura is a **desktop app for managing contacts, optimized for use via a  Line
 
    * `list` : Lists all contacts.
 
-   * `add n/John Doe p/98765432 e/johnd@example.com m/A01234567X t/friends t/owesMoney` : Adds a contact named `John Doe` to the Address Book.
+   * `add n/John Doe p/98765432 e/johnd@example.com m/A0123456X t/friends t/owesMoney` : Adds a contact named `John Doe` to the Address Book.
 
    * `archive 3` : Archives the 3rd member shown in the current list.
 
@@ -59,9 +60,14 @@ Treasura is a **desktop app for managing contacts, optimized for use via a  Line
 * Parameters can be in any order.<br>
   e.g. if the command specifies `n/NAME p/PHONE_NUMBER`, `p/PHONE_NUMBER n/NAME` is also acceptable.
 
-* Extraneous parameters for commands that do not take in parameters (such as `help`, `list`, `exit`) will be ignored.<br>
-  e.g. if the command specifies `help 123`, it will be interpreted as `help`.
-* `Archive` is used to remove members from the active list view
+* Extraneous parameters for commands that do not take in parameters (such as `undo`, `list`, `exit`) will return an error if a parameter is given.<br>
+  e.g. if the command specifies `undo 123`, it will cause an error.
+
+<box type="warning" seamless>
+
+**Caution:**
+`help` is the one exception to this rule, to provide leeway for unfamiliar users.<br>
+</box>
 
 * If you are using a PDF version of this document, be careful when copying and pasting commands that span multiple lines as space characters surrounding line-breaks may be omitted when copied over to the application.
 </box>
@@ -84,26 +90,41 @@ Adds a person to the address book.
 
 Format: `add n/NAME p/PHONE_NUMBER e/EMAIL m/MATRICNUM [t/TAG]…​`
 
+* A member's `MATRICNUM` is unique and duplicate entries will not be allowed.
+
 <box type="tip" seamless>
 
 **Tip:** A person can have any number of tags (including 0)
 </box>
 
 Examples:
-* `add n/John Doe p/98765432 e/johnd@example.com m/A01234567X t/friends t/owesMoney`
+* `add n/John Doe p/98765432 e/johnd@example.com m/A0123456X t/friends t/owesMoney`
 * `add n/Jane Doe p/98765432 e/janed@example.com m/A0987632Y t/member t/overdue`
+
+---
 
 ### Listing all persons : `list`
 
-Shows a list of all persons in the address book.
+* Shows a list of all persons in the address book.
+* Any argument will be disregarded in the command and will return an error.
 
 Format: `list`
+
+---
+### View member(s): `view`
+
+View details of a member in Treasura.
+
+Format: `view INDEX`
+
+* Displays a summary of details of the member at the specified `INDEX`. This includes: Name, Phone Number, Email address, Matriculation Number, Tags, Archive status.
+* For payments, use `viewpayment`
 
 ---
 
 ### Editing a person : `edit`
 
-Edits an existing person in the address book.
+Edits an existing person in Treasura.
 
 Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [m/MATRIC] [t/TAG]…​`
 
@@ -120,6 +141,51 @@ Examples:
 
 ---
 
+### Undoing an action: `undo`
+
+Undoes the most recent mutating action performed in Treasura.
+
+**Format:** `undo`
+
+- Reverses the **last mutating command** (e.g., state-changing commands such as `add`, `edit`, `archive`, `unarchive`, `addpayment`, `editpayment`, `deletepayment`).
+- You can `undo` a `redo` (i.e., undoing reverts the re-applied change).
+- Non-mutating commands (e.g., `list`, `find`, `help`, `viewpayment`, `findpayment`) **do not** affect the undo history.
+
+**Examples**
+```text
+add n/Ali p/91234567 e/ali@example.com m/A1234567X
+undo                      ← removes the person that was just added
+archive 1,2,3
+undo                      ← restores the archived members to active
+addpayment 1 a/25.00 d/2025-10-21 r/membership
+undo                      ← removes the payment just added
+```
+---
+
+### Redoing an action: `redo`
+
+Reapplies the most recently undone mutating action.
+
+**Format:** `redo`
+
+* Performs the last change that was previously undone using the `undo` command.
+* If a new mutating command (e.g., `add`, `edit`, `archive`, `unarchive`, `addpayment`, `deletepayment`) is executed after an `undo`, the redo history is cleared.  
+  This prevents redoing outdated actions after the user starts a new timeline.
+* Non-mutating commands (e.g., `list`, `find`, `help`, `viewpayment`, `findpayment`) do **not** affect the redo history.
+
+**Examples**
+```text
+archive 2
+undo                      ← restores member 2 to the active list
+redo                      ← re-archives member 2 again
+
+addpayment 1 a/50.00 d/2025-10-27
+undo
+redo                      ← re-applies the payment of $50.00 for person 1
+```
+
+---
+
 ### Locating persons by name or tag: `find`
 
 Finds persons whose names contain any of the given keywords.
@@ -130,10 +196,16 @@ Format: `find KEYWORD [MORE_KEYWORDS]`
 * The order of the keywords does not matter. e.g. `Hans Bo` will match `Bo Hans`
 * Only the name or tag is searched.
 * Only full words will be matched for names e.g. `Han` will not match `Hans`
-* When finding for via tag, any prefix matched will be shown e.g. `owe` will match `owesMoney`
+* When finding via tag, any case-insensitive, exact tag matched will be shown e.g. `OWESmoney` will match `owesMoney`, but `owe` will not match `owesMoney`
 * Persons matching at least one keyword will be returned (i.e. `OR` search).
   e.g. `Hans Bo` will return `Hans Gruber`, `Bo Yang`
   e.g. `Jane friend` will return all members either with the name `Jane` or with the tag `friend`
+
+<box type="warning" seamless>
+
+**Caution:**
+`find` does not return any archived members, even if matching criteria was met.<br>
+</box>
 
 Examples:
 * `find John` returns `john` and `John Doe`
@@ -157,6 +229,11 @@ Examples:
 * `list` followed by `archive 2` archives the 2nd person in the address book.
 * `find Betsy` followed by `archives 1` archives the 1st person in the results of the `find` command.
 
+<box type="tip" seamless>
+
+**Tip:** Members who have been archived still keep their payment and member details. Their details can be viewed via using `listarchived` and `viewpayment INDEX` or `view INDEX`.
+</box>
+
 ---
 
 ### Listing archived people: `listarchived`
@@ -166,7 +243,7 @@ List members who have been archived.
 Format: `listarchived`
 
 * Displays a list of archived members
-* Any argument will be disregarded in the command
+* Any argument will be disregarded in the command and will return an error.
 
 ---
 
@@ -181,7 +258,7 @@ Format: `unarchive INDEX[,INDEX...]`
 
 Examples:
 * `listarchived` followed by `unarchive 2` unarchives the 2nd person in the archived list.
-* `find Alice` followed by `unarchive 1` unarchives the 1st person in the results of the `find` command.
+* `listarchived` followed by `unarchive 1,2,4` unarchives the 1st, 2nd and 4th members in the archived list.
 
 ---
 
@@ -248,13 +325,21 @@ Examples:
 * `deletepayment 1 p/2` — deletes payment #2 for member #1.
 * `deletepayment 1,3 p/1` — deletes payment #1 for both members #1 and #3.
 
+<box type="tip" seamless>
+
+**Tip:** `deletepayment` can be reversed if `undo` is performed.
+</box>
+
 ---
 
 ### Exiting the program : `exit`
 
-Exits the program.
+* Exits the program.
+* Any argument will be disregarded in the command and will return an error.
 
 Format: `exit`
+
+---
 
 ### Saving the data
 
@@ -276,7 +361,7 @@ Furthermore, certain edits can cause the AddressBook to behave in unexpected way
 
 ## FAQ
 
-**Q**: How do I transfer my data to another Computer?<br>
+**Q**: How do I transfer my data to another computer?<br>
 **A**: Install the app in the other computer and overwrite the empty data file it creates with the file that contains the data of your previous AddressBook home folder.
 
 --------------------------------------------------------------------------------------------------------------------
@@ -290,22 +375,30 @@ Furthermore, certain edits can cause the AddressBook to behave in unexpected way
 
 ## Command summary
 
-| Action              | Format                                                                     | Example(s)                                                                         |
-| ------------------- | -------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| **Add**             | `add n/NAME p/PHONE e/EMAIL m/MATRIC [t/TAG]...`                           | `add n/James Ho p/22224444 e/jamesho@example.com m/A0273010Y t/friend t/treasurer` |
-| **Edit**            | `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [m/MATRIC] [t/TAG]...`            | `edit 2 n/James Lee e/jameslee@example.com`                                        |
-| **Delete**          | `delete INDEX`                                                             | `delete 3`                                                                         |
-| **Find**            | `find KEYWORD [MORE_KEYWORDS]...`                                          | `find James treasurer`                                                             |
-| **List**            | `list`                                                                     | `list`                                                                             |
-| **List Archived**   | `listarchived`                                                             | `listarchived`                                                                     |
-| **Archive**         | `archive INDEX[,INDEX]...`                                                 | `archive 1,2,5`                                                                    |
-| **Unarchive**       | `unarchive INDEX[,INDEX]...`                                               | `unarchive 2,5`                                                                    |
-| **View Member**     | `view INDEX`                                                               | `view 4`                                                                           |
-| **Add Payment**     | `addpayment INDEX[,INDEX]... a/AMOUNT d/DATE [r/REMARKS]`                  | `addpayment 1,3 a/25.00 d/2025-10-24 r/Monthly dues`                               |
-| **Edit Payment**    | `editpayment PERSON_INDEX p/PAYMENT_INDEX [a/AMOUNT] [d/DATE] [r/REMARKS]` | `editpayment 2 p/1 a/30.00 r/Corrected`                                            |
-| **Delete Payment**  | `deletepayment PERSON_INDEX[,PERSON_INDEX]... p/PAYMENT_INDEX`             | `deletepayment 1,3 p/2`                                                            |
-| **View Payment(s)** | `viewpayment INDEX` or `viewpayment all`                                   | `viewpayment 2`, `viewpayment all`                                                 |
-| **Help**            | `help`                                                                     | `help`                                                                             |
+| Action              | Format                                                                       | Example(s)                                                                         |
+|---------------------|------------------------------------------------------------------------------|------------------------------------------------------------------------------------|
+| **Add**             | `add n/NAME p/PHONE e/EMAIL m/MATRIC [t/TAG]...`                             | `add n/James Ho p/22224444 e/jamesho@example.com m/A0273010Y t/friend t/treasurer` |
+| **Edit**            | `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [m/MATRIC] [t/TAG]...`              | `edit 2 n/James Lee e/jameslee@example.com`                                        |
+| **Undo**            | `undo`                                                                       | `undo`                                                                             |
+| **Redo**            | `redo`                                                                       | `redo`                                                                             |
+| **Find**            | `find KEYWORD [MORE_KEYWORDS]...`                                            | `find James treasurer`                                                             |
+| **List**            | `list`                                                                       | `list`                                                                             |
+| **List Archived**   | `listarchived`                                                               | `listarchived`                                                                     |
+| **Archive**         | `archive INDEX[,INDEX]...`                                                   | `archive 1,2,5`                                                                    |
+| **Unarchive**       | `unarchive INDEX[,INDEX]...`                                                 | `unarchive 2,5`                                                                    |
+| **View Member**     | `view INDEX`                                                                 | `view 4`                                                                           |
+| **Add Payment**     | `addpayment INDEX[,INDEX]... a/AMOUNT d/DATE [r/REMARKS]`                    | `addpayment 1,3 a/25.00 d/2025-10-24 r/Monthly dues`                               |
+| **Edit Payment**    | `editpayment PERSON_INDEX p/PAYMENT_INDEX [a/AMOUNT] [d/DATE] [r/REMARKS]`   | `editpayment 2 p/1 a/30.00 r/Corrected`                                            |
+| **Delete Payment**  | `deletepayment PERSON_INDEX[,PERSON_INDEX]... p/PAYMENT_INDEX`               | `deletepayment 1,3 p/2`                                                            |
+| **View Payment(s)** | `viewpayment INDEX` or `viewpayment all`                                     | `viewpayment 2`, `viewpayment all`                                                 |
+| **Help**            | `help`                                                                       | `help`                                                                             |
 
+---
+
+### Glossary
+
+* Member = A NUS student part of a CCA
+* Matriculation number = A unique ID given to all NUS students. Starts with A, followed by 7 digits and ending with any upper case letter.
+* JSON = A file format used to store Treasura data.
 
 

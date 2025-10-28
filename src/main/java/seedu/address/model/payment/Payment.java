@@ -4,13 +4,26 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Immutable record of a single payment.
  * Contains the Amount, the payment date, optional remarks, and the recordedAt timestamp.
  */
 public final class Payment {
+
+    /**
+     * A single source of truth for how payments are shown in the UI.
+     * Current policy: most recent date first, then most recent recordedAt as tie-breaker.
+     * This guarantees a stable, deterministic order even when dates are equal.
+     */
+    public static final Comparator<Payment> DISPLAY_ORDER = Comparator
+            .comparing(Payment::getDate).reversed()
+            .thenComparing(Payment::getRecordedAt, Comparator.reverseOrder());
+
     private final Amount amount;
     private final LocalDate date;
     private final String remarks;
@@ -56,9 +69,6 @@ public final class Payment {
         return recordedAt;
     }
 
-    /**
-     * String view such as "2025-03-12 | 23.50 | taxi home".
-     */
     @Override
     public String toString() {
         String r = (remarks == null || remarks.isEmpty()) ? "" : (" | " + remarks);
@@ -74,12 +84,10 @@ public final class Payment {
             return false;
         }
         Payment p = (Payment) o;
-        boolean sameRemarks = (this.remarks == null && p.remarks == null)
-            || (this.remarks != null && this.remarks.equals(p.remarks));
-        return this.amount.equals(p.amount)
-            && this.date.equals(p.date)
-            && sameRemarks
-            && this.recordedAt.equals(p.recordedAt);
+        return Objects.equals(this.amount, p.amount)
+                && Objects.equals(this.date, p.date)
+                && Objects.equals(this.remarks, p.remarks)
+                && Objects.equals(this.recordedAt, p.recordedAt);
     }
 
     @Override
@@ -90,6 +98,13 @@ public final class Payment {
         h = 31 * h + (remarks == null ? 0 : remarks.hashCode());
         h = 31 * h + recordedAt.hashCode();
         return h;
+    }
+
+    /**
+     * Convenience: return a new list sorted in display order.
+     */
+    public static List<Payment> inDisplayOrder(List<Payment> src) {
+        return src.stream().sorted(DISPLAY_ORDER).collect(Collectors.toList());
     }
 
     // ---------- helpers ----------
@@ -104,6 +119,8 @@ public final class Payment {
 
     /**
      * Flexible parser that accepts both yyyy-MM-dd and yyyy-M-d formats.
+     *
+     * @throws IllegalArgumentException if the parsed date is in the future
      */
     public static LocalDate parseFlexibleDate(String dateStr) {
         Objects.requireNonNull(dateStr, "dateStr");
@@ -111,20 +128,15 @@ public final class Payment {
         LocalDate parsedDate;
 
         try {
-            // Try strict yyyy-MM-dd first
             parsedDate = LocalDate.parse(trimmed, DateTimeFormatter.ISO_LOCAL_DATE);
         } catch (DateTimeParseException e) {
-            // Fallback to lenient yyyy-M-d
             DateTimeFormatter fallback = DateTimeFormatter.ofPattern("yyyy-M-d");
             parsedDate = LocalDate.parse(trimmed, fallback);
         }
 
-        // Reject future dates
         if (parsedDate.isAfter(LocalDate.now())) {
             throw new IllegalArgumentException("Date cannot be in the future.");
         }
-
         return parsedDate;
     }
-
 }

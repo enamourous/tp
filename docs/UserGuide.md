@@ -1,7 +1,7 @@
 ---
   layout: default.md
-  title: "User Guide"
-  pageNav: 3
+    title: "User Guide"
+    pageNav: 3
 ---
 
 # Treasura User Guide
@@ -291,8 +291,8 @@ Adds a new member to Treasura.
 `add n/NAME m/MATRICULATION_NUMBER p/PHONE_NUMBER e/EMAIL [t/TAG]…​`
 
 **Notes:**
-* Each **Matriculation Number must be unique**. 
-* Must follow **NUS format**: `A` + 7 digits + uppercase letter (e.g., `A0123456X`). 
+* Each **Matriculation Number must be unique**.
+* Must follow **NUS format**: `A` + 7 digits + uppercase letter (e.g., `A0123456X`).
 * Tags are optional and can be used for roles (e.g., `exco`, `performer`).
 
 **Examples:**
@@ -345,9 +345,9 @@ Edits details of an existing member.
 `edit INDEX [n/NAME] [m/MATRICULATION_NUMBER] [p/PHONE_NUMBER] [e/EMAIL] [t/TAG]…​`
 
 **Notes:**
-* **INDEX** refers to the member’s number in the displayed list. 
-* At least one field must be provided. 
-* Editing tags replaces all existing tags. Use `t/` to remove all tags. 
+* **INDEX** refers to the member’s number in the displayed list.
+* At least one field must be provided.
+* Editing tags replaces all existing tags. Use `t/` to remove all tags.
 * Updated Matriculation Numbers must remain **unique** and **NUS-formatted**.
 
 **Examples:**
@@ -436,7 +436,7 @@ Adds a payment to one or more members specified by their indices.
 **Examples:**
 * `addpayment 1 a/20.00 d/2025-03-12 r/Membership fee`
 * `addpayment 2,3 a/15.50 d/2025-04-01 r/Event T-shirt`
-  
+
 <img width="645" height="659" alt="image" src="https://github.com/user-attachments/assets/d2e01018-3c17-4c15-b124-74ab58dad8bf" />
 
 ---

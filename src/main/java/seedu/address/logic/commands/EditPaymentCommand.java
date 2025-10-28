@@ -20,6 +20,8 @@ import seedu.address.model.person.Person;
 
 /**
  * Edits an existing payment of a person in the address book.
+ * The payment index refers to the index as displayed by 'viewpayment'
+ * (i.e., using the Payment display order).
  */
 public class EditPaymentCommand extends Command {
 
@@ -41,7 +43,6 @@ public class EditPaymentCommand extends Command {
     private final int paymentOneBased; // 1-based
     private final EditPaymentDescriptor descriptor;
 
-
     /**
      * Creates an EditPaymentCommand to edit the specified payment.
      */
@@ -59,34 +60,49 @@ public class EditPaymentCommand extends Command {
         logger.fine(() -> String.format("EditPayment.execute person=%d payment=%d",
                 personIndex.getOneBased(), paymentOneBased));
 
+        if (!descriptor.isAnyFieldEdited()) {
+            throw new CommandException(MESSAGE_NO_FIELDS);
+        }
+
         List<Person> lastShownList = model.getFilteredPersonList();
         if (personIndex.getZeroBased() >= lastShownList.size()) {
             throw new CommandException(MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
         }
 
         Person target = lastShownList.get(personIndex.getZeroBased());
-        int zeroBased = paymentOneBased - 1;
-        if (zeroBased < 0 || zeroBased >= target.getPayments().size()) {
+
+        // Resolve by the SAME order used in 'viewpayment'
+        List<Payment> displayList = Payment.inDisplayOrder(target.getPayments());
+        int displayZero = paymentOneBased - 1;
+        if (displayZero < 0 || displayZero >= displayList.size()) {
             throw new CommandException(MESSAGE_INVALID_PAYMENT_INDEX);
         }
 
-        Payment original = target.getPayments().get(zeroBased);
+        Payment original = displayList.get(displayZero);
         Payment edited = createEditedPayment(original, descriptor);
 
-        Person updated = target.withEditedPayment(zeroBased, edited);
+        // Find the original in the raw list and replace at that index
+        int rawIndex = target.getPayments().indexOf(original);
+        if (rawIndex < 0) {
+            // Defensive guard in case of concurrent changes
+            throw new CommandException("Selected payment could not be located. Please try again.");
+        }
+
+        Person updated = target.withEditedPayment(rawIndex, edited);
         model.setPerson(target, updated);
+
         return new CommandResult(String.format(MESSAGE_SUCCESS, paymentOneBased, updated.getName()));
     }
 
     /**
-     * Creates a new Payment using updated fields.
+     * Creates a new Payment using updated fields while preserving recordedAt.
      */
     private static Payment createEditedPayment(Payment original, EditPaymentDescriptor d) {
         Amount amount = d.getAmount().orElse(original.getAmount());
         LocalDate date = d.getDate().orElse(original.getDate());
         String remarks = d.getRemarks().orElse(original.getRemarks()); // may be null per model
 
-        // preserve original recordedAt for auditability
+        // Preserve original recordedAt for auditability
         return new Payment(amount, date, remarks, original.getRecordedAt());
     }
 

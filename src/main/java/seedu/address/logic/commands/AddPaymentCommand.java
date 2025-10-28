@@ -77,7 +77,7 @@ public class AddPaymentCommand extends Command {
 
         String joinedNames = String.join(", ", updatedNames);
         String message = String.format(MESSAGE_SUCCESS_TEMPLATE, payment, joinedNames);
-        logger.info("Successfully added payment: " + payment + " to " + joinedNames);
+        logger.info("Successfully added payment: $" + payment + " to " + joinedNames);
 
         return new CommandResult(message);
     }

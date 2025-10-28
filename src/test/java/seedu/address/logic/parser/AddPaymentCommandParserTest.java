@@ -117,11 +117,11 @@ public class AddPaymentCommandParserTest {
         AddPaymentCommand expected = new AddPaymentCommand(
                 List.of(INDEX_FIRST_PERSON),
                 Amount.parse("45.00"),
-                LocalDate.of(2025, 11, 10),
+                LocalDate.of(2025, 10, 10),
                 "taxi home");
 
-        assertParseSuccess(parser, "1 a/45.00 d/2025-11-10 r/taxi home", expected);
-        assertParseSuccess(parser, "1 a/45.00 d/2025-11-10 r/ taxi home ", expected);
+        assertParseSuccess(parser, "1 a/45.00 d/2025-10-10 r/taxi home", expected);
+        assertParseSuccess(parser, "1 a/45.00 d/2025-10-10 r/ taxi home ", expected);
     }
 
     // 8. Multiple indexes
@@ -130,11 +130,11 @@ public class AddPaymentCommandParserTest {
         AddPaymentCommand expected = new AddPaymentCommand(
                 Arrays.asList(INDEX_FIRST_PERSON, INDEX_SECOND_PERSON),
                 Amount.parse("12.34"),
-                LocalDate.of(2025, 12, 1),
+                LocalDate.of(2025, 10, 1),
                 null);
 
-        assertParseSuccess(parser, "1,2 a/12.34 d/2025-12-01", expected);
-        assertParseSuccess(parser, " 1 , 2  a/12.34 d/2025-12-01", expected);
+        assertParseSuccess(parser, "1,2 a/12.34 d/2025-10-01", expected);
+        assertParseSuccess(parser, " 1 , 2  a/12.34 d/2025-10-01", expected);
     }
 
     // 9. Multiple indexes with remarks and trailing comma

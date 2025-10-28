@@ -2,6 +2,8 @@ package seedu.address.model.payment;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Objects;
 
 /**
@@ -60,7 +62,7 @@ public final class Payment {
     @Override
     public String toString() {
         String r = (remarks == null || remarks.isEmpty()) ? "" : (" | " + remarks);
-        return date + " | " + amount.toString() + r;
+        return date + " | $" + amount.toString() + r;
     }
 
     @Override
@@ -99,4 +101,30 @@ public final class Payment {
         String t = s.trim();
         return t.isEmpty() ? null : t;
     }
+
+    /**
+     * Flexible parser that accepts both yyyy-MM-dd and yyyy-M-d formats.
+     */
+    public static LocalDate parseFlexibleDate(String dateStr) {
+        Objects.requireNonNull(dateStr, "dateStr");
+        String trimmed = dateStr.trim();
+        LocalDate parsedDate;
+
+        try {
+            // Try strict yyyy-MM-dd first
+            parsedDate = LocalDate.parse(trimmed, DateTimeFormatter.ISO_LOCAL_DATE);
+        } catch (DateTimeParseException e) {
+            // Fallback to lenient yyyy-M-d
+            DateTimeFormatter fallback = DateTimeFormatter.ofPattern("yyyy-M-d");
+            parsedDate = LocalDate.parse(trimmed, fallback);
+        }
+
+        // Reject future dates
+        if (parsedDate.isAfter(LocalDate.now())) {
+            throw new IllegalArgumentException("Date cannot be in the future.");
+        }
+
+        return parsedDate;
+    }
+
 }

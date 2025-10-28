@@ -1,6 +1,9 @@
 package seedu.address.logic.parser;
 
 import static seedu.address.commons.core.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_PAYMENT_AMOUNT;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_PAYMENT_DATE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_PAYMENT_REMARKS;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
@@ -21,18 +24,16 @@ public class AddPaymentCommandParser implements Parser<AddPaymentCommand> {
     public static final String MESSAGE_INVALID_AMOUNT =
             "Amount must be positive and have at most 2 decimal places!";
     public static final String MESSAGE_INVALID_DATE =
-            "Invalid date format. Please use YYYY-MM-DD.";
+        "Invalid date. Please use YYYY-MM-DD or YYYY-M-D, and ensure the date is not in the future.";
 
-    private static final Prefix PREFIX_AMOUNT = new Prefix("a/");
-    private static final Prefix PREFIX_DATE = new Prefix("d/");
-    private static final Prefix PREFIX_REMARKS = new Prefix("r/");
 
     @Override
     public AddPaymentCommand parse(String args) throws ParseException {
-        ArgumentMultimap map = ArgumentTokenizer.tokenize(args, PREFIX_AMOUNT, PREFIX_DATE, PREFIX_REMARKS);
+        ArgumentMultimap map = ArgumentTokenizer.tokenize(args,
+            PREFIX_PAYMENT_AMOUNT, PREFIX_PAYMENT_DATE, PREFIX_PAYMENT_REMARKS);
 
         // require: index preamble + a/ + d/
-        if (map.getPreamble().isBlank() || !arePrefixesPresent(map, PREFIX_AMOUNT, PREFIX_DATE)) {
+        if (map.getPreamble().isBlank() || !arePrefixesPresent(map, PREFIX_PAYMENT_AMOUNT, PREFIX_PAYMENT_DATE)) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT,
                     AddPaymentCommand.MESSAGE_USAGE));
         }
@@ -49,17 +50,29 @@ public class AddPaymentCommandParser implements Parser<AddPaymentCommand> {
                 }
             }
 
+            // 🚫 Reject duplicate indexes
+            long uniqueCount = indexes.stream()
+                .map(Index::getZeroBased) // compare by integer value
+                .distinct()
+                .count();
+
+            if (indexes.size() != uniqueCount) {
+                throw new ParseException("Duplicate indexes detected. Each index must be unique.");
+            }
+
+
             // technically this branch should not happen since the first branch has already handled that,
             // left it here for safety
             if (indexes.isEmpty()) {
                 throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                        AddPaymentCommand.MESSAGE_USAGE));
+                    AddPaymentCommand.MESSAGE_USAGE));
             }
 
+
             // Parse values
-            String amountStr = map.getValue(PREFIX_AMOUNT).get();
-            String dateStr = map.getValue(PREFIX_DATE).get();
-            String remarks = map.getValue(PREFIX_REMARKS).orElse(null);
+            String amountStr = map.getValue(PREFIX_PAYMENT_AMOUNT).get();
+            String dateStr = map.getValue(PREFIX_PAYMENT_DATE).get();
+            String remarks = map.getValue(PREFIX_PAYMENT_REMARKS).orElse(null);
 
             Amount amount;
             LocalDate date;
@@ -71,10 +84,10 @@ public class AddPaymentCommandParser implements Parser<AddPaymentCommand> {
                 throw new ParseException(MESSAGE_INVALID_AMOUNT, ex);
             }
 
-            // handle bad date
+            // handle bad date (flexible parsing)
             try {
-                date = LocalDate.parse(dateStr);
-            } catch (DateTimeParseException ex) {
+                date = seedu.address.model.payment.Payment.parseFlexibleDate(dateStr);
+            } catch (DateTimeParseException | IllegalArgumentException ex) {
                 throw new ParseException(MESSAGE_INVALID_DATE, ex);
             }
 

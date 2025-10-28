@@ -41,6 +41,14 @@ Treasura is primarily targeted towards CCA leaders and treasurers.
 Refer to the [Features](#features) below for details of more commands.
 
 --------------------------------------------------------------------------------------------------------------------
+<div markdown="block" class="alert alert-info">
+
+**ℹ️ Note about indexes**
+
+All `INDEX` values used in commands (e.g. `edit`, `archive`, `addpayment`) refer to the numbering shown in the **currently displayed list** in the GUI.  
+If you run a command such as `listarchived` or `find`, the indexes will change according to that list.
+
+</div>
 
 ## Features
 
@@ -82,7 +90,7 @@ Refer to the [Features](#features) below for details of more commands.
 
 ### Viewing help : `help`
 
-Shows a message explaining how to access the help page.
+Shows a message containing all functions.
 
 ![help message](images/helpMessage.png)
 
@@ -442,6 +450,12 @@ Furthermore, certain edits can cause the AddressBook to behave in unexpected way
 1. **When using multiple screens**, if you move the application to a secondary screen, and later switch to using only the primary screen, the GUI will open off-screen. The remedy is to delete the `preferences.json` file created by the application before running the application again.
 2. **If you minimize the Help Window** and then run the `help` command (or use the `Help` menu, or the keyboard shortcut `F1`) again, the original Help Window will remain minimized, and no new Help Window will appear. The remedy is to manually restore the minimized Help Window.
 
+## Limitations
+
+1. Undo history is cleared upon application restart.
+2. Payment remarks longer than 100 characters may be truncated in UI.
+3. Only one Treasura instance can access a data file at a time - opening multiple windows at once might not save data properly.
+
 --------------------------------------------------------------------------------------------------------------------
 
 ## Command summary
@@ -476,5 +490,3 @@ Furthermore, certain edits can cause the AddressBook to behave in unexpected way
 ### Future Features ( Work in Progress! )
 * Payment dashboard (A quick visualisation of all payments)
 * Store and access member and payment data from multiple CCAs (Separate storage)
-
-

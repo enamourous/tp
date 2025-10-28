@@ -479,6 +479,176 @@ Furthermore, certain edits can cause the AddressBook to behave in unexpected way
 | **Find Payment**    | `findpayment INDEX [a/AMOUNT] [r/REMARK] [d/DATE]`                         | `findpayment 1 a/50.00`, `findpayment 2 r/Workshop`, `findpayment 3 d/2025-03-15`  |
 | **Help**            | `help`                                                                     | `help`                                                                             |
 
+--------------------------------------------------------------------------------------------------------------------
+## Typical Workflow of a Treasurer on Treasura
+
+Let’s walk through a day in the life of a CCA treasurer, Alex, as he uses **Treasura** to manage member and payment records for his CCA — *NUS Music Ensemble* — at the start of a new Academic Year.
+
+---
+
+### 1. A New Semester Begins 🎓
+
+It’s the start of AY2025/2026, and Alex has not used Treasura in a while.  
+He launches the app and wants to recall the available commands.
+
+He types:
+
+```
+help
+```
+
+The **Help Window** appears, showing a list of all available commands and their formats.  
+Now he’s ready to get started.
+
+---
+
+### 2. Archiving Old Members 📦
+
+Some seniors have graduated, so Alex needs to archive them from the active member list.
+
+First, he checks the current members:
+
+```
+list
+```
+
+He sees the following list:
+
+| Index | Name             | Matriculation | Tags     |
+|--------|------------------|---------------|-----------|
+| 1      | John Tan         | A0123456X     | exco      |
+| 2      | Chloe Ng         | A0134578Y     | logistics |
+| 3      | Marcus Lee       | A0145789B     | performer |
+| 4      | Nicole Lim       | A0156789H     | exco      |
+
+John and Chloe have graduated, so Alex archives them with:
+
+```
+archive 1,2
+```
+
+Now only the active members remain in the list.  
+He can confirm the archived list using:
+
+```
+listarchived
+```
+
+---
+
+### 3. Adding New Members 👥
+
+A new batch of Year 1 students has joined the CCA!  
+Alex adds them to the system using the `add` command.
+
+```
+add n/Ethan Wong m/A0256789J p/98761234 e/ethanw@example.com t/performer
+add n/Sarah Tan m/A0267890L p/96543210 e/sarahtan@example.com t/exco
+add n/Lucas Koh m/A0268912M p/91234567 e/lucask@example.com t/logistics
+```
+
+To double-check, he runs:
+
+```
+list
+```
+
+and confirms that all new members appear correctly.
+
+---
+
+### 4. Collecting CCA Shirt Payment 👕💰
+
+The CCA has ordered new shirts costing **$21.00 each**, and some members have already paid.  
+Alex records these payments in one go for multiple members.
+
+```
+addpayment 1,2 a/21.00 d/2025-09-10 r/CCA Shirt Fee
+```
+
+(Here, `1` refers to Ethan, and `2` to Sarah, based on the current list.)
+
+A few days later, Lucas pays as well, so Alex records it separately:
+
+```
+addpayment 3 a/21.00 d/2025-09-12 r/CCA Shirt Fee
+```
+
+---
+
+### 5. Checking if a Member Has Paid 🔍
+
+Later, the president asks if *Ethan Wong* has already paid for the shirt.  
+Alex uses:
+
+```
+viewpayment 1
+```
+
+This shows Ethan’s payment history, confirming that he paid on **2025-09-10**.
+
+---
+
+### 6. Finding a Specific Payment 🧾
+
+Alex then wants to verify all payments related to the *CCA Shirt Fee*,  
+but the payment list is getting long. To locate them precisely, he runs:
+
+```
+findpayment 1 r/CCA Shirt
+```
+
+This filters only Ethan’s payments that include the remark *“CCA Shirt”*.
+
+---
+
+### 7. Correcting a Payment Error ✏️
+
+After checking receipts, Alex realizes he made a mistake —  
+Marcus (archived member #3) actually paid $23.00 because he ordered a Large shirt,  
+but Alex accidentally recorded it as $21.00.
+
+He fixes this with:
+
+```
+editpayment 3 p/1 a/23.00
+```
+
+This updates Marcus’s first payment record to reflect the correct amount.
+
+---
+
+### 8. Fixing a New Mistake — Undoing an Edit 😅
+
+While editing, Alex accidentally updated the wrong payment entry.  
+No worries — he can simply undo his last change:
+
+```
+undo
+```
+
+The previous correct state is restored.  
+Alex then re-applies the correct edit carefully.
+
+---
+
+### ✅ End of the Day
+
+By the end of the session, Alex has:
+
+- Archived past members
+- Added new members
+- Recorded CCA shirt payments
+- Verified and corrected payment records
+- Used `undo` to revert a mistaken edit
+
+All without ever needing to open a spreadsheet.
+
+---
+
+> 💡 **Tip:** This workflow can easily be adapted for other events (e.g., workshop fees, camp payments, or ticketed performances). Just adjust the payment remarks and dates accordingly.
+
+
 ---
 
 ### Glossary

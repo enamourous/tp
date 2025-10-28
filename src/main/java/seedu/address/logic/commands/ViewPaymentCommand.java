@@ -52,7 +52,9 @@ public class ViewPaymentCommand extends Command {
         requireNonNull(model);
         logger.fine(() -> "Executing viewpayment" + (index == null ? " all" : " " + index.getOneBased()));
 
-        List<Person> people = model.getFilteredPersonList();
+        final List<Person> people = (index == null)
+                ? model.getAddressBook().getPersonList() // includes archived too
+                : model.getFilteredPersonList();
 
         // 'all' mode: show per-person totals and a grand total
         if (index == null) {

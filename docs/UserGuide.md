@@ -670,6 +670,6 @@ Furthermore, certain edits can cause the AddressBook to behave in unexpected way
 * Matriculation number = A unique ID given to all NUS students. Starts with A, followed by 7 digits and ending with any upper case letter.
 * JSON = A file format used to store Treasura data.
 
-### Future Features ( Work in Progress! )
+### Appendix: Planned Enhancements
 * Payment dashboard (A quick visualisation of all payments)
 * Store and access member and payment data from multiple CCAs (Separate storage)

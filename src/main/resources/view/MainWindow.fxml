@@ -19,61 +19,101 @@
          onCloseRequest="#handleExit">
 
     <icons>
-        <Image url="@/images/Treasura.png" />
+        <Image url="@/images/Treasura.png"/>
     </icons>
 
     <scene>
-        <Scene>
+        <Scene fill="#0b421a">
             <stylesheets>
-                <URL value="@DarkTheme.css" />
-                <URL value="@Extensions.css" />
+                <URL value="@DarkTheme.css"/>
+                <URL value="@Extensions.css"/>
             </stylesheets>
 
-            <VBox>
+            <!-- Starbucks-inspired palette -->
+            <!-- Page background -->
+            <VBox style="-fx-background-color: #0b421a;            /* deep green */
+                          -fx-padding: 14 14 16 14;
+                          -fx-spacing: 12;
+                          -fx-font-family: 'Avenir','Helvetica Neue',Arial,Helvetica,sans-serif;">
 
-                <MenuBar fx:id="menuBar" VBox.vgrow="NEVER">
-                    <Menu mnemonicParsing="false" text="File">
-                        <MenuItem mnemonicParsing="false" onAction="#handleExit" text="Exit" />
+                <!-- Top bar -->
+                <MenuBar fx:id="menuBar" VBox.vgrow="NEVER"
+                         style="-fx-background-color: linear-gradient(to bottom, #0b421a, #0f2a25);
+                                -fx-padding: 6 10 6 10;
+                                -fx-border-color: rgba(212,175,55,0.55); /* light gold */
+                                -fx-border-width: 0 0 1 0;">
+                    <Menu mnemonicParsing="false" text="File" style="-fx-text-fill: white;">
+                        <MenuItem mnemonicParsing="false" onAction="#handleExit" text="Exit"/>
                     </Menu>
-                    <Menu mnemonicParsing="false" text="Help">
-                        <MenuItem fx:id="helpMenuItem" mnemonicParsing="false" onAction="#handleHelp" text="Help" />
+                    <Menu mnemonicParsing="false" text="Help" style="-fx-text-fill: white;">
+                        <MenuItem fx:id="helpMenuItem" mnemonicParsing="false" onAction="#handleHelp" text="Help"/>
                     </Menu>
                 </MenuBar>
 
+                <!-- Shared box styles:
+                     light green background + light gold borders -->
+                <!-- bg: #E7F3EA, border: #eac784 -->
+
                 <!-- Command box -->
                 <StackPane fx:id="commandBoxPlaceholder"
-                           styleClass="pane-with-border"
-                           VBox.vgrow="NEVER">
+                           VBox.vgrow="NEVER"
+                           style="-fx-background-color: #0b421a;
+                                  -fx-background-radius: 12;
+                                  -fx-padding: 8;
+                                  -fx-effect: dropshadow(gaussian, #eac784, 10, 0.15, 0, 2);
+                                  -fx-border-style: solid;
+                                  -fx-border-color: #eac784;
+                                  -fx-border-width: 2;            /* force override of any white border */
+                                  -fx-border-radius: 12;">
                     <padding>
-                        <Insets top="5" right="10" bottom="5" left="10"/>
+                        <Insets top="6" right="8" bottom="6" left="8"/>
                     </padding>
                 </StackPane>
 
-                <!-- RESULT DISPLAY (taller) -->
+                <!-- Result display -->
                 <StackPane fx:id="resultDisplayPlaceholder"
-                           styleClass="pane-with-border"
                            VBox.vgrow="NEVER"
-                           minHeight="220"
-                           prefHeight="220"
-                           maxHeight="220">
+                           minHeight="220" prefHeight="220" maxHeight="220"
+                           style="-fx-background-color: #0b421a;
+                                  -fx-background-radius: 12;
+                                  -fx-padding: 10;
+                                  -fx-effect: dropshadow(gaussian, #eac784, 12, 0.18, 0, 3);
+                                  -fx-border-style: solid;
+                                  -fx-border-color: #eac784;
+                                  -fx-border-width: 2;
+                                  -fx-border-radius: 12;">
                     <padding>
-                        <Insets top="5" right="10" bottom="5" left="10"/>
+                        <Insets top="8" right="10" bottom="8" left="10"/>
                     </padding>
                 </StackPane>
 
                 <!-- Person list -->
                 <VBox fx:id="personList"
-                      styleClass="pane-with-border"
-                      minWidth="340"
-                      prefWidth="340"
-                      VBox.vgrow="ALWAYS">
+                      minWidth="340" prefWidth="340" VBox.vgrow="ALWAYS"
+                      style="-fx-background-color: #0b421a;
+                             -fx-background-radius: 16;
+                             -fx-padding: 10;
+                             -fx-effect: dropshadow(gaussian, #eac784, 14, 0.22, 0, 4);
+                             -fx-border-style: solid;
+                             -fx-border-color: #eac784;
+                             -fx-border-width: 2;
+                             -fx-border-radius: 16;">
                     <padding>
                         <Insets top="10" right="10" bottom="10" left="10"/>
                     </padding>
-                    <StackPane fx:id="personListPanelPlaceholder" VBox.vgrow="ALWAYS"/>
+                    <StackPane fx:id="personListPanelPlaceholder" VBox.vgrow="ALWAYS"
+                               style="-fx-background-color: transparent; -fx-background-radius: 12;"/>
                 </VBox>
 
-                <StackPane fx:id="statusbarPlaceholder" VBox.vgrow="NEVER"/>
+                <!-- Status bar -->
+                <StackPane fx:id="statusbarPlaceholder" VBox.vgrow="NEVER"
+                           style="-fx-background-color: #0b421a;
+                                  -fx-background-radius: 8;
+                                  -fx-padding: 6 10 6 10;
+                                  -fx-border-style: solid;
+                                  -fx-border-color: #eac784;
+                                  -fx-border-width: 1;
+                                  -fx-border-radius: 10;"/>
             </VBox>
         </Scene>
     </scene>

@@ -1,20 +1,57 @@
+/* --- Starbucks green interiors --- */
 
-.error {
-    -fx-text-fill: #d06651 !important; /* The error class should always override the default text-fill style */
+/* Command TextField inside commandBoxPlaceholder */
+#commandBoxPlaceholder .text-field {
+  -fx-background-color: #2E3033;
+  -fx-control-inner-background: #2E3033;
+  -fx-text-fill: #e8f2ee;
+  -fx-prompt-text-fill: rgba(232,242,238,0.55);
+  -fx-background-insets: 0;
+  -fx-background-radius: 8;
+  -fx-border-color: rgba(212,175,55,0.65);
+  -fx-border-width: 1;
+  -fx-border-radius: 8;
 }
 
-.list-cell:empty {
-    /* Empty cells will not have alternating colours */
-    -fx-background: #383838;
+/* Result TextArea inside resultDisplayPlaceholder */
+#resultDisplayPlaceholder .text-area,
+#resultDisplayPlaceholder .text-area .content {
+  -fx-background-color: #2E3033;
+  -fx-control-inner-background: #2E3033;
+  -fx-text-fill: #e8f2ee;
+  -fx-background-insets: 0;
+  -fx-background-radius: 10;
+}
+#resultDisplayPlaceholder .text-area {
+  -fx-border-color: rgba(212,175,55,0.65);
+  -fx-border-width: 1;
+  -fx-border-radius: 10;
 }
 
-.tag-selector {
-    -fx-border-width: 1;
-    -fx-border-color: white;
-    -fx-border-radius: 3;
-    -fx-background-radius: 3;
+/* Person list (ListView) area */
+#personList .list-view,
+#personList .scroll-pane,
+#personList .scroll-pane .viewport {
+  -fx-background-color: #2E3033;
+  -fx-background-insets: 0;
+  -fx-background-radius: 12;
+  -fx-border-color: rgba(212,175,55,0.65);
+  -fx-border-width: 1;
+  -fx-border-radius: 12;
 }
 
-.tooltip-text {
-    -fx-text-fill: white;
+/* List cells */
+#personList .list-cell {
+  -fx-background-color: transparent;
+  -fx-text-fill: #e8f2ee;
+}
+#personList .list-cell:filled:selected,
+#personList .list-cell:filled:selected:hover {
+  -fx-background-color: #1e3932;
+  -fx-text-fill: white;
+}
+
+/* Status bar label text (if any) */
+#statusbarPlaceholder, #statusbarPlaceholder .label {
+  -fx-text-fill: #e8f2ee;
 }

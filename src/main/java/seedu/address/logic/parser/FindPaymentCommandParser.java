@@ -34,6 +34,17 @@ public class FindPaymentCommandParser implements Parser<FindPaymentCommand> {
 
     @Override
     public FindPaymentCommand parse(String args) throws ParseException {
+        // Check for unknown prefixes
+        String[] parts = args.trim().split("\\s+");
+        for (int i = 1; i < parts.length; i++) { // skip preamble (index) at parts[0]
+            String part = parts[i];
+            if (!(part.startsWith(PREFIX_AMOUNT.getPrefix())
+                    || part.startsWith(PREFIX_REMARK.getPrefix())
+                    || part.startsWith(PREFIX_DATE.getPrefix()))) {
+                throw new ParseException("Unknown tag: " + part);
+            }
+        }
+
         ArgumentMultimap map = ArgumentTokenizer.tokenize(args, PREFIX_AMOUNT, PREFIX_REMARK, PREFIX_DATE);
 
         if (map.getPreamble().isBlank()) {
@@ -48,6 +59,8 @@ public class FindPaymentCommandParser implements Parser<FindPaymentCommand> {
 
         return parseFilter(map, index);
     }
+
+
 
     private int countFilters(ArgumentMultimap map) {
         return (map.getValue(PREFIX_AMOUNT).isPresent() ? 1 : 0)

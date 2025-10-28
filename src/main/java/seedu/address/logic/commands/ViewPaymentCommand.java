@@ -84,9 +84,7 @@ public class ViewPaymentCommand extends Command {
         }
 
         Person person = people.get(index.getZeroBased());
-        List<Payment> sorted = person.getPayments().stream()
-                .sorted(Comparator.comparing(Payment::getDate).reversed())
-                .toList();
+        List<Payment> sorted = Payment.inDisplayOrder(person.getPayments());
 
         if (sorted.isEmpty()) {
             return new CommandResult(String.format("%s has no payments recorded.", person.getName()));

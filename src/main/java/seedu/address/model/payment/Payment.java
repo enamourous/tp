@@ -4,7 +4,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Comparator; // <-- add this
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Immutable record of a single payment.
@@ -15,6 +18,23 @@ public final class Payment {
     private final LocalDate date;
     private final String remarks;
     private final LocalDateTime recordedAt;
+
+    /**
+     * A single source of truth for how payments are shown in the UI.
+     * Current policy: most recent date first, then most recent recordedAt as tie-breaker.
+     * This guarantees a stable, deterministic order even when dates are equal.
+     */
+    public static final Comparator<Payment> DISPLAY_ORDER = Comparator
+            .comparing(Payment::getDate).reversed()
+            .thenComparing(Payment::getRecordedAt, Comparator.reverseOrder());
+
+    /**
+     * Convenience: return a new list sorted in display order.
+     */
+    public static List<Payment> inDisplayOrder(List<Payment> src) {
+        return src.stream().sorted(DISPLAY_ORDER).collect(Collectors.toList());
+    }
+
 
     /**
      * Create a payment with no remarks. recordedAt defaults to now.
@@ -40,25 +60,11 @@ public final class Payment {
         this.recordedAt = Objects.requireNonNull(recordedAt, "recordedAt");
     }
 
-    public Amount getAmount() {
-        return amount;
-    }
+    public Amount getAmount() { return amount; }
+    public LocalDate getDate() { return date; }
+    public String getRemarks() { return remarks; }
+    public LocalDateTime getRecordedAt() { return recordedAt; }
 
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public String getRemarks() {
-        return remarks;
-    }
-
-    public LocalDateTime getRecordedAt() {
-        return recordedAt;
-    }
-
-    /**
-     * String view such as "2025-03-12 | 23.50 | taxi home".
-     */
     @Override
     public String toString() {
         String r = (remarks == null || remarks.isEmpty()) ? "" : (" | " + remarks);
@@ -67,19 +73,15 @@ public final class Payment {
 
     @Override
     public boolean equals(Object o) {
-        if (o == this) {
-            return true;
-        }
-        if (!(o instanceof Payment)) {
-            return false;
-        }
+        if (o == this) return true;
+        if (!(o instanceof Payment)) return false;
         Payment p = (Payment) o;
         boolean sameRemarks = (this.remarks == null && p.remarks == null)
-            || (this.remarks != null && this.remarks.equals(p.remarks));
+                || (this.remarks != null && this.remarks.equals(p.remarks));
         return this.amount.equals(p.amount)
-            && this.date.equals(p.date)
-            && sameRemarks
-            && this.recordedAt.equals(p.recordedAt);
+                && this.date.equals(p.date)
+                && sameRemarks
+                && this.recordedAt.equals(p.recordedAt);
     }
 
     @Override
@@ -95,9 +97,7 @@ public final class Payment {
     // ---------- helpers ----------
 
     private static String tidy(String s) {
-        if (s == null) {
-            return null;
-        }
+        if (s == null) return null;
         String t = s.trim();
         return t.isEmpty() ? null : t;
     }
@@ -111,20 +111,15 @@ public final class Payment {
         LocalDate parsedDate;
 
         try {
-            // Try strict yyyy-MM-dd first
             parsedDate = LocalDate.parse(trimmed, DateTimeFormatter.ISO_LOCAL_DATE);
         } catch (DateTimeParseException e) {
-            // Fallback to lenient yyyy-M-d
             DateTimeFormatter fallback = DateTimeFormatter.ofPattern("yyyy-M-d");
             parsedDate = LocalDate.parse(trimmed, fallback);
         }
 
-        // Reject future dates
         if (parsedDate.isAfter(LocalDate.now())) {
             throw new IllegalArgumentException("Date cannot be in the future.");
         }
-
         return parsedDate;
     }
-
 }

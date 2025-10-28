@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.Comparator; // <-- add this
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -14,10 +14,6 @@ import java.util.stream.Collectors;
  * Contains the Amount, the payment date, optional remarks, and the recordedAt timestamp.
  */
 public final class Payment {
-    private final Amount amount;
-    private final LocalDate date;
-    private final String remarks;
-    private final LocalDateTime recordedAt;
 
     /**
      * A single source of truth for how payments are shown in the UI.
@@ -28,13 +24,10 @@ public final class Payment {
             .comparing(Payment::getDate).reversed()
             .thenComparing(Payment::getRecordedAt, Comparator.reverseOrder());
 
-    /**
-     * Convenience: return a new list sorted in display order.
-     */
-    public static List<Payment> inDisplayOrder(List<Payment> src) {
-        return src.stream().sorted(DISPLAY_ORDER).collect(Collectors.toList());
-    }
-
+    private final Amount amount;
+    private final LocalDate date;
+    private final String remarks;
+    private final LocalDateTime recordedAt;
 
     /**
      * Create a payment with no remarks. recordedAt defaults to now.
@@ -60,10 +53,21 @@ public final class Payment {
         this.recordedAt = Objects.requireNonNull(recordedAt, "recordedAt");
     }
 
-    public Amount getAmount() { return amount; }
-    public LocalDate getDate() { return date; }
-    public String getRemarks() { return remarks; }
-    public LocalDateTime getRecordedAt() { return recordedAt; }
+    public Amount getAmount() {
+        return amount;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public LocalDateTime getRecordedAt() {
+        return recordedAt;
+    }
 
     @Override
     public String toString() {
@@ -73,15 +77,17 @@ public final class Payment {
 
     @Override
     public boolean equals(Object o) {
-        if (o == this) return true;
-        if (!(o instanceof Payment)) return false;
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof Payment)) {
+            return false;
+        }
         Payment p = (Payment) o;
-        boolean sameRemarks = (this.remarks == null && p.remarks == null)
-                || (this.remarks != null && this.remarks.equals(p.remarks));
-        return this.amount.equals(p.amount)
-                && this.date.equals(p.date)
-                && sameRemarks
-                && this.recordedAt.equals(p.recordedAt);
+        return Objects.equals(this.amount, p.amount)
+                && Objects.equals(this.date, p.date)
+                && Objects.equals(this.remarks, p.remarks)
+                && Objects.equals(this.recordedAt, p.recordedAt);
     }
 
     @Override
@@ -94,16 +100,27 @@ public final class Payment {
         return h;
     }
 
+    /**
+     * Convenience: return a new list sorted in display order.
+     */
+    public static List<Payment> inDisplayOrder(List<Payment> src) {
+        return src.stream().sorted(DISPLAY_ORDER).collect(Collectors.toList());
+    }
+
     // ---------- helpers ----------
 
     private static String tidy(String s) {
-        if (s == null) return null;
+        if (s == null) {
+            return null;
+        }
         String t = s.trim();
         return t.isEmpty() ? null : t;
     }
 
     /**
      * Flexible parser that accepts both yyyy-MM-dd and yyyy-M-d formats.
+     *
+     * @throws IllegalArgumentException if the parsed date is in the future
      */
     public static LocalDate parseFlexibleDate(String dateStr) {
         Objects.requireNonNull(dateStr, "dateStr");

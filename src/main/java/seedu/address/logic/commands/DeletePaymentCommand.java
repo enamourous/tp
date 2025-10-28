@@ -34,6 +34,13 @@ public class DeletePaymentCommand extends Command {
     private final List<Index> personIndexes;
     private final Index paymentIndex; // index within the person's DISPLAY list
 
+    /**
+     * Creates a {@code DeletePaymentCommand}.
+     *
+     * @param personIndexes list of person indexes in the currently displayed list (1-based input).
+     * @param paymentIndex  the payment index within each person's display-ordered payment list (1-based input).
+     * @throws NullPointerException if any parameter is {@code null}.
+     */
     public DeletePaymentCommand(List<Index> personIndexes, Index paymentIndex) {
         requireNonNull(personIndexes);
         requireNonNull(paymentIndex);
@@ -41,6 +48,14 @@ public class DeletePaymentCommand extends Command {
         this.paymentIndex = paymentIndex;
     }
 
+    /**
+     * Deletes the specified payment (resolved using the same display order as {@code viewpayment})
+     * from each targeted person, then updates the model.
+     *
+     * @param model model holding the current filtered person list.
+     * @return a {@link CommandResult} summarising the deletions.
+     * @throws CommandException if any person index is invalid, or the payment index does not exist for a person.
+     */
     @Override
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);

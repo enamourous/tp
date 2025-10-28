@@ -2,49 +2,79 @@
 
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.Scene?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 
-<fx:root type="VBox"
+<fx:root type="javafx.stage.Stage"
          xmlns="http://javafx.com/javafx/17"
          xmlns:fx="http://javafx.com/fxml/1"
-         prefHeight="720.0" prefWidth="1100.0"
-         spacing="6" fillWidth="true">
+         title="Treasura"
+         minWidth="450"
+         minHeight="600"
+         onCloseRequest="#handleExit">
 
-    <stylesheets>
-        <URL value="@DarkTheme.css"/>
-        <URL value="@Extensions.css"/>
-    </stylesheets>
+    <icons>
+        <Image url="@/images/Treasura.png" />
+    </icons>
 
-    <children>
-        <!-- Menu bar with a Help > Help item that has fx:id="helpMenuItem" -->
-        <MenuBar VBox.vgrow="NEVER">
-            <menus>
-                <Menu text="File"/>
-                <Menu text="Help">
-                    <items>
-                        <MenuItem fx:id="helpMenuItem" text="Help" onAction="#handleHelpgi"/>
-                    </items>
-                </Menu>
-            </menus>
-        </MenuBar>
+    <scene>
+        <Scene>
+            <stylesheets>
+                <URL value="@DarkTheme.css" />
+                <URL value="@Extensions.css" />
+            </stylesheets>
 
-        <!-- GOLD Output Box placeholder -->
-        <StackPane fx:id="resultDisplayPlaceholder" VBox.vgrow="NEVER">
-            <padding><Insets top="6" left="6" right="6" bottom="0"/></padding>
-        </StackPane>
+            <VBox>
 
-        <!-- GOLD Command Box placeholder -->
-        <StackPane fx:id="commandBoxPlaceholder" VBox.vgrow="NEVER">
-            <padding><Insets top="6" left="6" right="6" bottom="0"/></padding>
-        </StackPane>
+                <MenuBar fx:id="menuBar" VBox.vgrow="NEVER">
+                    <Menu mnemonicParsing="false" text="File">
+                        <MenuItem mnemonicParsing="false" onAction="#handleExit" text="Exit" />
+                    </Menu>
+                    <Menu mnemonicParsing="false" text="Help">
+                        <MenuItem fx:id="helpMenuItem" mnemonicParsing="false" onAction="#handleHelp" text="Help" />
+                    </Menu>
+                </MenuBar>
 
-        <!-- Main content grows -->
-        <StackPane fx:id="personListPanelPlaceholder" VBox.vgrow="ALWAYS">
-            <padding><Insets top="6" left="6" right="6" bottom="6"/></padding>
-        </StackPane>
+                <!-- Command box -->
+                <StackPane fx:id="commandBoxPlaceholder"
+                           styleClass="pane-with-border"
+                           VBox.vgrow="NEVER">
+                    <padding>
+                        <Insets top="5" right="10" bottom="5" left="10"/>
+                    </padding>
+                </StackPane>
 
-        <!-- Status bar -->
-        <StackPane fx:id="statusbarPlaceholder" VBox.vgrow="NEVER"/>
-    </children>
+                <!-- RESULT DISPLAY (taller) -->
+                <StackPane fx:id="resultDisplayPlaceholder"
+                           styleClass="pane-with-border"
+                           VBox.vgrow="NEVER"
+                           minHeight="220"
+                           prefHeight="220"
+                           maxHeight="220">
+                    <padding>
+                        <Insets top="5" right="10" bottom="5" left="10"/>
+                    </padding>
+                </StackPane>
+
+                <!-- Person list -->
+                <VBox fx:id="personList"
+                      styleClass="pane-with-border"
+                      minWidth="340"
+                      prefWidth="340"
+                      VBox.vgrow="ALWAYS">
+                    <padding>
+                        <Insets top="10" right="10" bottom="10" left="10"/>
+                    </padding>
+                    <StackPane fx:id="personListPanelPlaceholder" VBox.vgrow="ALWAYS"/>
+                </VBox>
+
+                <StackPane fx:id="statusbarPlaceholder" VBox.vgrow="NEVER"/>
+            </VBox>
+        </Scene>
+    </scene>
 </fx:root>

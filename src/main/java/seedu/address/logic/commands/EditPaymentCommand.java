@@ -39,8 +39,8 @@ public class EditPaymentCommand extends Command {
 
     private static final Logger logger = LogsCenter.getLogger(EditPaymentCommand.class);
 
-    private final Index personIndex;     // 1-based
-    private final int paymentOneBased;   // 1-based
+    private final Index personIndex; // 1-based
+    private final int paymentOneBased; // 1-based
     private final EditPaymentDescriptor descriptor;
 
     /**
@@ -84,7 +84,7 @@ public class EditPaymentCommand extends Command {
         // Find the original in the raw list and replace at that index
         int rawIndex = target.getPayments().indexOf(original);
         if (rawIndex < 0) {
-            // Shouldn't happen; defensive guard in case of concurrent changes
+            // Defensive guard in case of concurrent changes
             throw new CommandException("Selected payment could not be located. Please try again.");
         }
 
@@ -121,18 +121,38 @@ public class EditPaymentCommand extends Command {
             return isAnyNonNull(amount, date, remarks);
         }
 
-        public void setAmount(Amount a) { this.amount = a; }
-        public void setDate(LocalDate d) { this.date = d; }
-        public void setRemarks(String r) { this.remarks = r; }
+        public void setAmount(Amount a) {
+            this.amount = a;
+        }
 
-        public Optional<Amount> getAmount() { return Optional.ofNullable(amount); }
-        public Optional<LocalDate> getDate() { return Optional.ofNullable(date); }
-        public Optional<String> getRemarks() { return Optional.ofNullable(remarks); }
+        public void setDate(LocalDate d) {
+            this.date = d;
+        }
+
+        public void setRemarks(String r) {
+            this.remarks = r;
+        }
+
+        public Optional<Amount> getAmount() {
+            return Optional.ofNullable(amount);
+        }
+
+        public Optional<LocalDate> getDate() {
+            return Optional.ofNullable(date);
+        }
+
+        public Optional<String> getRemarks() {
+            return Optional.ofNullable(remarks);
+        }
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) { return true; }
-            if (!(o instanceof EditPaymentDescriptor)) { return false; }
+            if (this == o) {
+                return true;
+            }
+            if (!(o instanceof EditPaymentDescriptor)) {
+                return false;
+            }
             EditPaymentDescriptor that = (EditPaymentDescriptor) o;
             return Objects.equals(amount, that.amount)
                     && Objects.equals(date, that.date)
@@ -147,8 +167,12 @@ public class EditPaymentCommand extends Command {
 
     @Override
     public boolean equals(Object other) {
-        if (other == this) { return true; }
-        if (!(other instanceof EditPaymentCommand)) { return false; }
+        if (other == this) {
+            return true;
+        }
+        if (!(other instanceof EditPaymentCommand)) {
+            return false;
+        }
         EditPaymentCommand o = (EditPaymentCommand) other;
         return personIndex.equals(o.personIndex)
                 && paymentOneBased == o.paymentOneBased

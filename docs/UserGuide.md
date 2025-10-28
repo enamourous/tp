@@ -1,7 +1,7 @@
 ---
   layout: default.md
-    title: "User Guide"
-    pageNav: 3
+  title: "User Guide"
+  pageNav: 3
 ---
 
 # Treasura User Guide
@@ -60,7 +60,7 @@ help
 ```
 
 The **Help Window** appears, showing a list of all available commands and their formats.  
-![Ui](images/UpdatedHelpWIndow.png)
+![updated help window](images/UpdatedHelpWIndow.png)
 Now he’s ready to get started.
 
 ---
@@ -257,7 +257,7 @@ If you run a command such as `listarchived` or `find`, the indexes will change a
 
 <box type="warning" seamless>
 
-**⚠️ Caution:**  
+**Caution:**  
 `help` is the one exception to this rule, to provide leeway for unfamiliar users.<br>
 </box>
 
@@ -267,7 +267,7 @@ If you run a command such as `listarchived` or `find`, the indexes will change a
 
 <box type="tip" seamless>
 
-💡 **Tip:** For best results, always run `list` or `listarchived` before executing commands that use an **INDEX**.
+**Tip:** For best results, always run `list` or `listarchived` before executing commands that use an **INDEX**.
 </box>
 
 ---
@@ -276,7 +276,7 @@ If you run a command such as `listarchived` or `find`, the indexes will change a
 
 Shows a message containing all functions.
 
-![help message](images/helpMessage.png)
+![updated help window](images/UpdatedHelpWIndow.png)
 
 **Format:** `help`
 

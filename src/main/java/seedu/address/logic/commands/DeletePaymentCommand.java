@@ -1,11 +1,9 @@
 package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
+import static seedu.address.commons.core.Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import seedu.address.commons.core.index.Index;
 import seedu.address.logic.commands.exceptions.CommandException;
@@ -14,103 +12,90 @@ import seedu.address.model.payment.Payment;
 import seedu.address.model.person.Person;
 
 /**
- * Deletes a payment from one or more persons identified by their indexes in the displayed person list.
- * The payment index refers to the index shown by 'viewpayment', which uses display order.
+ * Deletes one or more payments (by their display indices) from a single person.
  */
 public class DeletePaymentCommand extends Command {
 
     public static final String COMMAND_WORD = "deletepayment";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD
-            + ": Deletes a payment from one or more persons identified by their indexes, "
-            + "as shown in the displayed person list.\n"
-            + "Parameters: PERSON_INDEX[,PERSON_INDEX]... p/PAYMENT_INDEX\n"
-            + "Example: " + COMMAND_WORD + " 1 p/2";
+            + ": Deletes one or more payments from the person identified by the displayed index.\n"
+            + "Parameters: PERSON_INDEX p/PAYMENT_INDEX[,PAYMENT_INDEX]...\n"
+            + "Notes: PAYMENT_INDEX refers to the display order shown by 'viewpayment'. Duplicates are ignored.\n"
+            + "Example: " + COMMAND_WORD + " 2 p/1,2,3";
 
-    public static final String MESSAGE_SUCCESS = "Deleted payment #%d from %s";
-    public static final String MESSAGE_INVALID_PAYMENT_INDEX = "Invalid payment index for person: %s";
-    public static final String MESSAGE_INVALID_PERSON_INDEX_FOR_DELETE_PAYMENT = "The person index provided is invalid";
+    public static final String MESSAGE_SUCCESS = "Deleted payment(s) #%s from %s";
+    public static final String MESSAGE_INVALID_PAYMENT_INDEX = "Invalid payment index #%d for person: %s";
 
-    private final List<Index> personIndexes;
-    private final Index paymentIndex; // index within the person's DISPLAY list
+    private final Index personIndex; // one person (1-based input)
+    private final List<Index> paymentIndexes; // one or more payment indices (1-based input)
 
     /**
-     * Creates a {@code DeletePaymentCommand}.
-     *
-     * @param personIndexes list of person indexes in the currently displayed list (1-based input).
-     * @param paymentIndex  the payment index within each person's display-ordered payment list (1-based input).
-     * @throws NullPointerException if any parameter is {@code null}.
+     * Creates a DeletePaymentCommand to delete the specified payment(s).
      */
-    public DeletePaymentCommand(List<Index> personIndexes, Index paymentIndex) {
-        requireNonNull(personIndexes);
-        requireNonNull(paymentIndex);
-        this.personIndexes = List.copyOf(personIndexes);
-        this.paymentIndex = paymentIndex;
+    public DeletePaymentCommand(Index personIndex, List<Index> paymentIndexes) {
+        requireNonNull(personIndex);
+        requireNonNull(paymentIndexes);
+        this.personIndex = personIndex;
+        this.paymentIndexes = List.copyOf(paymentIndexes);
     }
 
-    /**
-     * Deletes the specified payment (resolved using the same display order as {@code viewpayment})
-     * from each targeted person, then updates the model.
-     *
-     * @param model model holding the current filtered person list.
-     * @return a {@link CommandResult} summarising the deletions.
-     * @throws CommandException if any person index is invalid, or the payment index does not exist for a person.
-     */
     @Override
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
-        List<Person> lastShownList = model.getFilteredPersonList();
 
-        if (lastShownList.isEmpty()) {
-            throw new CommandException(MESSAGE_INVALID_PERSON_INDEX_FOR_DELETE_PAYMENT);
+        final List<Person> lastShownList = model.getFilteredPersonList();
+        final int pZero = personIndex.getZeroBased();
+
+        if (pZero < 0 || pZero >= lastShownList.size()) {
+            throw new CommandException(MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
         }
 
-        // First pass: validate and resolve the exact Payment objects to delete in display order
-        // Use LinkedHashMap to keep output names in the same order as the input personIndexes
-        Map<Person, Payment> deletions = new LinkedHashMap<>();
+        final Person target = lastShownList.get(pZero);
+        final List<Payment> displayList = Payment.inDisplayOrder(target.getPayments());
 
-        for (Index personIndex : personIndexes) {
-            int zero = personIndex.getZeroBased();
-            if (zero >= lastShownList.size()) {
-                throw new CommandException(MESSAGE_INVALID_PERSON_INDEX_FOR_DELETE_PAYMENT);
+        if (displayList.isEmpty()) {
+            throw new CommandException("This person has no payments to delete.");
+        }
+
+        final List<Integer> zeroBased = paymentIndexes.stream()
+                .map(Index::getZeroBased)
+                .toList();
+
+        // Validate all indices first
+        for (int z : zeroBased) {
+            if (z >= displayList.size()) {
+                throw new CommandException(String.format(
+                        MESSAGE_INVALID_PAYMENT_INDEX, z + 1, target.getName()));
             }
-
-            Person target = lastShownList.get(zero);
-
-            // Build the SAME display list as viewpayment
-            List<Payment> displayList = Payment.inDisplayOrder(target.getPayments());
-
-            int payZero = paymentIndex.getZeroBased();
-            if (payZero >= displayList.size()) {
-                throw new CommandException(String.format(MESSAGE_INVALID_PAYMENT_INDEX, target.getName()));
-            }
-
-            Payment toDelete = displayList.get(payZero);
-            deletions.put(target, toDelete);
         }
 
-        // Second pass: apply all updates
-        List<String> updatedNames = new ArrayList<>();
-        for (Map.Entry<Person, Payment> entry : deletions.entrySet()) {
-            Person target = entry.getKey();
-            Payment toDelete = entry.getValue();
+        // Resolve payments to delete
+        final List<Payment> toDelete = zeroBased.stream()
+                .map(displayList::get)
+                .toList();
 
-            Person updated = target.withRemovedPayment(toDelete);
-            model.setPerson(target, updated);
-            updatedNames.add(updated.getName().toString());
+        // Apply deletion (by identity, order doesn't matter)
+        Person updated = target;
+        for (Payment pay : toDelete) {
+            updated = updated.withRemovedPayment(pay);
         }
+        model.setPerson(target, updated);
 
-        String joinedNames = String.join(", ", updatedNames);
-        String message = String.format(MESSAGE_SUCCESS, paymentIndex.getOneBased(), joinedNames);
-        return new CommandResult(message);
+        // Build success message
+        final String joined = paymentIndexes.stream()
+                .map(i -> Integer.toString(i.getOneBased()))
+                .collect(java.util.stream.Collectors.joining(","));
+
+        return new CommandResult(String.format(MESSAGE_SUCCESS, joined, updated.getName()));
     }
 
     @Override
     public boolean equals(Object other) {
         return other == this
-                || (other instanceof DeletePaymentCommand
-                && personIndexes.equals(((DeletePaymentCommand) other).personIndexes)
-                && paymentIndex.equals(((DeletePaymentCommand) other).paymentIndex));
+                || (other instanceof DeletePaymentCommand)
+                && personIndex.equals(((DeletePaymentCommand) other).personIndex)
+                && paymentIndexes.equals(((DeletePaymentCommand) other).paymentIndexes);
     }
 
     @Override

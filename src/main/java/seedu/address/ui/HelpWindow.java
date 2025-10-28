@@ -23,24 +23,30 @@ public class HelpWindow extends UiPart<Stage> {
                     + "──────────────────────────────\n"
                     + "BASIC COMMANDS\n"
                     + "**Member Management**\n"
-                    + "  add n/NAME p/PHONE e/EMAIL m/MATRIC [t/TAG]...\n"
-                    + "  edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [m/MATRIC] [t/TAG]...\n"
+                    + "  add n/NAME p/PHONE e/EMAIL m/MATRIC [t/TAG]... — add a new member\n"
+                    + "  edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [m/MATRIC] [t/TAG]... — edit member details\n"
                     + "  list — show all active members\n"
                     + "  listarchived — show archived members\n"
-                    + "  archive INDEX[,INDEX]... — archive members\n"
-                    + "  unarchive INDEX[,INDEX]... — unarchive members\n"
-                    + "  find KEYWORD [MORE_KEYWORDS]... — search by name/tag\n"
-                    + "  view INDEX — view member details\n\n"
+                    + "  archive INDEX[,INDEX]... — archive one or more members\n"
+                    + "  unarchive INDEX[,INDEX]... — restore archived members\n"
+                    + "  find KEYWORD [MORE_KEYWORDS]... — search members by name or tag\n"
+                    + "  view INDEX — view details of a member\n\n"
 
                     + "**Payment Management**\n"
-                    + "  addpayment INDEX[,INDEX]... a/AMOUNT d/DATE [r/REMARKS]\n"
-                    + "  editpayment PERSON_INDEX p/PAYMENT_INDEX [a/AMOUNT] [d/DATE] [r/REMARKS]\n"
-                    + "  deletepayment PERSON_INDEX[,PERSON_INDEX]... p/PAYMENT_INDEX\n"
-                    + "  viewpayment INDEX | all — view payments\n\n"
+                    + "  addpayment INDEX[,INDEX]... a/AMOUNT d/DATE [r/REMARKS] — add payment(s)\n"
+                    + "  editpayment PERSON_INDEX p/PAYMENT_INDEX [a/AMOUNT] [d/DATE] [r/REMARKS] — edit payment\n"
+                    + "  deletepayment PERSON_INDEX[,PERSON_INDEX]... p/PAYMENT_INDEX — delete payment(s)\n"
+                    + "  viewpayment INDEX | all — view payment(s)\n"
+                    + "  findpayment INDEX [a/AMOUNT] [r/REMARK] [d/DATE] — search a member’s payments\n\n"
 
                     + "**System Commands**\n"
+                    + "  undo — revert the last change\n"
+                    + "  redo — reapply the last undone change\n"
                     + "  help — show this help window\n"
-                    + "  exit — close the application\n\n";
+                    + "  exit — close the application\n\n"
+
+                    + "Tip: Run 'list' or 'listarchived' before commands that use an INDEX.\n";
+
 
     private static final Logger logger = LogsCenter.getLogger(HelpWindow.class);
     private static final String FXML = "HelpWindow.fxml";

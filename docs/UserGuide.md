@@ -605,7 +605,7 @@ This filters only Ethan’s payments that include the remark *“CCA Shirt”*.
 ### 7. Correcting a Payment Error ✏️
 
 After checking receipts, Alex realizes he made a mistake —  
-Marcus (archived member #3) actually paid $23.00 because he ordered a Large shirt,  
+Marcus (archived member #3) actually paid \$23.00 because he ordered a Large shirt,  
 but Alex accidentally recorded it as $21.00.
 
 He fixes this with:

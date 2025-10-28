@@ -1,21 +1,21 @@
 ---
   layout: default.md
-  title: "User Guide"
-  pageNav: 3
+    title: "User Guide"
+    pageNav: 3
 ---
 
 # Treasura User Guide
 
 Treasura is a **desktop app for managing CCA members and payments, optimized for use via a Command Line Interface (CLI)** while still having the benefits of a Graphical User Interface (GUI).  
 If you can type fast, Treasura can get your CCA management tasks done faster than traditional GUI apps.  
-Treasura is primarily targeted towards CCA leaders and treasurers.
+Treasura is primarily targeted towards CCA leaders and treasurers. 🎓💼
 
 
 <!-- * Table of Contents -->
 <page-nav-print />
 
 --------------------------------------------------------------------------------------------------------------------
-## Quick start
+## 🚀 Quick start
 
 1. Ensure you have Java `17` or above installed in your computer.<br>
    **Mac users:** Ensure you have the precise JDK version prescribed [here](https://se-education.org/guides/tutorials/javaInstallationMac.html).
@@ -34,11 +34,195 @@ Treasura is primarily targeted towards CCA leaders and treasurers.
 
 ---
 
-### Example Commands to Try
-   * `add n/John Doe p/98765432 e/johnd@example.com m/A0123456X t/friend t/owesMoney` : Adds a contact named `John Doe` to Treasura.
-   * `archive 3` : Archives the 3rd member shown in the current list.
+### 💡 Example Commands to Try
+* `add n/John Doe p/98765432 e/johnd@example.com m/A0123456X t/friend t/owesMoney` — Adds a contact named `John Doe` to Treasura.
+* `archive 3` — Archives the 3rd member shown in the current list.
 
 Refer to the [Features](#features) below for details of more commands.
+
+---
+
+## 🪙 Typical Treasurer Workflow using Treasura
+
+Let’s walk through a day in the life of a CCA treasurer, Alex, as he uses **Treasura** to manage member and payment records for his CCA — *NUS Music Ensemble* — at the start of a new Academic Year.
+
+---
+
+### 🎓 A New Semester Begins
+
+It’s the start of AY2025/2026, and Alex has not used Treasura in a while.  
+He launches the app and wants to recall the available commands.
+
+He types:
+
+```
+help
+```
+
+The **Help Window** appears, showing a list of all available commands and their formats.  
+![Ui](images/UpdatedHelpWIndow.png)
+Now he’s ready to get started.
+
+---
+
+### 📦 Archiving Old Members
+
+Some seniors have graduated, so Alex needs to archive them from the active member list.
+
+First, he checks the current members:
+
+```
+list
+```
+
+He sees the following list:
+
+| Index | Name             | Matriculation | Tags     |
+|--------|------------------|---------------|-----------|
+| 1      | John Tan         | A1234567X     | exco      |
+| 2      | Chloe Ng         | A0134578Y     | logistics |
+| 3      | Marcus Lee       | A0145789B     | performer |
+| 4      | Nicole Lim       | A0156789H     | exco      |
+
+John and Chloe have graduated, so Alex archives them with:
+
+```
+archive 1,2
+```
+
+Now only the active members remain in the list.  
+He can confirm the archived list using:
+
+```
+listarchived
+```
+
+---
+
+### 👥 Adding New Members
+
+A new batch of Year 1 students has joined the CCA!  
+Alex adds them to the system using the `add` command.
+
+```
+add n/Ethan Wong m/A0256789J p/98761234 e/ethanw@example.com t/performer
+add n/Sarah Tan m/A0267890L p/96543210 e/sarahtan@example.com t/exco
+add n/Lucas Koh m/A0268912M p/91234567 e/lucask@example.com t/logistics
+```
+
+To double-check, he runs:
+
+```
+list
+```
+
+and confirms that all new members appear correctly.
+
+---
+
+### 💰 Collecting CCA Shirt Payments
+
+The CCA has ordered new shirts costing **$21.00 each**, and some members have already paid.  
+Alex records these payments in one go for multiple members.
+
+```
+addpayment 1,2 a/21.00 d/2025-09-10 r/CCA Shirt Fee
+```
+
+(Here, `1` refers to Ethan, and `2` to Sarah, based on the current list.)
+
+A few days later, Lucas pays as well, so Alex first finds Lucas in the list:
+```
+find Lucas
+```
+
+Then he records his payment separately:
+
+```
+addpayment 1 a/21.00 d/2025-09-12 r/CCA Shirt Fee
+```
+
+---
+
+### 🔍 Checking if a Member Has Paid
+
+Later, the president asks if *Ethan Wong* has already paid for the shirt.  
+Alex first finds Ethan:
+
+```
+find ethan
+```
+
+To view Ethan's payments, Alex uses:
+
+```
+viewpayment 1
+```
+
+This shows Ethan’s payment history, confirming that he paid on **2025-09-10**.
+
+---
+
+### 🧾 Finding a Specific Payment
+
+Alex then wants to verify all payments related to the *CCA Shirt Fee*,  
+but the payment list is getting long. To locate them precisely, he runs:
+
+```
+findpayment 1 r/CCA Shirt
+```
+
+This filters only Ethan’s payments that include the remark *“CCA Shirt”*.
+
+---
+
+### ✏️ Correcting a Payment Error
+
+After checking receipts, Alex realizes he made a mistake —  
+Marcus (member #3) actually paid \$23.00 because he ordered a Large shirt,  
+but Alex accidentally recorded it as \$21.00.
+
+He fixes this with:
+
+```
+editpayment 3 p/1 a/23.00
+```
+
+This updates Marcus’s first payment record to reflect the correct amount.
+
+---
+
+### 😅 Fixing a Typo (Undoing a Command)
+
+While editing a payment, Alex accidentally typed the wrong amount.  
+No worries — he can simply undo his last change:
+
+```
+undo
+```
+
+The previous correct state is restored.  
+Alex then re-applies the correct edit carefully.
+
+Note: all commands can be undone using the 'undo' command
+
+---
+
+### ✅ End of the Day
+
+By the end of the session, Alex has:
+
+- Archived past members
+- Added new members
+- Recorded CCA shirt payments
+- Verified and corrected payment records
+- Used `undo` to revert a mistaken edit
+
+All without his hands ever leaving the keyboard or opening an EXCEL spreadsheet. 📊
+
+---
+
+> 💡 **Tip:** This workflow can easily be adapted for other events (e.g., workshop fees, camp payments, or ticketed performances). Just adjust the payment remarks and dates accordingly.
 
 --------------------------------------------------------------------------------------------------------------------
 <div markdown="block" class="alert alert-info">
@@ -50,7 +234,7 @@ If you run a command such as `listarchived` or `find`, the indexes will change a
 
 </div>
 
-## Features
+## ⚙️ Full Features
 
 <box type="info" seamless>
 
@@ -63,7 +247,7 @@ If you run a command such as `listarchived` or `find`, the indexes will change a
   e.g `n/NAME [t/TAG]` can be used as `n/John Doe t/friend` or as `n/John Doe`.
 
 * Items with `…`​ after them can be used multiple times including zero times.<br>
-  e.g. `[t/TAG]…​` can be used as ` ` (i.e. 0 times), `t/friend`, `t/friend t/family` etc.
+  e.g. `[t/TAG]…​` can be used as ` ` (i.e. 0 times), `t/friend`, `t/friend t/family` etc.
 
 * Parameters can be in any order.<br>
   e.g. if the command specifies `n/NAME p/PHONE_NUMBER`, `p/PHONE_NUMBER n/NAME` is also acceptable.
@@ -73,7 +257,7 @@ If you run a command such as `listarchived` or `find`, the indexes will change a
 
 <box type="warning" seamless>
 
-**Caution:**
+**⚠️ Caution:**  
 `help` is the one exception to this rule, to provide leeway for unfamiliar users.<br>
 </box>
 
@@ -83,12 +267,12 @@ If you run a command such as `listarchived` or `find`, the indexes will change a
 
 <box type="tip" seamless>
 
-**Tip:**  For best results, always run `list` or `listarchived` before executing commands that use an **INDEX**.
+💡 **Tip:** For best results, always run `list` or `listarchived` before executing commands that use an **INDEX**.
 </box>
 
 ---
 
-### Viewing help : `help`
+### 🆘 Viewing Help : `help`
 
 Shows a message containing all functions.
 
@@ -479,177 +663,6 @@ Furthermore, certain edits can cause the AddressBook to behave in unexpected way
 | **Find Payment**    | `findpayment INDEX [a/AMOUNT] [r/REMARK] [d/DATE]`                         | `findpayment 1 a/50.00`, `findpayment 2 r/Workshop`, `findpayment 3 d/2025-03-15`  |
 | **Help**            | `help`                                                                     | `help`                                                                             |
 
---------------------------------------------------------------------------------------------------------------------
-## Typical Workflow of a Treasurer on Treasura
-
-Let’s walk through a day in the life of a CCA treasurer, Alex, as he uses **Treasura** to manage member and payment records for his CCA — *NUS Music Ensemble* — at the start of a new Academic Year.
-
----
-
-### 1. A New Semester Begins 🎓
-
-It’s the start of AY2025/2026, and Alex has not used Treasura in a while.  
-He launches the app and wants to recall the available commands.
-
-He types:
-
-```
-help
-```
-
-The **Help Window** appears, showing a list of all available commands and their formats.  
-Now he’s ready to get started.
-
----
-
-### 2. Archiving Old Members 📦
-
-Some seniors have graduated, so Alex needs to archive them from the active member list.
-
-First, he checks the current members:
-
-```
-list
-```
-
-He sees the following list:
-
-| Index | Name             | Matriculation | Tags     |
-|--------|------------------|---------------|-----------|
-| 1      | John Tan         | A0123456X     | exco      |
-| 2      | Chloe Ng         | A0134578Y     | logistics |
-| 3      | Marcus Lee       | A0145789B     | performer |
-| 4      | Nicole Lim       | A0156789H     | exco      |
-
-John and Chloe have graduated, so Alex archives them with:
-
-```
-archive 1,2
-```
-
-Now only the active members remain in the list.  
-He can confirm the archived list using:
-
-```
-listarchived
-```
-
----
-
-### 3. Adding New Members 👥
-
-A new batch of Year 1 students has joined the CCA!  
-Alex adds them to the system using the `add` command.
-
-```
-add n/Ethan Wong m/A0256789J p/98761234 e/ethanw@example.com t/performer
-add n/Sarah Tan m/A0267890L p/96543210 e/sarahtan@example.com t/exco
-add n/Lucas Koh m/A0268912M p/91234567 e/lucask@example.com t/logistics
-```
-
-To double-check, he runs:
-
-```
-list
-```
-
-and confirms that all new members appear correctly.
-
----
-
-### 4. Collecting CCA Shirt Payment 👕💰
-
-The CCA has ordered new shirts costing **$21.00 each**, and some members have already paid.  
-Alex records these payments in one go for multiple members.
-
-```
-addpayment 1,2 a/21.00 d/2025-09-10 r/CCA Shirt Fee
-```
-
-(Here, `1` refers to Ethan, and `2` to Sarah, based on the current list.)
-
-A few days later, Lucas pays as well, so Alex records it separately:
-
-```
-addpayment 3 a/21.00 d/2025-09-12 r/CCA Shirt Fee
-```
-
----
-
-### 5. Checking if a Member Has Paid 🔍
-
-Later, the president asks if *Ethan Wong* has already paid for the shirt.  
-Alex uses:
-
-```
-viewpayment 1
-```
-
-This shows Ethan’s payment history, confirming that he paid on **2025-09-10**.
-
----
-
-### 6. Finding a Specific Payment 🧾
-
-Alex then wants to verify all payments related to the *CCA Shirt Fee*,  
-but the payment list is getting long. To locate them precisely, he runs:
-
-```
-findpayment 1 r/CCA Shirt
-```
-
-This filters only Ethan’s payments that include the remark *“CCA Shirt”*.
-
----
-
-### 7. Correcting a Payment Error ✏️
-
-After checking receipts, Alex realizes he made a mistake —  
-Marcus (archived member #3) actually paid \$23.00 because he ordered a Large shirt,  
-but Alex accidentally recorded it as $21.00.
-
-He fixes this with:
-
-```
-editpayment 3 p/1 a/23.00
-```
-
-This updates Marcus’s first payment record to reflect the correct amount.
-
----
-
-### 8. Fixing a New Mistake — Undoing an Edit 😅
-
-While editing, Alex accidentally updated the wrong payment entry.  
-No worries — he can simply undo his last change:
-
-```
-undo
-```
-
-The previous correct state is restored.  
-Alex then re-applies the correct edit carefully.
-
----
-
-### ✅ End of the Day
-
-By the end of the session, Alex has:
-
-- Archived past members
-- Added new members
-- Recorded CCA shirt payments
-- Verified and corrected payment records
-- Used `undo` to revert a mistaken edit
-
-All without ever needing to open a spreadsheet.
-
----
-
-> 💡 **Tip:** This workflow can easily be adapted for other events (e.g., workshop fees, camp payments, or ticketed performances). Just adjust the payment remarks and dates accordingly.
-
-
----
 
 ### Glossary
 

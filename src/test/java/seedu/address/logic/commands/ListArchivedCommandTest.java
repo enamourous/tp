@@ -1,5 +1,6 @@
 package seedu.address.logic.commands;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.model.Model.PREDICATE_SHOW_ARCHIVED_PERSONS;
@@ -45,6 +46,25 @@ public class ListArchivedCommandTest {
 
         // everything shown is archived
         assertTrue(model.getFilteredPersonList().stream().allMatch(Person::isArchived));
+    }
+
+    @Test
+    public void execute_noArchivedPersons_showsEmptyMessage() {
+        // Use fresh models with nobody archived
+        Model localModel = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+        Model localExpected = new ModelManager(new AddressBook(localModel.getAddressBook()), new UserPrefs());
+
+        //filter to archived first, then show empty message if none
+        localExpected.updateFilteredPersonList(PREDICATE_SHOW_ARCHIVED_PERSONS);
+
+        assertCommandSuccess(
+                new ListArchivedCommand(),
+                localModel,
+                ListArchivedCommand.MESSAGE_EMPTY,
+                localExpected
+        );
+        // Sanity
+        assertEquals(0, localModel.getFilteredPersonList().size());
     }
 
     @Test

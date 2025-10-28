@@ -11,18 +11,18 @@ import seedu.address.model.person.exceptions.InvalidMatriculationNumberException
 public class MatriculationNumber {
 
     public static final String MESSAGE_CONSTRAINTS =
-        "Matriculation numbers must be exactly 10 characters long, "
+        "Matriculation numbers must be exactly 9 characters long, "
             + "start with 'A', end with an alphabet, "
-            + "and contain digits in between (e.g. A01234567X).";
+            + "and contain digits in between (e.g. A1234567X).";
 
     /**
      * Format:
      * - First char: 'A'
      * - Next 8 chars: digits 0–9
      * - Last char: alphabet (A–Z)
-     * Total length: 10.
+     * Total length: 9.
      */
-    public static final String VALIDATION_REGEX = "A\\d{8}[A-Z]";
+    public static final String VALIDATION_REGEX = "A\\d{7}[A-Z]";
 
     public final String value;
 

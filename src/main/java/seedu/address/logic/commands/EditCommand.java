@@ -14,7 +14,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.logging.Logger;
 
+import seedu.address.commons.core.LogsCenter;
 import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.CollectionUtil;
 import seedu.address.commons.util.ToStringBuilder;
@@ -52,6 +54,8 @@ public class EditCommand extends Command {
     public static final String MESSAGE_NOT_EDITED = "At least one field to edit must be provided.";
     public static final String MESSAGE_DUPLICATE_PERSON = "This person already exists in the address book.";
 
+    private static final Logger logger = LogsCenter.getLogger(EditCommand.class);
+
     private final Index index;
     private final EditPersonDescriptor editPersonDescriptor;
 
@@ -72,19 +76,34 @@ public class EditCommand extends Command {
         requireNonNull(model);
         List<Person> lastShownList = model.getFilteredPersonList();
 
+        // Log that an edit attempt is starting
+        logger.info(String.format("Executing edit command for index: %d", index.getOneBased()));
+
         if (index.getZeroBased() >= lastShownList.size()) {
+            logger.warning(String.format("Edit failed - invalid index: %d (list size: %d)",
+                index.getOneBased(), lastShownList.size()));
             throw new CommandException(Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
         }
 
         Person personToEdit = lastShownList.get(index.getZeroBased());
+        logger.fine(String.format("Editing person: %s (%s)",
+            personToEdit.getName(), personToEdit.getMatriculationNumber()));
+
         Person editedPerson = createEditedPerson(personToEdit, editPersonDescriptor);
 
         if (!personToEdit.isSamePerson(editedPerson) && model.hasPerson(editedPerson)) {
+            logger.warning(String.format(
+                "Edit failed - duplicate detected for matriculation number: %s",
+                editedPerson.getMatriculationNumber()));
             throw new CommandException(MESSAGE_DUPLICATE_PERSON);
         }
 
         model.setPerson(personToEdit, editedPerson);
         model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
+
+        logger.info(String.format("Successfully edited person: [%s → %s]",
+            personToEdit.getMatriculationNumber(), editedPerson.getMatriculationNumber()));
+
         return new CommandResult(String.format(MESSAGE_EDIT_PERSON_SUCCESS, Messages.format(editedPerson)));
     }
 
@@ -102,7 +121,16 @@ public class EditCommand extends Command {
             editPersonDescriptor.getMatriculationNumber().orElse(personToEdit.getMatriculationNumber());
         Set<Tag> updatedTags = editPersonDescriptor.getTags().orElse(personToEdit.getTags());
 
-        return new Person(updatedName, updatedPhone, updatedEmail, updatedMatriculationNumber, updatedTags);
+        // returns new person with prior archive status and payment record
+        return new Person(
+                updatedName,
+                updatedPhone,
+                updatedEmail,
+                updatedMatriculationNumber,
+                updatedTags,
+                personToEdit.isArchived(),
+                personToEdit.getPayments()
+        );
     }
 
     @Override
@@ -127,6 +155,11 @@ public class EditCommand extends Command {
             .add("index", index)
             .add("editPersonDescriptor", editPersonDescriptor)
             .toString();
+    }
+
+    @Override
+    public boolean isMutating() {
+        return true;
     }
 
     /**

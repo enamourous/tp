@@ -141,11 +141,6 @@ public class AddMemberCommandTest {
         }
 
         @Override
-        public void deletePerson(Person target) {
-            throw new AssertionError("This method should not be called.");
-        }
-
-        @Override
         public void setPerson(Person target, Person editedPerson) {
             throw new AssertionError("This method should not be called.");
         }
@@ -157,6 +152,36 @@ public class AddMemberCommandTest {
 
         @Override
         public void updateFilteredPersonList(Predicate<Person> predicate) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public boolean canUndo() {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void saveSnapshot() {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void undo() {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void clearRedo() {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public boolean canRedo() {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void redo() {
             throw new AssertionError("This method should not be called.");
         }
     }

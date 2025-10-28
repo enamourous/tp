@@ -4,6 +4,8 @@ import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.nio.file.Path;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 
@@ -22,6 +24,8 @@ public class ModelManager implements Model {
     private final AddressBook addressBook;
     private final UserPrefs userPrefs;
     private final FilteredList<Person> filteredPersons;
+    private final Deque<ReadOnlyAddressBook> undoStack = new ArrayDeque<>();
+    private final Deque<ReadOnlyAddressBook> redoStack = new ArrayDeque<>(); // optional
 
     /**
      * Initializes a ModelManager with the given addressBook and userPrefs.
@@ -34,6 +38,7 @@ public class ModelManager implements Model {
         this.addressBook = new AddressBook(addressBook);
         this.userPrefs = new UserPrefs(userPrefs);
         filteredPersons = new FilteredList<>(this.addressBook.getPersonList());
+        updateFilteredPersonList(PREDICATE_SHOW_ACTIVE_PERSONS);
     }
 
     public ModelManager() {
@@ -94,11 +99,6 @@ public class ModelManager implements Model {
     }
 
     @Override
-    public void deletePerson(Person target) {
-        addressBook.removePerson(target);
-    }
-
-    @Override
     public void addPerson(Person person) {
         addressBook.addPerson(person);
         updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
@@ -126,6 +126,52 @@ public class ModelManager implements Model {
     public void updateFilteredPersonList(Predicate<Person> predicate) {
         requireNonNull(predicate);
         filteredPersons.setPredicate(predicate);
+    }
+
+    @Override
+    public void saveSnapshot() {
+        undoStack.push(new AddressBook(this.addressBook)); // deep copy
+    }
+
+    @Override
+    public boolean canUndo() {
+        return !undoStack.isEmpty();
+    }
+
+    @Override
+    public void undo() {
+        if (!canUndo()) {
+            throw new IllegalStateException("Nothing to undo");
+        }
+        // push current to redoStack
+        redoStack.push(new AddressBook(this.addressBook));
+        AddressBook prev = new AddressBook(undoStack.pop());
+        this.addressBook.resetData(prev);
+        // show active list after undo
+        updateFilteredPersonList(PREDICATE_SHOW_ACTIVE_PERSONS);
+    }
+
+    @Override
+    public void clearRedo() {
+        redoStack.clear();
+    }
+
+    @Override
+    public boolean canRedo() {
+        return !redoStack.isEmpty();
+    }
+
+    @Override
+    public void redo() {
+        if (!canRedo()) {
+            throw new IllegalStateException("Nothing to redo");
+        }
+        // push current to undoStack for safety
+        undoStack.push(new AddressBook(this.addressBook));
+
+        AddressBook next = new AddressBook(redoStack.pop());
+        this.addressBook.resetData(next);
+        updateFilteredPersonList(PREDICATE_SHOW_ACTIVE_PERSONS);
     }
 
     @Override

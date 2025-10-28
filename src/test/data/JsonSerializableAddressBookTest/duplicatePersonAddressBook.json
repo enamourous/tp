@@ -4,7 +4,7 @@
       "name": "Alice Pauline",
       "phone": "94351253",
       "email": "alice@example.com",
-      "matriculationNumber": "A44444444A",
+      "matriculationNumber": "A4444444A",
       "tags": [
         "friends"
       ]
@@ -13,7 +13,7 @@
       "name": "Alice George",
       "phone": "94351253",
       "email": "pauline@example.com",
-      "matriculationNumber": "A44444444A"
+      "matriculationNumber": "A4444444A"
     }
   ]
 }

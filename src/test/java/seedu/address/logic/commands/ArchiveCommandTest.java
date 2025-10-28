@@ -85,9 +85,11 @@ public class ArchiveCommandTest {
         Person p = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
         model.setPerson(p, p.withArchived(true));
 
+        // show archived so index 1 refers to that same person
+        model.updateFilteredPersonList(seedu.address.model.Model.PREDICATE_SHOW_ARCHIVED_PERSONS);
+
         ArchiveCommand command = new ArchiveCommand(List.of(INDEX_FIRST_PERSON));
 
-        // Expect MESSAGE_ALREADY_ARCHIVED to include the person's name
         assertCommandFailure(command, model,
                 String.format(ArchiveCommand.MESSAGE_ALREADY_ARCHIVED, p.getName()));
     }

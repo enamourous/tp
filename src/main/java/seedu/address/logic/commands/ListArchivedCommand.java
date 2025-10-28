@@ -13,12 +13,16 @@ public class ListArchivedCommand extends Command {
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Lists all archived persons.\n"
             + "Example: " + COMMAND_WORD;
 
+    public static final String MESSAGE_EMPTY = "No archived persons found.";
     public static final String MESSAGE_SUCCESS = "Listed all archived persons";
 
     @Override
     public CommandResult execute(Model model) {
         requireNonNull(model);
         model.updateFilteredPersonList(PREDICATE_SHOW_ARCHIVED_PERSONS);
+        if (model.getFilteredPersonList().isEmpty()) {
+            return new CommandResult(MESSAGE_EMPTY);
+        }
         return new CommandResult(MESSAGE_SUCCESS);
     }
 

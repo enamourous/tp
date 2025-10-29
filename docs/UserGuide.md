@@ -68,7 +68,7 @@ help
 ```
 
 The **Help Window** appears, showing a list of all available commands and their formats.  
-![updated help window](images/UpdatedHelpWIndow.png)
+![updated help window](images/UpdatedHelpWindow.png)
 Now he’s ready to get started.
 
 ---

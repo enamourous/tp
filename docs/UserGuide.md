@@ -42,7 +42,7 @@ Refer to the [Features](#features) below for details of more commands.
 
 ---
 
-## 🪙 Typical Treasurer Workflow using Treasura
+## 🪙 Tutorial: Typical Treasurer Workflow using Treasura
 
 Let’s walk through a day in the life of a CCA treasurer, Alex, as he uses **Treasura** to manage member and payment records for his CCA — *NUS Music Ensemble* — at the start of a new Academic Year.
 
@@ -69,6 +69,7 @@ help
 
 The **Help Window** appears, showing a list of all available commands and their formats.  
 ![updated help window](images/UpdatedHelpWindow.png)
+
 Now he’s ready to get started.
 
 ---
@@ -171,14 +172,15 @@ This shows Ethan’s payment history, confirming that he paid on **2025-09-10**.
 
 ### 🧾 Finding a Specific Payment
 
-Alex then wants to verify all payments related to the *CCA Shirt Fee*,  
-but the payment list is getting long. To locate them precisely, he runs:
+Alex also wants to verify if Ethan has paid for *Membership Fees*,  
+but the payment list is getting long. To locate the payment precisely, he runs:
 
 ```
-findpayment 1 r/CCA Shirt
+findpayment 1 r/membership
 ```
 
-This filters only Ethan’s payments that include the remark *“CCA Shirt”*.
+This filters only Ethan’s payments that include the remark *“membership”*.
+![find ethan's payment](images/FindEthansPayment.png)
 
 ---
 
@@ -230,6 +232,26 @@ Note: all commands can be undone using the 'undo' command
 
 ---
 
+### 📊 Checking Total Collections
+
+It’s nearing the end of the semester, and Alex wants to see **how much the CCA has collected in total** from all members — including membership fees, T-shirt payments, and event contributions.
+
+He uses the `viewpayment all` command to quickly view every recorded payment across all members and calculate the **cumulative total**:
+
+```
+viewpayment all
+```
+![view payment all](images/ViewPaymentAll.png)
+
+Treasura neatly lists all members and their respective total payment, together with a **grand total sum across all payments**.
+
+This helps Alex double-check that all funds have been properly recorded before submitting his finance report.
+
+Note that payment sums of archived members are included for financial consistency.
+
+
+---
+
 ### ✅ End of the Day
 
 By the end of the session, Alex has:
@@ -239,8 +261,9 @@ By the end of the session, Alex has:
 - Recorded CCA shirt payments
 - Verified and corrected payment records
 - Used `undo` to revert a mistaken edit
+- Checked the summary of payments and grand total
 
-All without his hands ever leaving the keyboard or opening an EXCEL spreadsheet. 📊
+**All without his hands ever leaving the keyboard or opening an EXCEL spreadsheet!**
 
 <box type="tip" seamless>
 

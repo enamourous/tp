@@ -27,10 +27,16 @@ public class FindPaymentCommand extends Command {
     public static final String MESSAGE_USAGE = COMMAND_WORD
             + ": Finds payments of the person identified by the displayed index, "
             + "filtered by amount, remark, or date.\n"
-            + "Parameters: INDEX [a/AMOUNT | r/REMARK | d/DATE]\n"
+            + "Parameters: INDEX [a/AMOUNT | r/REMARK | d/DATE] (Exactly one filter should be provided!)\n"
+            + "Amount should be a positive number with at most 2 decimal place. Date should be in YYYY-MM-DD format.\n"
             + "Example: " + COMMAND_WORD + " 1 r/CCA";
 
-    public static final String MESSAGE_SUCCESS = "Found %d payment(s) for %s:\n%s";
+    public static final String MESSAGE_SUCCESS =
+            "Found %d payment(s) for %s:\n%s\n\n"
+                    + "Note: Payments shown here are not indexed. "
+                    + "Do not use these results for 'editpayment' or 'deletepayment'.\n"
+                    + "Use the 'viewpayment' command to obtain the correct payment index.";
+
     public static final String MESSAGE_NOT_FOUND = "No payments found for %s matching %s.";
 
     private static final Logger logger = LogsCenter.getLogger(FindPaymentCommand.class);

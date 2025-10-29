@@ -19,8 +19,9 @@ import seedu.address.model.payment.Amount;
 
 /**
  * Parses input arguments and creates a new FindPaymentCommand object.
- *
- * Accepts exactly one filter (a/, d/, or r/) and rejects unknown prefixes.
+ * <p>
+ * Behaves consistently with AddPaymentCommandParser: provides clear usage
+ * feedback for invalid formats and rejects unknown prefixes.
  */
 public class FindPaymentCommandParser implements Parser<FindPaymentCommand> {
 
@@ -31,32 +32,41 @@ public class FindPaymentCommandParser implements Parser<FindPaymentCommand> {
     private static final String MESSAGE_INVALID_AMOUNT =
             "Invalid amount: must be positive and ≤ 2 decimal places.";
     private static final String MESSAGE_INVALID_DATE =
-            "Invalid date format. Please use YYYY-MM-DD.";
+            "Invalid date. Please use YYYY-MM-DD or YYYY-M-D, and ensure the date is not in the future.";
     private static final String MESSAGE_EMPTY_REMARK =
             "Remark cannot be empty.";
     private static final String MESSAGE_UNKNOWN_PREFIX =
-            "Unknown prefix: %s";
+            "Unknown filter: %s (valid filters are a/AMOUNT, d/DATE and r/REMARK)";
 
-    // Allowed prefixes
     private static final String[] VALID_PREFIXES = { "a/", "r/", "d/" };
 
     @Override
     public FindPaymentCommand parse(String args) throws ParseException {
-        // reject any unknown prefix in the input
+        ArgumentMultimap map = ArgumentTokenizer.tokenize(
+                args, PREFIX_PAYMENT_AMOUNT, PREFIX_PAYMENT_REMARKS, PREFIX_PAYMENT_DATE);
+
         checkForUnknownPrefixes(args);
 
-        ArgumentMultimap map = ArgumentTokenizer.tokenize(args,
-                PREFIX_PAYMENT_AMOUNT, PREFIX_PAYMENT_REMARKS, PREFIX_PAYMENT_DATE);
-
-        // validate index
-        if (map.getPreamble().isBlank()) {
-            throw new ParseException(String.format(
-                    MESSAGE_INVALID_COMMAND_FORMAT, FindPaymentCommand.MESSAGE_USAGE));
+        String preamble = map.getPreamble().trim();
+        if (preamble.isBlank()) {
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindPaymentCommand.MESSAGE_USAGE));
         }
-        Index index = ParserUtil.parseIndex(map.getPreamble());
 
-        // only allow exactly one filter
+        Index index;
+        try {
+            // only take the first word before any spaces
+            String[] tokens = preamble.split("\\s+");
+            if (tokens.length > 1) {
+                throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                        FindPaymentCommand.MESSAGE_USAGE));
+            }
+            index = ParserUtil.parseIndex(tokens[0]);
+        } catch (Exception e) {
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindPaymentCommand.MESSAGE_USAGE));
+        }
+
         map.verifyNoDuplicatePrefixesFor(PREFIX_PAYMENT_AMOUNT, PREFIX_PAYMENT_REMARKS, PREFIX_PAYMENT_DATE);
+
         int filtersUsed = countFilters(map);
         if (filtersUsed == 0) {
             throw new ParseException(MESSAGE_MISSING_FILTER);
@@ -65,7 +75,6 @@ public class FindPaymentCommandParser implements Parser<FindPaymentCommand> {
             throw new ParseException(MESSAGE_TOO_MANY_FILTERS);
         }
 
-        // Step 5: Parse the chosen filter
         return parseFilter(map, index);
     }
 
@@ -73,9 +82,6 @@ public class FindPaymentCommandParser implements Parser<FindPaymentCommand> {
     // Validation helpers
     // ----------------------------------------------------
 
-    /**
-     * Scans for unknown prefixes like x/, y/, etc. and rejects them.
-     */
     private void checkForUnknownPrefixes(String args) throws ParseException {
         Matcher matcher = Pattern.compile("\\b([a-zA-Z]{1,5}/)").matcher(args);
         while (matcher.find()) {
@@ -87,9 +93,6 @@ public class FindPaymentCommandParser implements Parser<FindPaymentCommand> {
         }
     }
 
-    /**
-     * Counts how many valid filter prefixes (a/, r/, d/) are present.
-     */
     private int countFilters(ArgumentMultimap map) {
         return (map.getValue(PREFIX_PAYMENT_AMOUNT).isPresent() ? 1 : 0)
                 + (map.getValue(PREFIX_PAYMENT_REMARKS).isPresent() ? 1 : 0)
@@ -117,9 +120,14 @@ public class FindPaymentCommandParser implements Parser<FindPaymentCommand> {
         }
     }
 
-    private Amount parseAmount(String value) throws ParseException {
+    /**
+     * Parses a valid Amount object from the given string.
+     *
+     * @throws ParseException if amount format is invalid
+     */
+    private Amount parseAmount(String amountStr) throws ParseException {
         try {
-            return Amount.parse(value);
+            return Amount.parse(amountStr);
         } catch (IllegalArgumentException ex) {
             throw new ParseException(MESSAGE_INVALID_AMOUNT, ex);
         }
@@ -133,10 +141,17 @@ public class FindPaymentCommandParser implements Parser<FindPaymentCommand> {
         return remark;
     }
 
-    private LocalDate parseDate(String value) throws ParseException {
+    /**
+     * Parses a valid LocalDate from the given string.
+     * <p>
+     * Accepts both yyyy-MM-dd and yyyy-M-d formats, rejecting future dates.
+     *
+     * @throws ParseException if date format is invalid or in the future
+     */
+    private LocalDate parseDate(String dateStr) throws ParseException {
         try {
-            return LocalDate.parse(value.trim());
-        } catch (DateTimeParseException ex) {
+            return seedu.address.model.payment.Payment.parseFlexibleDate(dateStr);
+        } catch (DateTimeParseException | IllegalArgumentException ex) {
             throw new ParseException(MESSAGE_INVALID_DATE, ex);
         }
     }

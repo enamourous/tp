@@ -4,6 +4,7 @@ import static seedu.address.commons.core.Messages.MESSAGE_INVALID_COMMAND_FORMAT
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.Arrays;
 import java.util.Optional;
 
 import seedu.address.commons.core.index.Index;
@@ -36,6 +37,7 @@ public class FindPaymentCommandParser implements Parser<FindPaymentCommand> {
     public FindPaymentCommand parse(String args) throws ParseException {
         // Check for unknown prefixes
         String[] parts = args.trim().split("\\s+");
+        System.out.println(Arrays.toString(parts));
         for (int i = 1; i < parts.length; i++) { // skip preamble (index) at parts[0]
             String part = parts[i];
             if (!(part.startsWith(PREFIX_AMOUNT.getPrefix())

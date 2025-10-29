@@ -26,7 +26,7 @@ Treasura is primarily targeted towards CCA leaders and treasurers. 🎓💼
 
 4. Open a command terminal, `cd` into the folder you put the jar file in, and use the `java -jar Treasura.jar` command to run the application.<br>
    A GUI similar to the below should appear in a few seconds. Note how the app contains some sample data.<br>
-   ![Ui](images/Ui.png)
+   ![ui on launch](images/UiOnLaunch.png)
 
 5. **Start using Treasura**  
    Type commands into the command box and press **Enter** to execute them.  

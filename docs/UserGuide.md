@@ -204,8 +204,13 @@ This updates Lucas’s first payment record to reflect the correct amount.
 When using `editpayment` or `deletepayment`, you must specify both the member’s index and the payment’s index (with a p/ prefix).
 The payment index is the number shown after running the `viewpayment` command (not `findpayment`).
 
-💡 Tip: Always use `viewpayment` first to check a member’s payment list before editing or deleting any payment!
+<box type="tip" seamless>
+
+**Tip:** Always use `viewpayment` first to check a member’s payment list and `INDEX` before editing or deleting any payment!
+</box>
+
 </div>
+
 
 ---
 
@@ -237,11 +242,10 @@ By the end of the session, Alex has:
 
 All without his hands ever leaving the keyboard or opening an EXCEL spreadsheet. 📊
 
+<box type="tip" seamless>
 
-
-> 💡 **Tip:** This workflow can easily be adapted for other events (e.g., workshop fees, camp payments, or ticketed performances). Just adjust the payment remarks and dates accordingly.
-
-
+**Tip:** This workflow can easily be adapted for other events (e.g., workshop fees, camp payments, or ticketed performances). Just adjust the payment remarks and dates accordingly.
+</box>
 
 ## ⚙️ Full Features
 
@@ -325,6 +329,8 @@ Adding an argument will cause an error!<br>
 
 ---
 
+<!-- @@author Roshan1572 -->
+
 ### Finding Members: `find`
 Finds members whose names or tags contain the given keywords.
 
@@ -343,7 +349,12 @@ Finds members whose names or tags contain the given keywords.
 * `find John` — returns all members with the name “John”.
 * `find Alex David` — returns members named “Alex” or “David”.
 * `find Alex family` — returns members named “Alex” or tagged with “family”.
-  ![result for 'find alex david'](images/findAlexDavidResult.png)
+
+**Expected output:**
+
+  ![result for 'find alex family'](images/findTagName.png)
+
+<!-- @@author -->
 
 ---
 
@@ -366,6 +377,8 @@ Edits details of an existing member.
 
 ---
 
+<!-- @@author Roshan1572 -->
+
 ### Archiving a Member: `archive`
 Archives a member, hiding them from the active list but keeping their records.
 
@@ -386,6 +399,10 @@ Archives a member, hiding them from the active list but keeping their records.
 **Tip:** Members who have been archived still keep their payment and member details. Their details can be viewed via using `listarchived` and `viewpayment INDEX` or `view INDEX`.
 </box>
 
+**Expected output:**
+
+![result for 'archive 1,5'](images/ArchiveOutput.png)
+
 ---
 
 ### Listing Archived Members: `listarchived`
@@ -404,6 +421,10 @@ Adding an argument will cause an error!<br>
 
 </box>
 
+**Expected output:**
+
+![result for 'listarchived'](images/Listarchived.png)
+
 ---
 
 ### Unarchiving a Member: `unarchive`
@@ -420,6 +441,12 @@ Restores an archived member to the active list.
 **Examples:**
 * `listarchived` followed by `unarchive 2` unarchives the 2nd person in the archived list.
 * `listarchived` followed by `unarchive 1,2,4` unarchives the 1st, 2nd and 4th members in the archived list.
+
+**Expected output:**
+
+![result for 'unarchive 1,2'](images/UnarchiveOutput.png)
+
+<!-- @@author -->
 
 ---
 
@@ -527,6 +554,8 @@ Finds payments made by a specific member using filters.
 
 ## ⚙️ General Commands
 
+<!-- @@author Roshan1572 -->
+
 ### Undoing an action: `undo`
 
 Undoes the most recent mutating action performed in Treasura.
@@ -602,6 +631,8 @@ Adding an argument will cause an error!<br>
 
 </box>
 
+<!-- @@author -->
+
 ---
 
 ### Saving the data
@@ -636,20 +667,23 @@ Furthermore, certain edits can cause the AddressBook to behave in unexpected way
 **Q**: If I archive a member, will his/her payments be removed?<br>
 **A**: The archived member's payments will be removed from the main payment history, but you can still access them from viewing the payment of the archived list.
 
+**Q**: Can I perform a full reset on Treasura data?<br>
+**A**: At the moment, we do not support mass removal of user data, since the `clear` function was removed to ensure safety. This feature may be implemented in the future with additional safety measures.
+
 --------------------------------------------------------------------------------------------------------------------
 
 ## Known issues
 
 1. **When using multiple screens**, if you move the application to a secondary screen, and later switch to using only the primary screen, the GUI will open off-screen. The remedy is to delete the `preferences.json` file created by the application before running the application again.
 2. **If you minimize the Help Window** and then run the `help` command (or use the `Help` menu, or the keyboard shortcut `F1`) again, the original Help Window will remain minimized, and no new Help Window will appear. The remedy is to manually restore the minimized Help Window.
-
-## Limitations
-
-1. Undo history is cleared upon application restart.
-2. Payment remarks longer than 100 characters may be truncated in UI.
-3. Only one Treasura instance can access a data file at a time - opening multiple windows at once might not save data properly.
+3. Undo history is cleared upon application restart.
+4. Payment remarks longer than 100 characters may be truncated in UI.
+5. Only one Treasura instance can access a data file at a time - opening multiple windows at once might not save data properly.
+6. Member payments are currently displayed in the command result panel. We will be adding a separate dashboard to view payments seamlessly in the future.
 
 --------------------------------------------------------------------------------------------------------------------
+
+<!-- @@author Roshan1572 -->
 
 ## Command summary
 
@@ -678,7 +712,6 @@ Furthermore, certain edits can cause the AddressBook to behave in unexpected way
 * Member = A NUS student part of a CCA
 * Matriculation number = A unique ID given to all NUS students. Starts with A, followed by 7 digits and ending with any upper case letter.
 * JSON = A file format used to store Treasura data.
+* Mutating action = A command that alters any data in Treasura.
 
-### Appendix: Planned Enhancements
-* Payment dashboard (A quick visualisation of all payments)
-* Store and access member and payment data from multiple CCAs (Separate storage)
+<!-- @@author -->

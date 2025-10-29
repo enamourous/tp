@@ -50,7 +50,7 @@ The bulk of the app's work is done by the following four components:
 
 **How the architecture components interact with each other**
 
-The *Sequence Diagram* below shows how the components interact with each other for the scenario where the user issues the command `delete 1`.
+The *Sequence Diagram* below shows how the components interact with each other for the scenario where the user issues the command `archive 1`.
 
 <puml src="diagrams/ArchitectureSequenceDiagram.puml" width="574" />
 
@@ -90,20 +90,20 @@ Here's a (partial) class diagram of the `Logic` component:
 
 <puml src="diagrams/LogicClassDiagram.puml" width="550"/>
 
-The sequence diagram below illustrates the interactions within the `Logic` component, taking `execute("delete 1")` API call as an example.
+The sequence diagram below illustrates the interactions within the `Logic` component, taking `execute("archive 1")` API call as an example.
 
-<puml src="diagrams/DeleteSequenceDiagram.puml" alt="Interactions Inside the Logic Component for the `delete 1` Command" />
+<puml src="diagrams/ArchiveCommandSequenceDiagram.puml" alt="Interactions Inside the Logic Component for the `archive 1` Command" />
 
 <box type="info" seamless>
 
-**Note:** The lifeline for `DeleteCommandParser` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline continues till the end of diagram.
+**Note:** The lifeline for `archiveCommandParser` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline continues till the end of diagram.
 </box>
 
 How the `Logic` component works:
 
-1. When `Logic` is called upon to execute a command, it is passed to an `AddressBookParser` object which in turn creates a parser that matches the command (e.g., `DeleteCommandParser`) and uses it to parse the command.
-1. This results in a `Command` object (more precisely, an object of one of its subclasses e.g., `DeleteCommand`) which is executed by the `LogicManager`.
-1. The command can communicate with the `Model` when it is executed (e.g. to delete a person).<br>
+1. When `Logic` is called upon to execute a command, it is passed to an `AddressBookParser` object which in turn creates a parser that matches the command (e.g., `archiveCommandParser`) and uses it to parse the command.
+1. This results in a `Command` object (more precisely, an object of one of its subclasses e.g., `archiveCommand`) which is executed by the `LogicManager`.
+1. The command can communicate with the `Model` when it is executed (e.g. to archive a person).<br>
    Note that although this is shown as a single step in the diagram above (for simplicity), in the code it can take several interactions (between the command object and the `Model`) to achieve.
 1. The result of the command execution is encapsulated as a `CommandResult` object which is returned back from `Logic`.
 
@@ -113,7 +113,7 @@ Here are the other classes in `Logic` (omitted from the class diagram above) tha
 
 How the parsing works:
 * When called upon to parse a user command, the `AddressBookParser` class creates an `XYZCommandParser` (`XYZ` is a placeholder for the specific command name e.g., `AddCommandParser`) which uses the other classes shown above to parse the user command and create a `XYZCommand` object (e.g., `AddCommand`) which the `AddressBookParser` returns back as a `Command` object.
-* All `XYZCommandParser` classes (e.g., `AddCommandParser`, `DeleteCommandParser`, ...) inherit from the `Parser` interface so that they can be treated similarly where possible e.g, during testing.
+* All `XYZCommandParser` classes (e.g., `AddCommandParser`, `archiveCommandParser`, ...) inherit from the `Parser` interface so that they can be treated similarly where possible e.g, during testing.
 
 ### Model component
 **API** : [`Model.java`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/model/Model.java)
@@ -176,7 +176,7 @@ Step 1. The user launches the application for the first time. The `VersionedAddr
 
 <puml src="diagrams/UndoRedoState0.puml" alt="UndoRedoState0" />
 
-Step 2. The user executes `delete 5` command to delete the 5th person in the address book. The `delete` command calls `Model#commitAddressBook()`, causing the modified state of the address book after the `delete 5` command executes to be saved in the `addressBookStateList`, and the `currentStatePointer` is shifted to the newly inserted address book state.
+Step 2. The user executes `archive 5` command to archive the 5th person in the address book. The `archive` command calls `Model#commitAddressBook()`, causing the modified state of the address book after the `archive 5` command executes to be saved in the `addressBookStateList`, and the `currentStatePointer` is shifted to the newly inserted address book state.
 
 <puml src="diagrams/UndoRedoState1.puml" alt="UndoRedoState1" />
 
@@ -246,7 +246,7 @@ The following activity diagram summarizes what happens when a user executes a ne
 
 * **Alternative 2:** Individual command knows how to undo/redo by
   itself.
-  * Pros: Will use less memory (e.g. for `delete`, just save the person being deleted).
+  * Pros: Will use less memory (e.g. for `archive`, just save the person being archived).
   * Cons: We must ensure that the implementation of each individual command are correct.
 
 _{more aspects and alternatives to be added}_
@@ -298,48 +298,105 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | `* * *`  | CCA Treasurer | record payments from members             | know who has paid fees                           |
 | `* * *`  | CCA Treasurer | see the time and date of payments        | track payments chronologically                   |
 | `* * *`  | CCA Treasurer | add expenses for CCA purchases           | streamline bookkeeping and avoid manual tracking |
-| `* * *`  | CCA Treasurer | delete expenses for CCA purchases        | delete unwanted data                             |
+| `* * *`  | CCA Treasurer | archive expenses for CCA purchases       | archive unwanted data                            |
 | `* * *`  | CCA Treasurer | sync data automatically when back online | avoid manual backups                             |
-| `* * *`  | CCA Treasurer | delete payment from a member             | delete unintended payment                        |
+| `* * *`  | CCA Treasurer | archive payment from a member            | archive unintended payment                       |
 
 
 *{More to be added}*
 
 ### Use cases
 
-(For all use cases below, the **System** is the `AddressBook` and the **Actor** is the `user`, unless specified otherwise)
+(For all use cases below, the **System** is the `Treasura` and the **Actor** is the `user`, unless specified otherwise)
 
-**Use case: Add an expense**
+---
+
+**Use case: Archive a student**
 
 **MSS**
 
-1.  User requests to list expenses
-2.  Treasura shows a list of expenses
-3.  User requests to add a specific expense into the list
-4.  Treasura adds the expense
+1. User requests to list students.
+2. Treasura shows a list of students.
+3. User requests to archive a specific student.
+4. Treasura archives the student.
 
-    Use case ends.
+   Use case ends.
 
 **Extensions**
 
-* 2a. The list is empty.
-
+* 2a. The list is empty.  
   Use case ends.
 
-* 2a. One or more required fields are missing.
+* 3a. The specified index is invalid (non-integer or out of range).  
+  Use case ends.
 
-    * 2a1. AddressBook shows error: Missing required field: <field>.
+* 4a. The specified student is already archived.  
+  Treasura shows error: *Student is already archived*.  
+  Use case ends.
 
-      Use case ends.
+* 4b. Storage failure occurs.  
+  Treasura shows error: *Unable to save changes*.  
+  Use case ends.
 
-* 2b. A student with the same studentID already exists.
+---
 
-    * 2b1. AddressBook shows error: Student with this ID already exists.
+**Use case: Undo last action**
 
-      Use case ends.
+**MSS**
 
+1. User requests to undo the most recent reversible command.
+2. Treasura reverts the most recent state change.
+3. Treasura shows a confirmation of the undone action.
 
-*{More to be added}*
+   Use case ends.
+
+**Extensions**
+
+* 1a. There is no action to undo.  
+  Treasura shows error: *Nothing to undo*.  
+  Use case ends.
+
+* 2a. The last command is not undoable (e.g., non-state-changing action).  
+  Treasura shows error: *Last action cannot be undone*.  
+  Use case ends.
+
+* 2b. Storage failure occurs while reverting.  
+  Treasura shows error: *Unable to restore previous state*.  
+  Use case ends.
+
+---
+
+**Use case: Unarchive a student**
+
+**MSS**
+
+1. User requests to list archived students.
+2. Treasura shows a list of archived students.
+3. User requests to unarchive a specific student.
+4. Treasura unarchives the student and moves them back to the active list.
+
+   Use case ends.
+
+**Extensions**
+
+* 2a. The archived list is empty.  
+  Use case ends.
+
+* 3a. The specified index is invalid (non-integer or out of range).  
+  Use case ends.
+
+* 4a. The specified student is already active (not archived).  
+  Treasura shows error: *Student is not archived*.  
+  Use case ends.
+
+* 4b. Unarchiving would violate a uniqueness constraint (e.g., an active student with the same `studentID` already exists).  
+  Treasura shows error: *Student with this ID already exists*.  
+  Use case ends.
+
+* 4c. Storage failure occurs.  
+  Treasura shows error: *Unable to save changes*.  
+  Use case ends.
+
 
 ### Non-Functional Requirements
 
@@ -369,6 +426,13 @@ testers are expected to do more *exploratory* testing.
 
 </box>
 
+### Appendix: Planned Enhancements
+Our team size is 5.
+* Payment dashboard (A quick visualisation of all payments)
+* Store and access member and payment data from multiple CCAs (Separate storage)
+* Some of our error messages may not identify the exact cause of error, and may return a general error message which provides the correct command format to use. We will be refining these error messages to target their specific cause in the future versions.
+* Our `editpayment` and `archivepayment` features may function without using viewpayment to view the payment indices. This will be fixed in a future version.
+
 ### Launch and shutdown
 
 1. Initial launch
@@ -386,19 +450,19 @@ testers are expected to do more *exploratory* testing.
 
 1. _{ more test cases …​ }_
 
-### Deleting a person
+### Archiving a person
 
 1. Deleting a person while all persons are being shown
 
    1. Prerequisites: List all persons using the `list` command. Multiple persons in the list.
 
-   1. Test case: `delete 1`<br>
-      Expected: First contact is deleted from the list. Details of the deleted contact shown in the status message. Timestamp in the status bar is updated.
+   1. Test case: `archive 1`<br>
+      Expected: First contact is archived from the list. Details of the archived contact shown in the status message. Timestamp in the status bar is updated.
 
-   1. Test case: `delete 0`<br>
-      Expected: No person is deleted. Error details shown in the status message. Status bar remains the same.
+   1. Test case: `archive 0`<br>
+      Expected: No person is archived. Error details shown in the status message. Status bar remains the same.
 
-   1. Other incorrect delete commands to try: `delete`, `delete x`, `...` (where x is larger than the list size)<br>
+   1. Other incorrect archive commands to try: `archive`, `archive x`, `...` (where x is larger than the list size)<br>
       Expected: Similar to previous.
 
 1. _{ more test cases …​ }_

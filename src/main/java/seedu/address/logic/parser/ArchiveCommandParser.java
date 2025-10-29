@@ -18,7 +18,6 @@ import seedu.address.logic.parser.exceptions.ParseException;
  *   "1,2,5"            // multiple comma-separated indexes
  *   " 1 ,  2 , 3  "    // spaces around commas and indexes are allowed
  * </pre>
- * Any blank tokens (e.g., from ",,") are ignored; if no valid tokens remain,
  * usage error is raised. Each non-blank token is parsed via {@link ParserUtil#parseIndex(String)}.
  */
 public class ArchiveCommandParser implements Parser<ArchiveCommand> {
@@ -26,11 +25,11 @@ public class ArchiveCommandParser implements Parser<ArchiveCommand> {
     @Override
     public ArchiveCommand parse(String args) throws ParseException {
         try {
-            final String trimmedArgs = args.trim();
+            String trimmedArgs = args.trim();
             validateNonEmpty(trimmedArgs);
 
-            final String[] tokens = splitByComma(trimmedArgs);
-            final List<Index> indexes = parseIndexes(tokens);
+            String[] tokens = splitByComma(trimmedArgs);
+            List<Index> indexes = parseIndexes(tokens);
 
             ensureNonEmptyIndexes(indexes);
 

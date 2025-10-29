@@ -21,11 +21,11 @@ public class UnarchiveCommandParser implements Parser<UnarchiveCommand> {
     @Override
     public UnarchiveCommand parse(String args) throws ParseException {
         try {
-            final String trimmedArgs = args.trim();
+            String trimmedArgs = args.trim();
             validateNonEmpty(trimmedArgs);
 
-            final String[] tokens = splitByComma(trimmedArgs);
-            final List<Index> indexes = parseIndexes(tokens);
+            String[] tokens = splitByComma(trimmedArgs);
+            List<Index> indexes = parseIndexes(tokens);
 
             ensureNonEmptyIndexes(indexes);
 

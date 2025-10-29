@@ -195,7 +195,7 @@ editpayment 1 p/1 a/23.00
 ```
 
 This updates Lucas’s first payment record to reflect the correct amount.
-![find and edit lucas payment](images/FindAndEditLucasPayment.png)
+![view and edit lucas payment](images/ViewAndEditLucasPayment.png)
 
 <div markdown="block" class="alert alert-info">
 

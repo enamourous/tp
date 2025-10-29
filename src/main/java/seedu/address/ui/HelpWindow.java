@@ -36,16 +36,14 @@ public class HelpWindow extends UiPart<Stage> {
                     + "  addpayment INDEX[,INDEX]... a/AMOUNT d/DATE [r/REMARKS] — add payment(s)\n"
                     + "  editpayment PERSON_INDEX p/PAYMENT_INDEX [a/AMOUNT] [d/DATE] [r/REMARKS] — edit payment\n"
                     + "  deletepayment PERSON_INDEX[,PERSON_INDEX]... p/PAYMENT_INDEX — delete payment(s)\n"
-                    + "  viewpayment INDEX | all — view payment(s)\n"
+                    + "  viewpayment INDEX — view payment(s)\n"
                     + "  findpayment INDEX [a/AMOUNT] [r/REMARK] [d/DATE] — search a member’s payments\n\n"
 
                     + "**System Commands**\n"
                     + "  undo — revert the last change\n"
                     + "  redo — reapply the last undone change\n"
                     + "  help — show this help window\n"
-                    + "  exit — close the application\n\n"
-
-                    + "Tip: Run 'list' or 'listarchived' before commands that use an INDEX.\n";
+                    + "  exit — close the application\n\n";
 
 
     private static final Logger logger = LogsCenter.getLogger(HelpWindow.class);

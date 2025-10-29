@@ -46,6 +46,14 @@ Refer to the [Features](#features) below for details of more commands.
 
 Let’s walk through a day in the life of a CCA treasurer, Alex, as he uses **Treasura** to manage member and payment records for his CCA — *NUS Music Ensemble* — at the start of a new Academic Year.
 
+<div markdown="block" class="alert alert-info">
+
+**ℹ️ Note about indexes**
+
+All `INDEX` values used in commands (e.g. `edit`, `archive`, `addpayment`) refer to the numbering shown in the **currently displayed list** in the GUI.  
+If you run a command such as `listarchived` or `find`, the indexes will change according to that list.
+</div>
+
 ---
 
 ### 🎓 A New Semester Begins
@@ -76,13 +84,7 @@ list
 ```
 
 He sees the following list:
-
-| Index | Name             | Matriculation | Tags     |
-|--------|------------------|---------------|-----------|
-| 1      | John Tan         | A1234567X     | exco      |
-| 2      | Chloe Ng         | A0134578Y     | logistics |
-| 3      | Marcus Lee       | A0145789B     | performer |
-| 4      | Nicole Lim       | A0156789H     | exco      |
+![graduated seniors](images/GraduatedSeniors.png)
 
 John and Chloe have graduated, so Alex archives them with:
 
@@ -96,6 +98,7 @@ He can confirm the archived list using:
 ```
 listarchived
 ```
+![seniors archived](images/SeniorsArchived.png)
 
 ---
 
@@ -117,6 +120,7 @@ list
 ```
 
 and confirms that all new members appear correctly.
+![new members added](images/NewMembersAdded.png)
 
 ---
 
@@ -130,6 +134,7 @@ addpayment 1,2 a/21.00 d/2025-09-10 r/CCA Shirt Fee
 ```
 
 (Here, `1` refers to Ethan, and `2` to Sarah, based on the current list.)
+![ethan sarah payment success](images/EthanSarahPaymentSuccess.png)
 
 A few days later, Lucas pays as well, so Alex first finds Lucas in the list:
 ```
@@ -160,6 +165,7 @@ viewpayment 1
 ```
 
 This shows Ethan’s payment history, confirming that he paid on **2025-09-10**.
+![find and view ethan's payments](images/FindAndViewEthansPayments.png)
 
 ---
 
@@ -179,16 +185,27 @@ This filters only Ethan’s payments that include the remark *“CCA Shirt”*.
 ### ✏️ Correcting a Payment Error
 
 After checking receipts, Alex realizes he made a mistake —  
-Marcus (member #3) actually paid \$23.00 because he ordered a Large shirt,  
-but Alex accidentally recorded it as \$21.00.
+Lucas actually paid **\$23.00** because he ordered a Large shirt,  
+but Alex accidentally recorded it as **\$21.00**.
 
-He fixes this with:
+He first finds Lucas with `find lucas` command, then lists all his payments with `viewpayment 1` command. Lastly, he fixes the payment error with:
 
 ```
-editpayment 3 p/1 a/23.00
+editpayment 1 p/1 a/23.00
 ```
 
-This updates Marcus’s first payment record to reflect the correct amount.
+This updates Lucas’s first payment record to reflect the correct amount.
+![find and edit lucas payment](images/FindAndEditLucasPayment.png)
+
+<div markdown="block" class="alert alert-info">
+
+**ℹ️ Important note about payments**
+
+When using `editpayment` or `deletepayment`, you must specify both the member’s index and the payment’s index (with a p/ prefix).
+The payment index is the number shown after running the `viewpayment` command (not `findpayment`).
+
+💡 Tip: Always use `viewpayment` first to check a member’s payment list before editing or deleting any payment!
+</div>
 
 ---
 
@@ -220,19 +237,11 @@ By the end of the session, Alex has:
 
 All without his hands ever leaving the keyboard or opening an EXCEL spreadsheet. 📊
 
----
+
 
 > 💡 **Tip:** This workflow can easily be adapted for other events (e.g., workshop fees, camp payments, or ticketed performances). Just adjust the payment remarks and dates accordingly.
 
---------------------------------------------------------------------------------------------------------------------
-<div markdown="block" class="alert alert-info">
 
-**ℹ️ Note about indexes**
-
-All `INDEX` values used in commands (e.g. `edit`, `archive`, `addpayment`) refer to the numbering shown in the **currently displayed list** in the GUI.  
-If you run a command such as `listarchived` or `find`, the indexes will change according to that list.
-
-</div>
 
 ## ⚙️ Full Features
 

@@ -46,6 +46,14 @@ Refer to the [Features](#features) below for details of more commands.
 
 Let’s walk through a day in the life of a CCA treasurer, Alex, as he uses **Treasura** to manage member and payment records for his CCA — *NUS Music Ensemble* — at the start of a new Academic Year.
 
+<div markdown="block" class="alert alert-info">
+
+**ℹ️ Note about indexes**
+
+All `INDEX` values used in commands (e.g. `edit`, `archive`, `addpayment`) refer to the numbering shown in the **currently displayed list** in the GUI.  
+If you run a command such as `listarchived` or `find`, the indexes will change according to that list.
+</div>
+
 ---
 
 ### 🎓 A New Semester Begins
@@ -180,7 +188,7 @@ After checking receipts, Alex realizes he made a mistake —
 Lucas actually paid **\$23.00** because he ordered a Large shirt,  
 but Alex accidentally recorded it as **\$21.00**.
 
-He first finds Lucas with `find lucas` command, then fixes this with:
+He first finds Lucas with `find lucas` command, then lists all his payments with `viewpayment 1` command. Lastly, he fixes the payment error with:
 
 ```
 editpayment 1 p/1 a/23.00
@@ -188,6 +196,16 @@ editpayment 1 p/1 a/23.00
 
 This updates Lucas’s first payment record to reflect the correct amount.
 ![find and edit lucas payment](images/FindAndEditLucasPayment.png)
+
+<div markdown="block" class="alert alert-info">
+
+**ℹ️ Important note about payments**
+
+When using `editpayment` or `deletepayment`, you must specify both the member’s index and the payment’s index (with a p/ prefix).
+The payment index is the number shown after running the `viewpayment` command (not `findpayment`).
+
+💡 Tip: Always use `viewpayment` first to check a member’s payment list before editing or deleting any payment!
+</div>
 
 ---
 
@@ -219,19 +237,11 @@ By the end of the session, Alex has:
 
 All without his hands ever leaving the keyboard or opening an EXCEL spreadsheet. 📊
 
----
+
 
 > 💡 **Tip:** This workflow can easily be adapted for other events (e.g., workshop fees, camp payments, or ticketed performances). Just adjust the payment remarks and dates accordingly.
 
---------------------------------------------------------------------------------------------------------------------
-<div markdown="block" class="alert alert-info">
 
-**ℹ️ Note about indexes**
-
-All `INDEX` values used in commands (e.g. `edit`, `archive`, `addpayment`) refer to the numbering shown in the **currently displayed list** in the GUI.  
-If you run a command such as `listarchived` or `find`, the indexes will change according to that list.
-
-</div>
 
 ## ⚙️ Full Features
 

@@ -158,6 +158,14 @@ Classes used by multiple components are in the `seedu.address.commons` package.
 
 This section describes some noteworthy details on how certain features are implemented.
 
+### Handling Payments in the Model
+
+- `Person` objects are immutable. Any addition, deletion, or edit of a payment produces a new `Person` object.
+- `Model#setPerson()` replaces the old object in both the master and filtered lists.
+- Undo/redo works seamlessly because each state stores the entire `AddressBook`, including `Person` payment lists.
+- Logging occurs for every mutating action via `LogsCenter`, aiding debugging and traceability.
+
+
 ### \[Proposed\] Undo/redo feature
 
 #### Proposed Implementation

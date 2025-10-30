@@ -1,6 +1,7 @@
 package seedu.address.logic.commands;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.testutil.Assert.assertThrows;
 
 import java.math.BigDecimal;
@@ -52,6 +53,42 @@ public class DeletePaymentCommandTest {
                 Index.fromOneBased(1), List.of(Index.fromOneBased(1)));
 
         assertThrows(CommandException.class, () -> command.execute(model));
+    }
+
+    @Test
+    public void execute_emptyFilteredList_throwsCommandException() {
+        Model model = new ModelStub() {
+            @Override public ObservableList<Person> getFilteredPersonList() {
+                return FXCollections.observableArrayList(); // empty
+            }
+        };
+
+        DeletePaymentCommand cmd = new DeletePaymentCommand(Index.fromOneBased(1),
+                List.of(Index.fromOneBased(1)));
+
+        assertThrows(CommandException.class, () -> cmd.execute(model));
+    }
+
+    @Test
+    public void execute_personIndexOutOfBounds_throwsCommandException() {
+        Person p = new PersonBuilder().withName("X").build();
+        Model model = new ModelStub() {
+            @Override public ObservableList<Person> getFilteredPersonList() {
+                return FXCollections.observableArrayList(p); // size=1
+            }
+        };
+
+        DeletePaymentCommand cmd = new DeletePaymentCommand(Index.fromOneBased(2),
+                List.of(Index.fromOneBased(1)));
+
+        assertThrows(CommandException.class, () -> cmd.execute(model));
+    }
+
+    @Test
+    public void isMutating_returnsTrue() {
+        DeletePaymentCommand cmd = new DeletePaymentCommand(Index.fromOneBased(1),
+                List.of(Index.fromOneBased(1)));
+        assertTrue(cmd.isMutating());
     }
 
     @Test

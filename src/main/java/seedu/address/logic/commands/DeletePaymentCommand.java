@@ -117,7 +117,7 @@ public class DeletePaymentCommand extends Command {
     private Person resolveTargetPerson(Model model) throws CommandException {
         final List<Person> shown = model.getFilteredPersonList();
         final int pZero = personIndex.getZeroBased();
-        if (pZero >= shown.size()) {
+        if (pZero < 0 || pZero >= shown.size()) {
             logger.warning(() -> String.format(
                     "Invalid person index %d (list size: %d)", personIndex.getOneBased(), shown.size()));
             throw new CommandException(MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);

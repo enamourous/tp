@@ -21,8 +21,8 @@ public final class Payment {
      * This guarantees a stable, deterministic order even when dates are equal.
      */
     public static final Comparator<Payment> DISPLAY_ORDER = Comparator
-            .comparing(Payment::getDate).reversed()
-            .thenComparing(Payment::getRecordedAt, Comparator.reverseOrder());
+        .comparing(Payment::getDate).reversed()
+        .thenComparing(Payment::getRecordedAt, Comparator.reverseOrder());
 
     private final Amount amount;
     private final LocalDate date;
@@ -85,9 +85,9 @@ public final class Payment {
         }
         Payment p = (Payment) o;
         return Objects.equals(this.amount, p.amount)
-                && Objects.equals(this.date, p.date)
-                && Objects.equals(this.remarks, p.remarks)
-                && Objects.equals(this.recordedAt, p.recordedAt);
+            && Objects.equals(this.date, p.date)
+            && Objects.equals(this.remarks, p.remarks)
+            && Objects.equals(this.recordedAt, p.recordedAt);
     }
 
     @Override
@@ -118,25 +118,23 @@ public final class Payment {
     }
 
     /**
-     * Flexible parser that accepts both yyyy-MM-dd and yyyy-M-d formats.
+     * Strict date parser that only accepts YYYY-MM-DD format.
      *
-     * @throws IllegalArgumentException if the parsed date is in the future
+     * @throws IllegalArgumentException if the format is invalid or the date is in the future.
      */
-    public static LocalDate parseFlexibleDate(String dateStr) {
+    public static LocalDate parseStrictDate(String dateStr) {
         Objects.requireNonNull(dateStr, "dateStr");
         String trimmed = dateStr.trim();
-        LocalDate parsedDate;
 
         try {
-            parsedDate = LocalDate.parse(trimmed, DateTimeFormatter.ISO_LOCAL_DATE);
+            LocalDate parsedDate = LocalDate.parse(trimmed, DateTimeFormatter.ISO_LOCAL_DATE);
+            if (parsedDate.isAfter(LocalDate.now())) {
+                throw new IllegalArgumentException("Date cannot be in the future.");
+            }
+            return parsedDate;
         } catch (DateTimeParseException e) {
-            DateTimeFormatter fallback = DateTimeFormatter.ofPattern("yyyy-M-d");
-            parsedDate = LocalDate.parse(trimmed, fallback);
+            throw new IllegalArgumentException(
+                "Invalid date format. Please use strict YYYY-MM-DD (e.g., 2025-01-01).", e);
         }
-
-        if (parsedDate.isAfter(LocalDate.now())) {
-            throw new IllegalArgumentException("Date cannot be in the future.");
-        }
-        return parsedDate;
     }
 }

@@ -21,18 +21,18 @@ import seedu.address.model.payment.Amount;
 public class EditPaymentCommandParser implements Parser<EditPaymentCommand> {
 
     public static final String MESSAGE_INVALID_DATE =
-        "Invalid date. Please use YYYY-MM-DD or YYYY-M-D, and ensure the date is correct and not in the future.";
+        "Invalid date. Please use the strict format YYYY-MM-DD (e.g., 2025-01-01) and ensure it is not in the future.";
 
     @Override
     public EditPaymentCommand parse(String args) throws ParseException {
         ArgumentMultimap map = ArgumentTokenizer.tokenize(
             args, PREFIX_PAYMENT_INDEX, PREFIX_PAYMENT_AMOUNT, PREFIX_PAYMENT_DATE, PREFIX_PAYMENT_REMARKS);
 
-        //Reject multiple of the same prefix
+        // Reject multiple of the same prefix
         map.verifyNoDuplicatePrefixesFor(PREFIX_PAYMENT_INDEX, PREFIX_PAYMENT_AMOUNT,
             PREFIX_PAYMENT_DATE, PREFIX_PAYMENT_REMARKS);
 
-        //Check for unknown prefixes
+        // Check for unknown prefixes
         checkForUnknownPrefixes(args);
 
         Index personIndex;
@@ -53,7 +53,7 @@ public class EditPaymentCommandParser implements Parser<EditPaymentCommand> {
 
         Optional<String> dateOpt = map.getValue(PREFIX_PAYMENT_DATE);
         if (dateOpt.isPresent()) {
-            d.setDate(parseDate(dateOpt.get())); //flexible date parsing with validation
+            d.setDate(parseDate(dateOpt.get())); // strict date parsing
         }
 
         map.getValue(PREFIX_PAYMENT_REMARKS).ifPresent(d::setRemarks);
@@ -88,20 +88,18 @@ public class EditPaymentCommandParser implements Parser<EditPaymentCommand> {
     }
 
     /**
-     * ✅ Parses dates flexibly and disallows future ones.
-     * Accepts both yyyy-MM-dd and yyyy-M-d.
+     * ✅ Parses dates strictly in YYYY-MM-DD format and disallows future dates.
      */
     private static LocalDate parseDate(String s) throws ParseException {
         try {
-            LocalDate date = seedu.address.model.payment.Payment.parseFlexibleDate(s.trim());
-            return date;
+            return seedu.address.model.payment.Payment.parseStrictDate(s.trim());
         } catch (DateTimeParseException | IllegalArgumentException ex) {
             throw new ParseException(MESSAGE_INVALID_DATE);
         }
     }
 
     /**
-     * ✅ Detect any prefixes that are not recognized and throw a ParseException.
+     * ✅ Detects any prefixes that are not recognized and throws a ParseException.
      */
     private static void checkForUnknownPrefixes(String args) throws ParseException {
         // All valid prefixes for this command

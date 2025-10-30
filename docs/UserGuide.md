@@ -601,7 +601,7 @@ undo                      ← removes the payment just added
 <box type="warning" seamless>
 
 **Caution:**
-Adding an argument will cause an error! Please unarchive the member first.<br>
+Adding an argument will cause an error!<br>
 
 </box>
 
@@ -659,11 +659,11 @@ Adding an argument will cause an error!<br>
 
 ### Saving the data
 
-Treasura data are saved in the hard disk automatically after any command that changes the data. There is no need to save manually.
+Treasura data is saved in the hard disk automatically after any command that changes the data. There is no need to save manually.
 
 ### Editing the data file
 
-Treasura data are saved automatically as a JSON file `[JAR file location]/data/addressbook.json`. Advanced users are welcome to update data directly by editing that data file.
+Treasura data is saved automatically as a JSON file `[JAR file location]/data/addressbook.json`. Advanced users are welcome to update data directly by editing that data file.
 
 <box type="warning" seamless>
 

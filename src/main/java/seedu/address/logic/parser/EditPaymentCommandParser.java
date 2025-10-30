@@ -21,7 +21,7 @@ import seedu.address.model.payment.Amount;
 public class EditPaymentCommandParser implements Parser<EditPaymentCommand> {
 
     public static final String MESSAGE_INVALID_DATE =
-        "Invalid date. Please use YYYY-MM-DD or YYYY-M-D, and ensure the date is not in the future.";
+        "Invalid date. Please use YYYY-MM-DD or YYYY-M-D, and ensure the date is correct and not in the future.";
 
     @Override
     public EditPaymentCommand parse(String args) throws ParseException {

@@ -27,7 +27,7 @@ public class AddPaymentCommandParser implements Parser<AddPaymentCommand> {
     public static final String MESSAGE_INVALID_AMOUNT =
         "Amount must be positive and have at most 2 decimal places!";
     public static final String MESSAGE_INVALID_DATE =
-        "Invalid date. Please use YYYY-MM-DD or YYYY-M-D, and ensure the date is not in the future.";
+        "Invalid date. Please use YYYY-MM-DD or YYYY-M-D, and ensure the date is correct and not in the future.";
 
     @Override
     public AddPaymentCommand parse(String args) throws ParseException {

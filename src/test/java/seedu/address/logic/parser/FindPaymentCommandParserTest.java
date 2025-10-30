@@ -62,7 +62,7 @@ public class FindPaymentCommandParserTest {
     public void parse_invalidDate_throwsParseException() {
         ParseException e = assertThrows(ParseException.class, () -> parser.parse("1 d/2025-31-12"));
         assertEquals("Invalid date. Please use YYYY-MM-DD or YYYY-M-D, "
-                + "and ensure the date is not in the future.", e.getMessage());
+                + "and ensure the date is correct and not in the future.", e.getMessage());
     }
 
     @Test

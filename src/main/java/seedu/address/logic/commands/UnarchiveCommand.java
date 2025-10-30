@@ -17,52 +17,110 @@ import seedu.address.model.person.Person;
 
 /**
  * Unarchives one or more persons identified by their indexes in the displayed list.
+ *
+ * <p>Command format:
+ * <pre>
+ *   unarchive INDEX[,INDEX]...
+ * </pre>
+ *
+ * <p>Indexes refer to the currently displayed person list.
+ * Duplicate indexes are permitted in input but will be de-duplicated internally
+ * while preserving the first-seen order.
  */
 public class UnarchiveCommand extends Command {
 
+    /** Command word used to invoke this command. */
     public static final String COMMAND_WORD = "unarchive";
 
+    /** Usage message describing the command format and examples. */
     public static final String MESSAGE_USAGE = COMMAND_WORD
-        + ": Unarchives one or more persons identified by their indexes in the displayed person list.\n"
-        + "Parameters: INDEX[,INDEX]... (each must be a positive integer)\n"
-        + "Example (single): " + COMMAND_WORD + " 1\n"
-        + "Example (multiple): " + COMMAND_WORD + " 1,2,5";
+            + ": Unarchives one or more persons identified by their indexes in the displayed person list.\n"
+            + "Parameters: INDEX[,INDEX]... (each must be a positive integer)\n"
+            + "Example (single): " + COMMAND_WORD + " 1\n"
+            + "Example (multiple): " + COMMAND_WORD + " 1,2,5";
 
+    /** Error shown when at least one selected person is not archived. */
     public static final String MESSAGE_NOT_ARCHIVED = "One or more selected persons are not archived: %s";
-    public static final String MESSAGE_SUCCESS = "Unarchived: %s";
+
+    /** Success message template. */
+    public static final String MESSAGE_SUCCESS = "Unarchived: %s\nShowing active list.";
 
     private final List<Index> targetIndexes;
 
     /**
-     * Creates an {@code UnarchiveCommand} to unarchive the specified persons.
+     * Constructs an {@code UnarchiveCommand} to unarchive one or more persons in the displayed list.
+     * Duplicate indexes are removed while preserving the original order.
      *
-     * @param targetIndexes the list of person indexes to unarchive.
+     * @param targetIndexes indexes (1-based in UI) of persons to unarchive; must not be {@code null}.
      */
     public UnarchiveCommand(List<Index> targetIndexes) {
         requireNonNull(targetIndexes);
-        // remove duplicates while preserving user input order
-        Set<Integer> seenIndexes = new LinkedHashSet<>();
-        this.targetIndexes = targetIndexes.stream()
-            .filter(index -> seenIndexes.add(index.getZeroBased()))
-            .collect(Collectors.toUnmodifiableList());
+        this.targetIndexes = removeDuplicates(targetIndexes);
     }
 
+    /**
+     * Unarchives the selected persons and returns a {@link CommandResult} with a summary.
+     *
+     * <p>Behavior:
+     * <ul>
+     *   <li>Validates indexes against the currently displayed person list.</li>
+     *   <li>Fails if any targeted person is not archived.</li>
+     *   <li>Unarchives all valid targets atomically (same failure path for any invalid state).</li>
+     *   <li>Refreshes the filtered list to show active persons after completion.</li>
+     * </ul>
+     *
+     * @param model model providing access to persons and mutation APIs; must not be {@code null}.
+     * @return result containing the names of unarchived persons.
+     * @throws CommandException if an index is out of bounds or a person is not archived.
+     */
     @Override
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
         List<Person> displayedPersons = model.getFilteredPersonList();
 
-        // pre validation
+        List<Person> personsToUnarchive = validateAndCollect(displayedPersons);
+        List<String> unarchivedNames = applyUnarchive(model, personsToUnarchive);
+
+        model.updateFilteredPersonList(PREDICATE_SHOW_ACTIVE_PERSONS);
+        return new CommandResult(String.format(MESSAGE_SUCCESS, String.join(", ", unarchivedNames)));
+    }
+
+    // ----------------------------------------------------
+    // Helper methods
+    // ----------------------------------------------------
+
+    /**
+     * Removes duplicate indexes while preserving their original order.
+     *
+     * @param indexes list that may contain duplicates.
+     * @return unmodifiable list with duplicates removed.
+     */
+    private List<Index> removeDuplicates(List<Index> indexes) {
+        Set<Integer> seen = new LinkedHashSet<>();
+        return indexes.stream()
+                .filter(i -> seen.add(i.getZeroBased()))
+                .collect(Collectors.toUnmodifiableList());
+    }
+
+    /**
+     * Validates all target indexes and collects the corresponding persons to unarchive.
+     *
+     * <p>Validation steps:
+     * <ul>
+     *   <li>Ensure each index is within bounds of the displayed person list.</li>
+     *   <li>Detect if any targeted person is not archived; if found, fail the command.</li>
+     * </ul>
+     *
+     * @param displayedPersons current list of persons shown to the user.
+     * @return list of persons to unarchive.
+     * @throws CommandException if any index is out of bounds or any person is not archived.
+     */
+    private List<Person> validateAndCollect(List<Person> displayedPersons) throws CommandException {
         List<Person> personsToUnarchive = new ArrayList<>(targetIndexes.size());
         List<String> notArchivedNames = new ArrayList<>();
 
         for (Index targetIndex : targetIndexes) {
-            int zeroBasedIndex = targetIndex.getZeroBased();
-            if (zeroBasedIndex >= displayedPersons.size()) {
-                throw new CommandException(Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
-            }
-
-            Person person = displayedPersons.get(zeroBasedIndex);
+            Person person = getValidPerson(displayedPersons, targetIndex);
             if (!person.isArchived()) {
                 notArchivedNames.add(person.getName().toString());
             }
@@ -71,34 +129,60 @@ public class UnarchiveCommand extends Command {
 
         if (!notArchivedNames.isEmpty()) {
             throw new CommandException(String.format(MESSAGE_NOT_ARCHIVED,
-                String.join(", ", notArchivedNames)));
+                    String.join(", ", notArchivedNames)));
         }
 
-        // apply updates
+        return personsToUnarchive;
+    }
+
+    /**
+     * Resolves an index to a valid {@link Person} from the displayed list.
+     *
+     * @param displayedPersons list being referenced by the user's indexes.
+     * @param targetIndex index to resolve.
+     * @return the referenced person.
+     * @throws CommandException if the index is out of bounds.
+     */
+    private Person getValidPerson(List<Person> displayedPersons, Index targetIndex) throws CommandException {
+        int zeroBasedIndex = targetIndex.getZeroBased();
+        if (zeroBasedIndex >= displayedPersons.size()) {
+            throw new CommandException(Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
+        }
+        return displayedPersons.get(zeroBasedIndex);
+    }
+
+    /**
+     * Applies the unarchive flag to each person and persists updates through the model.
+     *
+     * @param model model used to mutate the person entries.
+     * @param personsToUnarchive persons to unarchive.
+     * @return ordered list of unarchived person names, for display.
+     */
+    private List<String> applyUnarchive(Model model, List<Person> personsToUnarchive) {
         List<String> unarchivedNames = new ArrayList<>(personsToUnarchive.size());
         for (Person originalPerson : personsToUnarchive) {
             Person unarchivedPerson = originalPerson.withArchived(false);
             model.setPerson(originalPerson, unarchivedPerson);
             unarchivedNames.add(unarchivedPerson.getName().toString());
         }
-
-        model.updateFilteredPersonList(PREDICATE_SHOW_ACTIVE_PERSONS);
-
-        return new CommandResult(String.format(MESSAGE_SUCCESS, String.join(", ", unarchivedNames)));
+        return unarchivedNames;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean equals(Object other) {
-        if (other == this) {
-            return true;
-        }
-        if (!(other instanceof UnarchiveCommand)) {
-            return false;
-        }
-        UnarchiveCommand otherCommand = (UnarchiveCommand) other;
-        return targetIndexes.equals(otherCommand.targetIndexes);
+        return other == this
+                || (other instanceof UnarchiveCommand
+                && targetIndexes.equals(((UnarchiveCommand) other).targetIndexes));
     }
 
+    /**
+     * Indicates that this command mutates the model.
+     *
+     * @return always {@code true}.
+     */
     @Override
     public boolean isMutating() {
         return true;

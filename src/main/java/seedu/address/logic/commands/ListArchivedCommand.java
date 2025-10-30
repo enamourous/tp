@@ -13,7 +13,7 @@ public class ListArchivedCommand extends Command {
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Lists all archived persons.\n"
             + "Example: " + COMMAND_WORD;
 
-    public static final String MESSAGE_EMPTY = "No archived persons found.";
+    public static final String MESSAGE_EMPTY = "No archived persons found. Use 'list' command to show active list.";
     public static final String MESSAGE_SUCCESS = "Listed all archived persons";
 
     @Override

@@ -46,7 +46,7 @@ The bulk of the app's work is done by the following four components:
 * [**`Model`**](#model-component): Holds the data of the App in memory.
 * [**`Storage`**](#storage-component): Reads data from, and writes data to, the hard disk.
 
-[**`Commons`**](#common-classes) represents a collection of classes used by multiple other components.
+* [**`Commons`**](#common-classes) represents a collection of classes used by multiple other components.
 
 **How the architecture components interact with each other**
 
@@ -397,25 +397,90 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
   Treasura shows error: *Unable to save changes*.  
   Use case ends.
 
+---
+
+<!-- @@author Roshan1572 -->
 
 ### Non-Functional Requirements
 
-1.  Should work on any _mainstream OS_ as long as it has Java `17` or above installed.
-2.  Should be able to hold up to 1000 persons without a noticeable sluggishness in performance for typical usage.
-3.  A user with above average typing speed for regular English text (i.e. not code, not system admin commands) should be able to accomplish most of the tasks faster using commands than using the mouse.
-4.  Maximum 500 students per CCA
+### 1. Data Requirements
+* **Data Volatility** — Person and payment data should be stored persistently and remain intact between sessions.  
+  Data changes (add, edit, archive, payment updates) are only committed upon successful command execution.
+* **Data Consistency** — The system must prevent conflicting updates (e.g., deleting a payment after it was archived).  
+  Undo/redo operations must preserve logical consistency across all entities.
+* **Data Integrity** — Each person must have a unique combination of `Name` and `Matriculation Number`.  
+  Archived records must retain their associated payments for traceability.
+* **Data Security** — User data is stored locally in JSON format. The application does not transmit any data externally.
+* **Data Recoverability** — In the event of an abnormal termination, the most recent successful state should be recoverable upon restart.
 
-*{More to be added}*
+---
+
+### 2. Technical Requirements
+* **Platform Compatibility** — The application must run on any mainstream OS (Windows, macOS, Linux, Unix) with **Java 17** or above installed.
+* **Build System** — The project uses **Gradle** for compilation, testing, and packaging (shadow JAR for distribution).
+* **Architecture** — Follows the **AB3 MVC architecture** (`Logic`, `Model`, `Storage`, `UI`) for maintainability and modularity.
+* **Logging** — The application should log command execution and errors through `LogsCenter` for debugging and traceability.
+* **Error Handling** — Parsing and validation errors should never crash the application; they must show user-friendly error messages.
+* **Extensibility** — New commands (e.g., `export`, `import`) should be addable without major refactoring due to consistent parser–command structure.
+
+---
+
+### 3. Performance Requirements
+* **Startup Time** — The application should launch and display the active list within **≤ 2 seconds** on a typical laptop.
+* **Command Latency** — Each command (`archive`, `unarchive`, `find`, `addpayment`, `deletepayment`, etc.) must execute within **≤ 150 ms** for a dataset of  
+  up to **5,000 persons** and **20 payments per person**.
+* **Undo/Redo Depth** — The undo/redo system must support **at least 20 reversible steps** without performance degradation.
+* **Responsiveness** — UI updates (switching between active/archived views) should occur instantly upon command completion.
+* **Storage Efficiency** — The application should remain performant and responsive even with file sizes up to **10 MB**.
+
+---
+
+### 4. Scalability Requirements
+* **Data Volume** — The system must handle at least **1,000 active persons** and **20,000 total payments** with no noticeable slowdown.
+* **Feature Scalability** — The architecture should support future extensions such as `export`, `import`, or `statistics` without affecting core logic.
+* **Storage Format** — The JSON-based storage can be evolved (e.g., adding new fields) while maintaining backward compatibility through the adapter pattern.
+* **Multi-entity Extension** — The system can be extended to support new entity types (e.g., CCA Events, Expenses) using the existing command framework.
+
+---
+
+### 5. Usability Requirements
+* **Command Efficiency** — A user with above-average typing speed should accomplish most tasks faster using text commands than the mouse.
+* **Command Feedback** — All commands must provide clear success or error messages in the result display.
+* **Error Recovery** — Invalid commands must not corrupt data and should guide the user toward correct syntax via `MESSAGE_USAGE`.
+* **Consistency** — Command syntax and usage follow AB3 conventions (e.g., prefixes like `n/`, `e/`, `m/`, `p/`).
+* **Learnability** — First-time users should be able to perform basic actions (add, find, archive, view) within **10 minutes** of exploration.
+* **Accessibility** — The UI should be readable and usable on screens as small as **1280×720**, with high-contrast text for visibility.
+
+---
+
+### 6. Constraints
+* **Offline Operation** — The application must operate fully offline without network connectivity.
+* **Single User Environment** — Only one user instance interacts with the data file at any time (no concurrency control required).
+* **No External Database** — All data must be stored locally; the use of external servers or cloud databases is not permitted.
+* **File Corruption Handling** — If the data file becomes unreadable, the app should display a clear error message and fall back to an empty dataset.
+* **Open Source Requirement** — The full source code must be publicly available on GitHub.
+* **Coding Standards** — All code must conform to the project’s Java coding standard and pass Checkstyle verification.
+
+---
 
 ### Glossary
 
-* **Mainstream OS**: Windows, Linux, Unix, MacOS
-* **Student ID**: A unique ID given to each NUS student
-* **CCA**: A NUS co-curricular activity or club
+* **Mainstream OS** — Commonly used operating systems such as **Windows**, **Linux**, **Unix**, and **macOS**.
+* **Student ID** — A unique identification code assigned to each **NUS student** (e.g., A0123456X).
+* **CCA** — Stands for *Co-Curricular Activity*; refers to a **student club, society, or organization** in NUS.
+* **Archived Person** — A person who has been soft-deleted from the active list but remains in storage for record-keeping.
+* **Payment Record** — A transaction entry associated with a person, containing an **amount**, **date**, and optional **remarks**.
+* **Predicate** — A filtering condition used in the app’s logic layer to determine which persons are displayed in the UI.
+* **Command Word** — The keyword used to trigger a command (e.g., `archive`, `find`, `undo`).
+* **Model** — The component responsible for holding data and business logic; updates the UI through observable lists.
+* **View** — The user interface layer that reflects the current state of the model (e.g., active list, archived list, payment view).
+* **Undo/Redo Stack** — A pair of internal data structures that track the history of changes for reversible commands.
+
+<!-- @@author -->
 
 --------------------------------------------------------------------------------------------------------------------
 
-## **Appendix: Instructions for manual testing**
+### **Appendix: Instructions for manual testing**
 
 Given below are instructions to test the app manually.
 
@@ -426,12 +491,76 @@ testers are expected to do more *exploratory* testing.
 
 </box>
 
-### Appendix: Planned Enhancements
+### **Appendix: Planned Enhancements**
 Our team size is 5.
 * Payment dashboard (A quick visualisation of all payments)
 * Store and access member and payment data from multiple CCAs (Separate storage)
 * Some of our error messages may not identify the exact cause of error, and may return a general error message which provides the correct command format to use. We will be refining these error messages to target their specific cause in the future versions.
 * Our `editpayment` and `archivepayment` features may function without using viewpayment to view the payment indices. This will be fixed in a future version.
+
+<!-- @@author Roshan1572 -->
+
+### Appendix: Effort
+
+### Overview
+The project builds on the AddressBook Level 3 (AB3) foundation but significantly expands its scope and complexity.  
+While AB3 manages a single entity type (`Person`), our project introduces **multiple entity states and relationships**:
+* **Archived vs Active persons** with distinct filters, views, and persistence logic.
+* **Payment records** linked to each person, with support for amount, date, and remarks fields.
+* **Undo/Redo** functionality for all mutating commands, increasing both user convenience and implementation complexity.
+
+These extensions required architectural changes across the `Model`, `Logic`, `Storage`, and `UI` layers, while maintaining compatibility with the existing AB3 command architecture.
+
+---
+
+### Challenges Faced
+1. **Multi-file updates and merge conflicts**  
+   Introducing new attributes (e.g., `archived` flag, payment list) required synchronized updates across the `Person`, `JsonAdaptedPerson`, `Storage`, and `Ui` classes.  
+   Coordinating these updates required coordination and communication to minimise merge conflicts and overwrites.
+
+2. **Payment interface design**  
+   Designing a flexible payment model that stores multiple payments per person with amount, date, and optional remarks demanded careful consideration of immutability and display ordering.  
+   Commands like `addpayment`, `deletepayment`, `editpayment`, and `viewpayment` required custom parsing and validation logic distinct from AB3’s single-field operations.
+
+3. **Archived/Active view management**  
+   Implementing `archive`, `unarchive`, and `listarchived` introduced the need for dynamic predicate switching (`PREDICATE_SHOW_ACTIVE_PERSONS` vs `PREDICATE_SHOW_ARCHIVED_PERSONS`).  
+   Ensuring that archived persons were excluded from normal search and list results, while still being able to manage their payments required defensive programming and extensive testing across commands.
+
+4. **Undo/Redo functionality**  
+   Maintaining consistent application state after consecutive undo/redo operations required snapshot-based history tracking in the `Model`.  
+   Edge cases involving sequential operations (e.g., `archive → undo → addpayment → undo → redo`) were challenging to reason about and verify.
+
+5. **UI synchronization**  
+   Modifying the UI to display the Archived label and each member's latest payment.
+
+---
+
+### Effort and Achievements
+* **Code effort:** approximately **1.5× the effort of base AB3**, due to additional entity relationships, new commands, validation, and UI enhancements.
+* **Testing effort:** expanded significantly, as new commands (`archive`, `unarchive`, `undo`, `redo`, and payment operations) required both unit and integration tests to maintain >80% coverage.
+* **Collaboration effort:** frequent merges and PR reviews to maintain consistent architecture and coding standards.
+
+**Key achievements:**
+* Successfully implemented **two distinct views** for archived and active persons.
+* Created a robust **payment interface** that tracks transaction amount, date, and remarks.
+* Added **undo/redo** functionality, improving user experience and reliability.
+* Enhanced test coverage and logging, ensuring stability under edge cases.
+
+---
+
+### Reuse and Efficiency
+A small portion of the project (~10%) reused or adapted existing AB3 utilities and parser logic:
+* The `ArgumentTokenizer`, `ParserUtil`, and `CommandResult` classes were reused with minor extensions.
+* This reuse allowed us to focus effort on implementing new domain logic (e.g., payment handling, undo/redo, archived filtering) rather than reimplementing core infrastructure.
+* The saved effort was redirected toward improving **test depth**, **code readability**, and **UI integration**.
+
+---
+
+### Summary
+In summary, our project demonstrates a substantial step beyond AB3 in both **functionality** and **complexity**.  
+By integrating **multiple data dimensions**, **state management**, and **user-friendly undo/redo capabilities**, we produced a feature-rich, reliable, and user-oriented application that serves the needs of our target audience.
+
+<!-- @@author -->
 
 ### Launch and shutdown
 

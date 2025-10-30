@@ -26,7 +26,7 @@ Treasura is primarily targeted towards CCA leaders and treasurers. 🎓💼
 
 4. Open a command terminal, `cd` into the folder you put the jar file in, and use the `java -jar Treasura.jar` command to run the application.<br>
    A GUI similar to the below should appear in a few seconds. Note how the app contains some sample data.<br>
-   ![ui on launch](images/UiOnLaunch.png)
+   ![ui on launch](images/UiOnLaunchv2.png)
 
 5. **Start using Treasura**  
    Type commands into the command box and press **Enter** to execute them.  
@@ -68,7 +68,7 @@ help
 ```
 
 The **Help Window** appears, showing a list of all available commands and their formats.  
-![updated help window](images/UpdatedHelpWindow.png)
+![updated help window](images/UpdatedHelpWindowv2.png)
 
 Now he’s ready to get started.
 
@@ -312,7 +312,7 @@ By the end of the session, Alex has:
 
 Shows a message containing all functions.
 
-![updated help window](images/UpdatedHelpWindow.png)
+![updated help window](images/UpdatedHelpWindowv2.png)
 
 **Format:** `help`
 
@@ -494,9 +494,8 @@ Adds a payment to one or more members specified by their indices.
 
 **Examples:**
 * `addpayment 1 a/20.00 d/2025-03-12 r/Membership fee`
-* `addpayment 2,3 a/15.50 d/2025-04-01 r/Event T-shirt`
 
-<img width="645" height="659" alt="image" src="https://github.com/user-attachments/assets/d2e01018-3c17-4c15-b124-74ab58dad8bf" />
+![add payment output](images/AddPaymentOutput.png)
 
 ---
 
@@ -669,8 +668,8 @@ Treasura data are saved automatically as a JSON file `[JAR file location]/data/a
 <box type="warning" seamless>
 
 **Caution:**
-If your changes to the data file makes its format invalid, AddressBook will discard all data and start with an empty data file at the next run.  Hence, it is recommended to take a backup of the file before editing it.<br>
-Furthermore, certain edits can cause the AddressBook to behave in unexpected ways (e.g., if a value entered is outside the acceptable range). Therefore, edit the data file only if you are confident that you can update it correctly.
+If your changes to the data file makes its format invalid, Treasura will discard all data and start with an empty data file at the next run.  Hence, it is recommended to take a backup of the file before editing it.<br>
+Furthermore, certain edits can cause the Treasura to behave in unexpected ways (e.g., if a value entered is outside the acceptable range). Therefore, edit the data file only if you are confident that you can update it correctly.
 </box>
 
 
@@ -679,7 +678,7 @@ Furthermore, certain edits can cause the AddressBook to behave in unexpected way
 ## FAQ
 
 **Q**: How do I transfer my data to another computer?<br>
-**A**: Install the app in the other computer and overwrite the empty data file it creates with the file that contains the data of your previous AddressBook home folder.
+**A**: Install the app in the other computer and overwrite the empty data file it creates with the file that contains the data of your previous Treasura home folder.
 
 **Q**: Can I delete a member?<br>
 **A**: Deleting a member accidentally can wipe out his/her entire payment history, therefor the app only supports archiving a member. You can also use edit command to swap out the details of the unwanted member with that of a new member.

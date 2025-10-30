@@ -11,10 +11,11 @@ title: "About Us"
 
 ![Ui](images/Ui.png)
 
-**Treasura is a desktop application for managing your contact details.** While it has a GUI, most of the user interactions happen using a CLI (Command Line Interface).
+**Treasura is a **desktop app for managing CCA members and payments, optimized for use via a Command Line Interface (CLI)** while still having the benefits of a Graphical User Interface (GUI).**
 
 * If you are interested in using Treasura, head over to the [_Quick Start_ section of the **User Guide**](UserGuide.html#quick-start).
 * If you are interested about developing Treasura, the [**Developer Guide**](DeveloperGuide.html) is a good place to start.
+* If you would like to know more about the developers behind this project, head to the [**About Us section**](AboutUs.html).
 
 
 **Acknowledgements**

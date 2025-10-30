@@ -17,6 +17,9 @@ import seedu.address.logic.parser.exceptions.ParseException;
  */
 public class DeletePaymentCommandParser implements Parser<DeletePaymentCommand> {
 
+    public static final String MESSAGE_DUPLICATE_PAYMENT_INDEX =
+            "Duplicate payment indexes are not allowed.";
+
     @Override
     public DeletePaymentCommand parse(String args) throws ParseException {
         requireNonNull(args);
@@ -45,7 +48,7 @@ public class DeletePaymentCommandParser implements Parser<DeletePaymentCommand> 
             throw new ParseException("Missing payment index after 'p/'. Example: p/1,2,3");
         }
 
-        final String[] tokens = paymentsRaw.split(",");
+        final String[] tokens = paymentsRaw.split(",", -1);
         final List<Index> paymentIndexes = new ArrayList<>();
 
         for (String token : tokens) {
@@ -66,7 +69,7 @@ public class DeletePaymentCommandParser implements Parser<DeletePaymentCommand> 
         for (Index idx : paymentIndexes) {
             int oneBased = idx.getOneBased();
             if (!seen.add(oneBased)) {
-                throw new ParseException("Duplicate payment indexes are not allowed.");
+                throw new ParseException(MESSAGE_DUPLICATE_PAYMENT_INDEX);
             }
         }
 
